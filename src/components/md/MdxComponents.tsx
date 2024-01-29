@@ -13,5 +13,8 @@ export const mdxComponents: MDXComponents = {
   //   );
   // },
   img: MDXImage as any,
+  h1: ({ children }) => {
+    return <div className='text-amber-500'>{children}</div>;
+  },
   // 마크다운에 사용하려는 다른 컴포넌트
 };
