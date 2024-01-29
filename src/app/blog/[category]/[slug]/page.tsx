@@ -19,12 +19,12 @@ const PostDetail = async ({ params }: Props) => {
   console.log(post);
 
   return (
-    <div className='w-[1000px] mx-auto'>
+    <div className='w-[900px] mx-auto'>
       <header>
         <h1>{post.title}</h1>
         <div>{post.date.toISOString()}</div>
       </header>
-      <div className='prose'>
+      <div className='prose max-w-none'>
         <PostBody>{post.content}</PostBody>
       </div>
     </div>

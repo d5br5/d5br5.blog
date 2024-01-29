@@ -1,0 +1,86 @@
+---
+title: Nginx에 POST 요청하기 (405 Not Allowed)
+date: 2023-10-22T12:11:00
+tags: ['devops', 'nginx']
+---
+
+#문제 상황
+
+서드파티 결제 서비스를 연동하여 cash 입출금 작업을 진행하는 과정에서 에러가 발생했다.
+
+결제 성공/실패/취소 상황에 대한 redirect URL들을 payload에 담아 API로 요청하는데,
+성공/실패의 경우 정상적으로 redirect 되었으나
+취소의 경우 redirect된 url에서 아래와 같이 405 Not Allowed 응답을 받았다.
+
+![image](/posts/deep_dive/nginx405/1.png)
+
+redirect된 페이지의 405 응답
+
+성공, 취소의 redirect url을 동일하게 설정해도 같은 현상이 반복되었다.
+
+네트워크 탭에서 각 요청을 살펴보았는데, 아래와 같이 요청 Method가 달랐다!
+
+![image](/posts/deep_dive/nginx405/2.png)
+
+성공 redirect 페이지의 네트워크 요청 (200 응답)
+
+![image](/posts/deep_dive/nginx405/3.png)
+
+취소 redirect 페이지의 네트워크 요청 (405 응답)
+
+서드파티 앱 쪽에, 성공은 GET으로 / 취소는 POST 로 요청하도록 미리 설정된 모양이다.
+
+(성공/실패 시에는 단순 리다이렉트만으로 충분하고, 취소시에는 별도 action이 필요할 수 있다고 판단한 모양..)
+
+원인
+Nginx는 .html 파일에 대한 POST 요청을 지원하지 않는다.
+
+Nginx는 주로 HTTP GET 요청을 처리하는 웹 서버로 사용된다.
+
+웹페이지에 접속할 경우, 해당 URL에 대응되는 html 파일을 nginx에 GET method로 요청하게 되는데,
+
+HTML 파일을 POST 요청으로 받아오는 것은 기본 구성에서는 작동하지 않는다.
+
+해결
+.nginx.conf 파일에 설정을 추가
+
+방법 1 : Nginx error_page rediect 설정
+405 응답을 200으로 응답하도록 설정
+
+```
+location / {
+error_page 405 =200 $uri;
+}
+```
+
+방법 2 : Nginx HTTP Method 제한 설정
+GET 만 허용 → GET, POST 이외 요청 거부로 변경
+
+```
+location / {
+limit_except GET POST {
+deny all;
+}
+}
+```
+
+방법 3 : 특정 URL에 대한 POST 요청 허용
+기본적으로 GET만 허용을 유지해야 하므로, 원하는 URL 만 분기처리
+
+```
+location ~ ^/([^/]+)/test_url {
+if ($request_method = POST) {
+        set $redirect_url $scheme://$host/test_url$args;
+rewrite ^ $redirect_url permanent;
+}
+}
+```
+
+나는 방법 1을 이용하여 문제를 해결했다!
+
+Reference
+https://velog.io/@leesomyoung/NginX-리다이렉션-시-POST가-GET으로-바뀌는-문제점
+
+https://12bme.tistory.com/569
+
+https://velog.io/@directorhwan59/405-문제-탐방기
