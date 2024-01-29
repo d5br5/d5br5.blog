@@ -1,16 +1,16 @@
+import { getPostParamList } from '@/lib/post';
+
 type Props = {
   params: { category: string; slug: string };
 };
 
-// // [231123 by DOH] 허용된 param 외 접근시 404
-// export const dynamicParams = true
+// 허용된 param 외 접근시 404
+export const dynamicParams = false;
 
-// export async function generateStaticParams() {
-
-//   // return langs.map(({ locale }: any) => ({
-//   //   lang: getKeyByValue(langMap, locale),
-//   // }))
-// }
+export async function generateStaticParams() {
+  const paramList = getPostParamList();
+  return paramList;
+}
 
 const PostDetail = ({ params }: Props) => {
   const { category, slug } = params;
