@@ -24,7 +24,7 @@ const PostDetail = async ({ params }: Props) => {
         <h1>{post.title}</h1>
         <div>{post.date.toISOString()}</div>
       </header>
-      <div>
+      <div className='prose'>
         <PostBody>{post.content}</PostBody>
       </div>
     </div>
