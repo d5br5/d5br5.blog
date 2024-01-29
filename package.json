@@ -9,7 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fec/remark-a11y-emoji": "^4.0.2",
+    "@mdx-js/loader": "^3.0.0",
+    "@mdx-js/react": "^3.0.0",
+    "@next/mdx": "^14.1.0",
     "@types/glob": "^8.1.0",
+    "@types/mdx": "^2.0.10",
     "clsx": "^2.1.0",
     "gray-matter": "^4.0.3",
     "next": "14.1.0",
@@ -17,6 +22,10 @@
     "prettier-plugin-tailwindcss": "^0.5.11",
     "react": "^18",
     "react-dom": "^18",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-slug": "^6.0.0",
+    "remark-gfm": "^4.0.0",
+    "remark-toc": "^9.0.0",
     "tailwind-merge": "^2.2.1"
   },
   "devDependencies": {

@@ -19,7 +19,7 @@ export interface Post extends PostMatter {
   slug: string;
   categoryPath: string;
   categoryPublicName: string;
-  mdx: MDXRemoteSerializeResult;
+  content: string;
 }
 
 // target folder의 모든 mdx 파일 조회
@@ -62,18 +62,7 @@ const parsePostDetail = async (postPath: string) => {
   const { data, content } = matter(file);
   const grayMatter = data as PostMatter;
 
-  const mdx = await serialize(content, {
-    mdxOptions: {
-      remarkPlugins: [],
-      rehypePlugins: [],
-      format: 'mdx',
-    },
-  });
-
-  return {
-    ...grayMatter,
-    mdx,
-  };
+  return { ...grayMatter, content };
 };
 
 const getCategoryPublicName = (dirPath: string) =>
@@ -109,4 +98,10 @@ export const getPostParamList = () => {
     .map((path) => parsePostAbstract(path))
     .map((item) => ({ category: item.categoryPath, slug: item.slug }));
   return abstractList;
+};
+
+export const getPostDetail = async (category: string, slug: string) => {
+  const filePath = `${POSTS_PATH}/${category}/${slug}.mdx`;
+  const detail = await parsePost(filePath);
+  return detail;
 };
