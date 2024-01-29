@@ -49,7 +49,7 @@ HTML 파일을 POST 요청으로 받아오는 것은 기본 구성에서는 작�
 
 ```
 location / {
-error_page 405 =200 $uri;
+  error_page 405 =200 $uri;
 }
 ```
 
@@ -58,9 +58,9 @@ GET 만 허용 → GET, POST 이외 요청 거부로 변경
 
 ```
 location / {
-limit_except GET POST {
-deny all;
-}
+  limit_except GET POST {
+   deny all;
+  }
 }
 ```
 
@@ -69,10 +69,10 @@ deny all;
 
 ```
 location ~ ^/([^/]+)/test_url {
-if ($request_method = POST) {
-        set $redirect_url $scheme://$host/test_url$args;
-rewrite ^ $redirect_url permanent;
-}
+  if ($request_method = POST) {
+    set $redirect_url $scheme://$host/test_url$args;
+    rewrite ^ $redirect_url permanent;
+  }
 }
 ```
 
