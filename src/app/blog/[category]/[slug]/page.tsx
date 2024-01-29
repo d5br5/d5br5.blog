@@ -1,4 +1,5 @@
-import { PostBody } from '@/components/md/PostBody';
+import { PostBody } from '@/components/post/PostBody';
+import { PostHeader } from '@/components/post/PostHeader';
 import { getPostDetail, getPostParamList } from '@/lib/post';
 
 type Props = {
@@ -13,17 +14,11 @@ export async function generateStaticParams() {
   return paramList;
 }
 
-const PostDetail = async ({ params }: Props) => {
-  const { category, slug } = params;
+const PostDetail = async ({ params: { category, slug } }: Props) => {
   const post = await getPostDetail(category, slug);
-  console.log(post);
-
   return (
     <div className='w-[900px] mx-auto'>
-      <header>
-        <h1>{post.title}</h1>
-        <div>{post.date.toISOString()}</div>
-      </header>
+      <PostHeader post={post} />
       <div className='prose max-w-none'>
         <PostBody>{post.content}</PostBody>
       </div>

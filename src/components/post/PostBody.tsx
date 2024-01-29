@@ -1,4 +1,4 @@
-import { mdxComponents } from './MdxComponents';
+import { MdxComponents } from '../mdx';
 // @ts-expect-error no types
 import remarkA11yEmoji from '@fec/remark-a11y-emoji';
 import { MDXRemote } from 'next-mdx-remote/rsc';
@@ -31,7 +31,7 @@ export const PostBody = ({ children }: Props) => {
           rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
         },
       }}
-      components={mdxComponents}
+      components={MdxComponents}
     />
   );
 };
