@@ -47,7 +47,7 @@ HTML 파일을 POST 요청으로 받아오는 것은 기본 구성에서는 작�
 방법 1 : Nginx error_page rediect 설정
 405 응답을 200으로 응답하도록 설정
 
-```
+```shell
 location / {
   error_page 405 =200 $uri;
 }
@@ -56,8 +56,8 @@ location / {
 방법 2 : Nginx HTTP Method 제한 설정
 GET 만 허용 → GET, POST 이외 요청 거부로 변경
 
-```
-location / {
+```shell
+location /  {
   limit_except GET POST {
    deny all;
   }
@@ -67,7 +67,7 @@ location / {
 방법 3 : 특정 URL에 대한 POST 요청 허용
 기본적으로 GET만 허용을 유지해야 하므로, 원하는 URL 만 분기처리
 
-```
+```shell
 location ~ ^/([^/]+)/test_url {
   if ($request_method = POST) {
     set $redirect_url $scheme://$host/test_url$args;

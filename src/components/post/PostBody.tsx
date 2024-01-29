@@ -3,6 +3,7 @@ import { MdxComponents } from '../mdx';
 import remarkA11yEmoji from '@fec/remark-a11y-emoji';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypePrettyCode from 'rehype-pretty-code';
 import rehypeSlug from 'rehype-slug';
 import remarkBreaks from 'remark-breaks';
 import remarkGfm from 'remark-gfm';
@@ -28,7 +29,7 @@ export const PostBody = ({ children }: Props) => {
             remarkBreaks,
           ],
           // 함께 작동하여 ID를 추가하고 제목을 연결합니다.
-          rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
+          rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings, rehypePrettyCode],
         },
       }}
       components={MdxComponents}
