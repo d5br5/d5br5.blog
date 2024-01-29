@@ -12,7 +12,7 @@ const Blog = async () => {
         {postList.map((post) => (
           <li key={post.url + post.date}>
             <Link href={post.url}>
-              {post.title}({post.category})
+              {post.title}({post.category.public})
             </Link>
           </li>
         ))}

@@ -15,9 +15,14 @@ interface PostMatter {
   tags: string[];
 }
 
+interface Category {
+  public: string;
+  dir_path: string;
+}
+
 export interface Post extends PostMatter {
   url: string;
-  category: string;
+  category: Category;
   mdx: MDXRemoteSerializeResult;
 }
 
@@ -27,12 +32,12 @@ const parsePost = async (postPath: string): Promise<Post> => {
   const { data, content } = matter(file);
   const grayMatter = data as PostMatter;
 
-  const path = postPath
+  const filePath = postPath
     .slice(postPath.indexOf(BASE_PATH))
     .replace(`${BASE_PATH}/`, '')
     .replace('.mdx', '');
 
-  const [category, slug] = path.split('/');
+  const [dir_path, slug] = filePath.split('/');
 
   const mdx = await serialize(content, {
     mdxOptions: {
@@ -42,7 +47,17 @@ const parsePost = async (postPath: string): Promise<Post> => {
     },
   });
 
-  const url = `blog/${category}/${slug}`.replace(' ', '_');
+  const url = `blog/${dir_path}/${slug}`;
+
+  const publicCategory = dir_path
+    .split('_')
+    .map((token) => token[0].toUpperCase() + token.slice(1, token.length))
+    .join(' ');
+
+  const category: Category = {
+    public: publicCategory,
+    dir_path,
+  };
 
   return {
     ...grayMatter,
@@ -55,6 +70,7 @@ const parsePost = async (postPath: string): Promise<Post> => {
 // 타겟 폴더에 있는 모든 mdx 파일을 탐색하여 가져옵니다.
 export const getPostList = async (): Promise<Post[]> => {
   const postPaths: string[] = sync(`${POSTS_PATH}/**/*.mdx`);
+  console.log(postPaths);
   const result = await Promise.all(
     postPaths.map((postPath) => parsePost(postPath))
   );
