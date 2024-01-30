@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import '@/config/globals.css';
 import { Footer } from '@/layouts/Footer';
 import { Header } from '@/layouts/Header';
+import { Providers as ThemeProvider } from '@/layouts/ThemeProvider';
 import { cn } from '@/lib/utils';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -19,11 +20,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en' className='h-full'>
+    <html lang='en' className='h-full' suppressHydrationWarning>
       <body className={cn(inter.className, 'min-h-screen flex flex-col')}>
-        <Header />
-        <main className='flex flex-1 flex-col'>{children}</main>
-        <Footer />
+        <ThemeProvider>
+          <Header />
+          <main className='flex flex-1 flex-col'>{children}</main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

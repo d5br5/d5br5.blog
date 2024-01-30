@@ -1,5 +1,7 @@
 import Link from 'next/link';
 
+import ThemeSwitch from './ThemeChanger';
+
 export const Header = () => {
   return (
     <nav className='flex justify-center h-[60px] items-center'>
@@ -7,7 +9,9 @@ export const Header = () => {
         <div>
           <Link href='/blog'>D5BL5G</Link>
         </div>
-        <div>right</div>
+        <div>
+          <ThemeSwitch />
+        </div>
       </div>
     </nav>
   );
