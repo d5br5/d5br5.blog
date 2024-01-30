@@ -20,7 +20,7 @@ export const PostBody = ({ children }: Props) => {
       options={{
         mdxOptions: {
           remarkPlugins: [
-            // 깃허브 Flavored 마크다운 지원 추가
+            // 깃허브 Flavored 마크다운 지원 추가 (version downgrade)
             remarkGfm,
             // 이모티콘 접근성 향상
             remarkA11yEmoji,

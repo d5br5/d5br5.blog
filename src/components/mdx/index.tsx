@@ -1,5 +1,7 @@
 // import Link from 'next/link';
-import { MDXImage } from './MdxImage';
+import { PropsWithChildren } from 'react';
+
+import { Callout } from '../Callout';
 import { MDXComponents } from 'mdx/types';
 
 export const MdxComponents: MDXComponents = {
@@ -10,7 +12,8 @@ export const MdxComponents: MDXComponents = {
   //     </Link>
   //   );
   // },
-  img: MDXImage as any,
+  blockquote: (props: PropsWithChildren) => <div>{props.children} dd</div>,
+  Callout: Callout,
 
   // 마크다운에 사용하려는 다른 컴포넌트
 };

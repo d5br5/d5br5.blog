@@ -19,7 +19,7 @@ const PostDetail = async ({ params: { category, slug } }: Props) => {
   return (
     <div className='w-[800px] mx-auto'>
       <PostHeader post={post} />
-      <div className='prose max-w-none'>
+      <div className='prose max-w-none dark:prose-invert'>
         <PostBody>{post.content}</PostBody>
       </div>
     </div>
