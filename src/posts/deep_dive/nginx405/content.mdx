@@ -12,8 +12,8 @@ tags: ['devops', 'nginx']
 성공/실패의 경우 정상적으로 redirect 되었으나
 취소의 경우 redirect된 url에서 아래와 같이 405 Not Allowed 응답을 받았다.
 
-![image](/posts/deep_dive/nginx405/1.png)
-_redirect된 페이지의 405 응답_
+![redirect된 페이지의 405 응답](/posts/deep_dive/nginx405/1.png)
+
 
 성공, 취소의 <u>redirect url을 동일하게 설정해도 같은 현상이 반복</u>되었다.
 
@@ -21,8 +21,8 @@ _redirect된 페이지의 405 응답_
 
 ![성공 redirect 페이지의 네트워크 요청 (200 응답)](/posts/deep_dive/nginx405/2.png)
 
-![image](/posts/deep_dive/nginx405/3.png)
-_취소 redirect 페이지의 네트워크 요청 (405 응답)_
+![취소 redirect 페이지의 네트워크 요청 (405 응답)](/posts/deep_dive/nginx405/3.png)
+
 
 서드파티 앱 쪽에, 성공은 GET으로 / 취소는 POST 로 요청하도록 미리 설정된 모양이다.
 

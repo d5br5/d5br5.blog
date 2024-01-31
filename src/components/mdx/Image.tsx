@@ -1,34 +1,15 @@
-import NextImage from 'next/image';
-
-export const Image = ({
-  src,
-  alt,
-}: React.DetailedHTMLProps<
-  React.ImgHTMLAttributes<HTMLImageElement>,
-  HTMLImageElement
-> & {
+interface ImageProps {
   src: string;
   alt: string;
-}) => {
-  let widthFromSrc, heightFromSrc;
-  const url = new URL(src, 'https://maxleiter.com');
-  const widthParam = url.searchParams.get('w') || url.searchParams.get('width');
-  const heightParam =
-    url.searchParams.get('h') || url.searchParams.get('height');
-  if (widthParam) {
-    widthFromSrc = parseInt(widthParam);
-  }
-  if (heightParam) {
-    heightFromSrc = parseInt(heightParam);
-  }
+}
 
-  const imageProps = {
-    src,
-    alt,
-    // 원하는 대로 조정하세요.
-    height: heightFromSrc || 450,
-    width: widthFromSrc || 550,
-  };
-
-  return <NextImage {...imageProps} />;
+export const Image = ({ src, alt }: ImageProps) => {
+  return (
+    <>
+      <img src={src} alt={alt} className='mx-auto rounded-md mt-8 mb-0' />
+      <span className='w-full block text-center mb-8 mt-2 text-sm text-gray-500 dark:text-gray-400'>
+        {alt}
+      </span>
+    </>
+  );
 };

@@ -13,7 +13,7 @@ export const MdxComponents: MDXComponents = {
   //     </Link>
   //   );
   // },
-  // img: Image,
+  img: Image as any,
   blockquote: Callout,
   Callout,
 

@@ -9,12 +9,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Moon, Sun } from 'lucide-react';
+import { Dot, LucideIcon, Monitor, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+
+interface DropdownItemProps {
+  t: string;
+  label: string;
+  Icon: LucideIcon;
+}
 
 const ThemeSwitch = () => {
   const [mounted, setMounted] = useState(false);
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   // useEffect only runs on the client, so now we can safely show the UI
   useEffect(() => {
@@ -24,6 +30,15 @@ const ThemeSwitch = () => {
   if (!mounted) {
     return null;
   }
+
+  const Item = ({ t, Icon, label }: DropdownItemProps) => (
+    <DropdownMenuItem onClick={() => setTheme(t)} className='justify-between'>
+      <div className='flex items-center gap-2'>
+        <Icon width={14} /> {label}
+      </div>
+      {theme === t && <Dot />}
+    </DropdownMenuItem>
+  );
 
   return (
     <DropdownMenu>
@@ -35,9 +50,9 @@ const ThemeSwitch = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>System</DropdownMenuItem>
+        <Item t='light' label='Light' Icon={Sun} />
+        <Item t='dark' label='Dark' Icon={Moon} />
+        <Item t='system' label='System' Icon={Monitor} />
       </DropdownMenuContent>
     </DropdownMenu>
   );
