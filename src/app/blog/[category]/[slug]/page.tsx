@@ -1,5 +1,6 @@
 import { PostBody } from '@/components/post/PostBody';
 import { PostHeader } from '@/components/post/PostHeader';
+import ScrollProgressBar from '@/layouts/ScrollProgressBar';
 import { getPostDetail, getPostParamList } from '@/lib/post';
 
 type Props = {
@@ -17,10 +18,13 @@ export async function generateStaticParams() {
 const PostDetail = async ({ params: { category, slug } }: Props) => {
   const post = await getPostDetail(category, slug);
   return (
-    <div className='w-[800px] mx-auto prose max-w-none dark:prose-invert'>
-      <PostHeader post={post} />
-      <PostBody>{post.content}</PostBody>
-    </div>
+    <>
+      <ScrollProgressBar />
+      <div className='w-[800px] mx-auto prose max-w-none dark:prose-invert'>
+        <PostHeader post={post} />
+        <PostBody>{post.content}</PostBody>
+      </div>
+    </>
   );
 };
 

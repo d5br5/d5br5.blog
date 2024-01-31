@@ -80,7 +80,7 @@ GET 만 허용 → GET, POST 이외 요청 거부로 변경
 ```shell
 location /  {
   limit_except GET POST {
-   deny all;
+    deny all;
   }
 }
 ```
