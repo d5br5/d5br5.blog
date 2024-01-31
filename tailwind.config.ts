@@ -26,7 +26,7 @@ const config: Config = {
         DEFAULT: {
           css: {
             color: 'var(--foreground)',
-            h1: {
+            'h1, h2, h3, code, a': {
               color: 'var(--foreground)',
             },
             '.callout-contents > p': {

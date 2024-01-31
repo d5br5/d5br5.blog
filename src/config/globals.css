@@ -3,56 +3,59 @@
 @tailwind utilities;
 
 :root {
-  --background: white;
-  --foreground: black;
+  --white: hsl(210 40% 98%);
+  --black: #121212;
+
+  --background: var(--white);
+  --foreground: var(--black);
 
   --secondary: hsl(210 40% 96.1%);
   --secondary-foreground: hsl(222.2 47.4% 11.2%);
 
   --informative: #e0f2fe;
-  --informative-foreground: #121212;
+  --informative-foreground: var(--black);
 
   --warning: #fef3c7;
-  --warning-foreground: #121212;
+  --warning-foreground: var(--black);
 
   --destructive: #fecdd3;
-  --destructive-foreground: #121212;
+  --destructive-foreground: var(--black);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: black;
-    --foreground: white;
+    --background: var(--black);
+    --foreground: var(--white);
 
     --secondary: hsl(217.2 32.6% 17.5%);
-    --secondary-foreground: hsl(210 40% 98%);
+    --secondary-foreground: var(--white);
 
     --informative: #075985;
-    --informative-foreground: hsl(210 40% 98%);
+    --informative-foreground: var(--white);
 
     --warning: #ca8a04;
-    --warning-foreground: hsl(210 40% 98%);
+    --warning-foreground: var(--white);
 
     --destructive: #7f1d1d;
-    --destructive-foreground: hsl(210 40% 98%);
+    --destructive-foreground: var(--white);
   }
 }
 
 [data-theme='dark'] {
-  --background: #121212;
-  --foreground: white;
+  --background: var(--black);
+  --foreground: var(--white);
 
   --secondary: hsl(217.2 32.6% 17.5%);
-  --secondary-foreground: hsl(210 40% 98%);
+  --secondary-foreground: var(--white);
 
   --informative: #075985;
-  --informative-foreground: hsl(210 40% 98%);
+  --informative-foreground: var(--white);
 
   --warning: #ca8a04;
-  --warning-foreground: hsl(210 40% 98%);
+  --warning-foreground: var(--white);
 
   --destructive: #7f1d1d;
-  --destructive-foreground: hsl(210 40% 98%);
+  --destructive-foreground: var(--white);
 }
 
 body {
