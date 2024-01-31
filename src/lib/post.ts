@@ -1,9 +1,8 @@
 import fs from 'fs';
 import { sync } from 'glob';
 import matter from 'gray-matter';
-import { MDXRemoteSerializeResult } from 'next-mdx-remote';
-import { serialize } from 'next-mdx-remote/serialize';
 import path from 'path';
+import readingTime from 'reading-time';
 
 const BASE_PATH = '/src/posts';
 const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
@@ -20,6 +19,7 @@ export interface Post extends PostMatter {
   categoryPath: string;
   categoryPublicName: string;
   content: string;
+  readingMinutes: number;
 }
 
 // target folder의 모든 mdx 파일 조회
@@ -61,8 +61,9 @@ const parsePostDetail = async (postPath: string) => {
   const file = fs.readFileSync(postPath, 'utf8');
   const { data, content } = matter(file);
   const grayMatter = data as PostMatter;
+  const readingMinutes = Math.ceil(readingTime(content).minutes);
 
-  return { ...grayMatter, content };
+  return { ...grayMatter, content, readingMinutes };
 };
 
 const getCategoryPublicName = (dirPath: string) =>
@@ -85,9 +86,7 @@ const sortPostList = (PostList: Post[]) => {
 export const getPostList = async (): Promise<Post[]> => {
   const postPaths: string[] = getPostPaths();
 
-  const result = await Promise.all(
-    postPaths.map((postPath) => parsePost(postPath))
-  );
+  const result = await Promise.all(postPaths.map((postPath) => parsePost(postPath)));
 
   return sortPostList(result);
 };

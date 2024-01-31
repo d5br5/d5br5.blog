@@ -1,10 +1,10 @@
 ---
 title: Nginx에 POST 요청하기 (405 Not Allowed)
-date: 2023-10-22T12:11:00
+date: 2023-10-22
 tags: ['devops', 'nginx']
 ---
 
-# 문제 상황
+## 문제 상황
 
 서드파티 결제 서비스를 연동하여 cash 입출금 작업을 진행하는 과정에서 에러가 발생했다.
 
@@ -30,17 +30,25 @@ _취소 redirect 페이지의 네트워크 요청 (405 응답)_
 
 ---
 
-<Callout type='warn'>warn accent Critical content demanding immediate user attention due to potential risks. Critsssii content demanding immediate user attention due to potential risks. Critical content demanding immediate user attention due to potential risks.</Callout>
+<Callout type='warn'>
+  warn accent Critical content demanding immediate user attention due to potential risks. Critsssii
+  content demanding immediate user attention due to potential risks. Critical content demanding
+  immediate user attention due to potential risks.
+</Callout>
 
-<Callout type='info'>info secondary Critical content demanding immediate user attention due to potential risks.</Callout>
+<Callout type='info'>
+  info secondary Critical content demanding immediate user attention due to potential risks.
+</Callout>
 
-<Callout type='danger'>danger destructive Critical content demanding immediate user attention due to potential risks.</Callout>
+<Callout type='danger'>
+  danger destructive Critical content demanding immediate user attention due to potential risks.
+</Callout>
 
 > sexxy
 
 ---
 
-# 원인
+## 원인
 
 > Nginx는 .html 파일에 대한 POST 요청을 지원하지 않는다.
 
@@ -51,11 +59,11 @@ Nginx는 주로 HTTP GET 요청을 처리하는 웹 서버로 사용된다.
 
 ---
 
-# 해결
+## 해결
 
 > .nginx.conf 파일에 설정을 추가
 
-## 방법 1 : Nginx error_page rediect 설정
+### 방법 1 : Nginx error_page rediect 설정
 
 405 응답을 200으로 응답하도록 설정
 
@@ -65,7 +73,7 @@ location / {
 }
 ```
 
-## 방법 2 : Nginx HTTP Method 제한 설정
+### 방법 2 : Nginx HTTP Method 제한 설정
 
 GET 만 허용 → GET, POST 이외 요청 거부로 변경
 
@@ -77,7 +85,7 @@ location /  {
 }
 ```
 
-## 방법 3 : 특정 URL에 대한 POST 요청 허용
+### 방법 3 : 특정 URL에 대한 POST 요청 허용
 
 기본적으로 `GET`만 허용을 유지해야 하므로, 원하는 URL 만 분기처리
 
@@ -94,7 +102,7 @@ location ~ ^/([^/]+)/test_url {
 
 ---
 
-# Reference
+## Reference
 
 https://velog.io/@leesomyoung/NginX-리다이렉션-시-POST가-GET으로-바뀌는-문제점
 https://12bme.tistory.com/569
