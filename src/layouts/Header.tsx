@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import ThemeSwitch from './ThemeChanger';
+import ThemeSwitch from '@/layouts/theme/Switch';
 
 export const Header = () => {
   return (
