@@ -59,10 +59,6 @@ const config = {
       typography: {
         DEFAULT: {
           css: {
-            color: 'var(--foreground)',
-            'h1, h2, h3, code, a': {
-              color: 'var(--foreground)',
-            },
             '.callout-contents > p': {
               margin: 0,
             },
