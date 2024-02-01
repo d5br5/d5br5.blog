@@ -1,7 +1,6 @@
 import Link from 'next/link';
 
 import { getCategoryList, getCategoryPublicName, getPostList } from '@/lib/post';
-import { cn } from '@/lib/utils';
 
 interface PostListProps {
   category?: string;
