@@ -1,5 +1,5 @@
-import PostList from '@/layouts/PostList';
-import { getCategoryList, getPostList } from '@/lib/post';
+import PostListPage from '@/layouts/PostListPage';
+import { getCategoryParamList } from '@/lib/post';
 
 type Props = {
   params: { category: string };
@@ -9,14 +9,12 @@ type Props = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  const paramList = getCategoryList();
+  const paramList = getCategoryParamList();
   return paramList;
 }
 
 const CategoryPage = async ({ params }: Props) => {
-  const { category } = params;
-  const postList = await getPostList(category);
-  return <PostList postList={postList} />;
+  return <PostListPage category={params.category} />;
 };
 
 export default CategoryPage;

@@ -1,9 +1,7 @@
-import PostList from '@/layouts/PostList';
-import { getPostList } from '@/lib/post';
+import PostListPage from '@/layouts/PostListPage';
 
 const Blog = async () => {
-  const postList = await getPostList();
-  return <PostList postList={postList} />;
+  return <PostListPage />;
 };
 
 export default Blog;
