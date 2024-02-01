@@ -10,7 +10,7 @@ type Props = {
 // 허용된 param 외 접근시 404
 export const dynamicParams = false;
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   const paramList = getPostParamList();
   return paramList;
 }

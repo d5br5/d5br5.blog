@@ -22,13 +22,14 @@ export interface Post extends PostMatter {
   readingMinutes: number;
 }
 
-// target folder의 모든 mdx 파일 조회
-const getPostPaths = () => {
-  const postPaths: string[] = sync(`${POSTS_PATH}/**/*.mdx`);
+// 모든 MDX 파일 조회
+const getPostPaths = (category?: string) => {
+  const folder = category || '**';
+  const postPaths: string[] = sync(`${POSTS_PATH}/${folder}/**/*.mdx`);
   return postPaths;
 };
 
-// mdx 파일 parsing
+// MDX 파일 파싱 : abstract / detail 구분
 const parsePost = async (postPath: string): Promise<Post> => {
   const postAbstract = parsePostAbstract(postPath);
   const postDetail = await parsePostDetail(postPath);
@@ -38,6 +39,8 @@ const parsePost = async (postPath: string): Promise<Post> => {
   };
 };
 
+// MDX의 개요 파싱
+// url, cg path, cg name, slug
 const parsePostAbstract = (postPath: string) => {
   const filePath = postPath
     .slice(postPath.indexOf(BASE_PATH))
@@ -46,7 +49,7 @@ const parsePostAbstract = (postPath: string) => {
 
   const [categoryPath, slug] = filePath.split('/');
 
-  const url = `blog/${categoryPath}/${slug}`;
+  const url = `/blog/${categoryPath}/${slug}`;
   const categoryPublicName = getCategoryPublicName(categoryPath);
 
   return {
@@ -57,6 +60,7 @@ const parsePostAbstract = (postPath: string) => {
   };
 };
 
+// MDX detail
 const parsePostDetail = async (postPath: string) => {
   const file = fs.readFileSync(postPath, 'utf8');
   const { data, content } = matter(file);
@@ -66,12 +70,14 @@ const parsePostDetail = async (postPath: string) => {
   return { ...grayMatter, content, readingMinutes };
 };
 
+// category folder name을 public name으로 변경 : dir_name -> Dir Name
 const getCategoryPublicName = (dirPath: string) =>
   dirPath
     .split('_')
     .map((token) => token[0].toUpperCase() + token.slice(1, token.length))
     .join(' ');
 
+// post를 날짜 최신순으로 정렬
 const sortPostList = (PostList: Post[]) => {
   return PostList.sort((a: Post, b: Post) => {
     const dateA = a.date;
@@ -83,14 +89,14 @@ const sortPostList = (PostList: Post[]) => {
   });
 };
 
-export const getPostList = async (): Promise<Post[]> => {
-  const postPaths: string[] = getPostPaths();
-
+// 모든 포스트 목록 조회. 블로그 메인 페이지에서 사용
+export const getPostList = async (category?: string): Promise<Post[]> => {
+  const postPaths: string[] = getPostPaths(category);
   const result = await Promise.all(postPaths.map((postPath) => parsePost(postPath)));
-
   return sortPostList(result);
 };
 
+// 모든 category, slug 조합 조회. 접근 가능한 디테일 페이지 목록
 export const getPostParamList = () => {
   const postPaths: string[] = getPostPaths();
   const abstractList = postPaths
@@ -99,6 +105,16 @@ export const getPostParamList = () => {
   return abstractList;
 };
 
+// category 목록 조회
+export const getCategoryList = () => {
+  const cgPaths: string[] = sync(`${POSTS_PATH}/*`);
+  const cgList = cgPaths
+    .map((path) => path.split('/').slice(-1)?.[0])
+    .map((category) => ({ category }));
+  return cgList;
+};
+
+// post 상세 페이지 내용 조회
 export const getPostDetail = async (category: string, slug: string) => {
   const filePath = `${POSTS_PATH}/${category}/${slug}/content.mdx`;
   const detail = await parsePost(filePath);
