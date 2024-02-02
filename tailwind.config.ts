@@ -62,6 +62,26 @@ const config = {
             '.callout-contents > p': {
               margin: 0,
             },
+
+            // Inline code only
+            ':not(pre) > code': {
+              position: 'relative',
+              bottom: 1,
+              color: '#64748b',
+              backgroundColor: '#f5f5f4',
+            },
+
+            '.dark :not(pre) > code': {
+              color: 'white',
+              backgroundColor: 'red',
+            },
+
+            'code::before': {
+              content: 'none',
+            },
+            'code::after': {
+              content: 'none',
+            },
           },
         },
       },

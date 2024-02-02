@@ -91,15 +91,15 @@ window.open(url, windowName, windowFeatures);
 - windowName (옵션)
     - 새로 열릴 window의 이름
     - 추후 새 window 조작, 참조시 사용
-    - 사용자 지정 문자열 혹은 빈 문자열, '_blank', '_self', '_parent', '_top' 을 일반적으로 사용
+    - 사용자 지정 문자열 혹은 빈 문자열, `_blank`, `_self`, `_parent`, `_top` 을 일반적으로 사용
 - windowFeatures (옵션)
-    - 예시 : 'width=800,height=600,resizable=no'
+    - 예시 : `width=800,height=600,resizable=no`
     - 새 창의 속성을 지정하는 문자열
     - 창의 크기, 위치, 스크롤바 여부 등 포함
     - 주요 속성
         - width, height, left, top : 새 창의 크기 및 위치
-        - resizable : 창의 크기 조절 가능 여부. 'yes' or 'no'
-        - scrollbars : 스크롤바 표시 여부. 'yes' or 'no'
+        - resizable : 창의 크기 조절 가능 여부. `yes` or `no`
+        - scrollbars : 스크롤바 표시 여부. `yes` or `no`
 
 ---
 
@@ -205,16 +205,15 @@ export default PopupCallback;
 </Callout>
 
 - 메시지 송신
-    - postMessage() 함수 사용
-    - [수신 window].postMessage( message, origin )
+    - `postMessage()` 함수 사용
+    - `[수신 window].postMessage( message, origin )`
 - 메시지 수신
-    - window.addEventListener('message', callback) 으로 이벤트 감지 후 콜백 호출
-    - e.data 로 message 접근
+    - `window.addEventListener('message', callback)` 으로 이벤트 감지 후 콜백 호출
+    - `e.data` 로 message 접근
 
 <Callout title="주의사항" type="warn">
 다른 도메인 간(Cross-Origin)에도 통신 가능하므로, 보안에 신경써야함
-getDataFromPopup 함수에서 아래와 같은 로직을 추가한 이유
-
+`getDataFromPopup` 함수에서 아래와 같은 로직을 추가한 이유
 </Callout>
 
 ```javascript
