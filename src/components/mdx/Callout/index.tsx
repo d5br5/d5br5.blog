@@ -19,7 +19,7 @@ interface IconType {
 
 const metadata: IconType = {
   info: {
-    icon: Icon.Info,
+    icon: Icon.Warn,
     boxClass: 'text-informative-foreground bg-informative',
   },
   danger: {
@@ -27,7 +27,7 @@ const metadata: IconType = {
     boxClass: 'text-destructive-foreground bg-destructive',
   },
   warn: {
-    icon: Icon.Warn,
+    icon: Icon.Info,
     boxClass: 'text-warning-foreground bg-warning',
   },
 
