@@ -1,4 +1,4 @@
-import PostListPage from '@/layouts/PostListPage';
+import PostListPage from '@/components/post_list/PostListPage';
 import { getCategoryParamList } from '@/lib/post';
 
 type Props = {

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import PostCard from './PostCard';
 import { getCategoryList, getCategoryPublicName, getPostList } from '@/lib/post';
 
 interface PostListProps {
@@ -37,11 +38,7 @@ const PostListPage = async ({ category }: PostListProps) => {
       <section className='w-[1000px] mx-auto'>
         <ul>
           {postList.map((post) => (
-            <li key={post.url + post.date}>
-              <Link href={post.url}>
-                {post.title}({post.categoryPublicName}) 읽는데 {post.readingMinutes}분
-              </Link>
-            </li>
+            <PostCard key={post.url + post.date} post={post} />
           ))}
         </ul>
       </section>

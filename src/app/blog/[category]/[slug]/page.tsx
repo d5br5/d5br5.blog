@@ -1,5 +1,5 @@
-import { PostBody } from '@/components/post/PostBody';
-import { PostHeader } from '@/components/post/PostHeader';
+import { PostBody } from '@/components/post_detail/PostBody';
+import { PostHeader } from '@/components/post_detail/PostHeader';
 import ScrollProgressBar from '@/layouts/ScrollProgressBar';
 import { getPostDetail, getPostParamList } from '@/lib/post';
 
