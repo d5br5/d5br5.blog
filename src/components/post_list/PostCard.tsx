@@ -8,11 +8,11 @@ interface Props {
 
 const PostCard = ({ post }: Props) => {
   return (
-    <li key={post.url + post.date}>
-      <Link href={post.url}>
+    <Link href={post.url}>
+      <li className='border'>
         {post.title}({post.categoryPublicName}) 읽는데 {post.readingMinutes}분
-      </Link>
-    </li>
+      </li>
+    </Link>
   );
 };
 
