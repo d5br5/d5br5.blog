@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 import { CategoryButton } from './CategoryButton';
 import PostCard from './PostCard';
 import { getCategoryList, getCategoryPublicName, getPostList } from '@/lib/post';

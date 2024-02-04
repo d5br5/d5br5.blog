@@ -10,6 +10,7 @@ const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
 interface PostMatter {
   title: string;
   date: Date;
+  thumbnail: string;
 }
 
 export interface Post extends PostMatter {
