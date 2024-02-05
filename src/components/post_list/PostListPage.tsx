@@ -14,8 +14,8 @@ const PostListPage = async ({ category }: PostListProps) => {
   }));
 
   return (
-    <>
-      <section className='w-[1000px] mx-auto mb-10'>
+    <section className='max-w-[1200px] w-full mx-auto px-4 mt-14'>
+      <section className='mb-10'>
         <ul className='flex gap-3'>
           <CategoryButton href='/blog' isCurrent={!category} displayName='All' />
           {categoryList.map((cg) => (
@@ -28,14 +28,14 @@ const PostListPage = async ({ category }: PostListProps) => {
           ))}
         </ul>
       </section>
-      <section className='w-[1000px] mx-auto'>
-        <ul className='grid grid-cols-2	gap-4'>
+      <section className=''>
+        <ul className='grid md:grid-cols-2 grid-cols-1 lg:gap-12 gap-8'>
           {postList.map((post) => (
             <PostCard key={post.url + post.date} post={post} />
           ))}
         </ul>
       </section>
-    </>
+    </section>
   );
 };
 

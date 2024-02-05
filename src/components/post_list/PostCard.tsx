@@ -13,7 +13,7 @@ const PostCard = ({ post }: Props) => {
   const date = dayjs(post.date).locale('ko').format('YYYY년 MM월 DD일');
   return (
     <Link href={post.url}>
-      <li className='border rounded-md p-3 flex flex-col gap-3'>
+      <li className='flex flex-col gap-3'>
         <div className='w-full aspect-video border rounded-md relative'>
           <Image
             src={post.thumbnail}

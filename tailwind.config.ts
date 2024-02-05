@@ -65,10 +65,15 @@ const config = {
 
             // Inline code only
             ':not(pre) > code': {
+              fontWeight: 'inherit',
               position: 'relative',
               bottom: 1,
-              color: '#64748b',
-              backgroundColor: '#f5f5f4',
+              color: '#eb5757',
+              backgroundColor: 'rgba(135,131,120,0.15)',
+              fontFamily: 'Consolas, Menlo, Monaco, "Courier New", monospace',
+              borderRadius: 3,
+              border: '1px solid #e0e0e0',
+              padding: '2px 5px',
             },
 
             '.dark :not(pre) > code': {
