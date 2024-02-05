@@ -82,6 +82,17 @@ const config = {
             'code::after': {
               content: 'none',
             },
+            '[data-highlighted-line]': {
+              backgroundColor: 'rgba(253, 224, 71, 0.2)',
+            },
+            pre: {
+              paddingRight: 0,
+              paddingLeft: 0,
+            },
+            'pre > code > span': {
+              paddingLeft: '1rem',
+              paddingRight: '1rem',
+            },
           },
         },
       },

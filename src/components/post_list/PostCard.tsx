@@ -21,7 +21,7 @@ const PostCard = ({ post }: Props) => {
             fill
             className='rounded-md'
             style={{
-              objectFit: 'contain',
+              objectFit: 'cover',
             }}
           />
         </div>
