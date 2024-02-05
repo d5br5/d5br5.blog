@@ -98,6 +98,11 @@ const config = {
               paddingLeft: '1rem',
               paddingRight: '1rem',
             },
+            u: {
+              textUnderlineOffset: '4px',
+              textDecorationThickness: 1,
+              fontWeight: 600,
+            },
           },
         },
       },
