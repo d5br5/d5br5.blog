@@ -68,17 +68,14 @@ const config = {
               fontWeight: 'inherit',
               position: 'relative',
               bottom: 1,
+              margin: '0 3px',
               color: '#eb5757',
               backgroundColor: 'rgba(135,131,120,0.15)',
-              fontFamily: 'Consolas, Menlo, Monaco, "Courier New", monospace',
+              fontFamily:
+                '"SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace',
               borderRadius: 3,
-              border: '1px solid #e0e0e0',
-              padding: '2px 5px',
-            },
-
-            '.dark :not(pre) > code': {
-              color: 'white',
-              backgroundColor: 'red',
+              // border: '1px solid #e0e0e0',
+              padding: '0.2em 0.4em',
             },
 
             'code::before': {

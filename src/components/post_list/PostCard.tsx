@@ -26,7 +26,7 @@ const PostCard = ({ post }: Props) => {
           />
         </div>
         <div>
-          <div>{post.categoryPublicName}</div>
+          <div className='text-pink-600 font-medium'>{post.categoryPublicName}</div>
           <h2 className='text-xl font-bold'>{post.title}</h2>
           <div className='flex gap-3 text-sm text-gray-500 dark:text-gray-400'>
             <div className='flex items-center gap-1'>
