@@ -14,7 +14,7 @@ const PostListPage = async ({ category }: PostListProps) => {
   }));
 
   return (
-    <section className='max-w-[1200px] w-full mx-auto px-4 mt-14'>
+    <section className='max-w-[950px] w-full mx-auto px-4 mt-14'>
       <section className='mb-10'>
         <ul className='flex gap-3'>
           <CategoryButton href='/blog' isCurrent={!category} displayName='All' />
