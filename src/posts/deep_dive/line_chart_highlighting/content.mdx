@@ -70,7 +70,7 @@ legend item간 간격도 벌어지고 legend 위로도 여백이 생겨 보기 �
 
 Chart.js 공식 github에 다음과 같은 [issue](https://github.com/chartjs/Chart.js/issues/6544)가 있었다.
 
-![chart.js github issue : https://github.com/chartjs/Chart.js/issues/6544](/posts/deep_dive/line_chart_highlighting/9.jpg)
+![내 생각과 연관된 chart.js github issue](/posts/deep_dive/line_chart_highlighting/9.jpg)
  
 <Callout>
 아쉽지만 결론은, chart.js의 내장 legend 말고 [HTML Legend](https://www.chartjs.org/docs/latest/samples/legend/html.html)를 사용하라! 였다.
@@ -165,7 +165,7 @@ hover는 catch하고 leave는 catch하지 못하여
 5번 과정 완료 후 6번 과정이 수행되기 전에 마우스가 이미 요소 바깥에 위치하게 되어
 leave 이벤트 핸들러가 이를 catch하지 못하는 것이다.
 
- highlight, reset 로직 내에서 `chart.update()`를 수행하기 때문에 발생하는 필연적인 결과였다.
+highlight, reset 로직 내에서 `chart.update()`를 수행하기 때문에 발생하는 필연적인 결과였다.
 (색상 변경 후 `chart.update()` 를 반드시 수행해야만 차트에 반영된다.)
 
 이를 해결하기 위해 이것저것 시도해 보았으나, 실패였다. 
