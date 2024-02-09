@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { Post } from '@/lib/post';
+import { Post, getCategoryPublicName } from '@/lib/post';
 import dayjs from 'dayjs';
 import { CalendarDays, Clock3 } from 'lucide-react';
 
@@ -10,6 +10,7 @@ interface Props {
 
 export const PostHeader = ({ post }: Props) => {
   const date = dayjs(post.date).locale('ko').format('YYYY년 MM월 DD일');
+  const categoryPublicName = getCategoryPublicName(post.categoryPath);
   return (
     <header className='text-center mt-14'>
       <h1 className='mb-5'>{post.title}</h1>
@@ -18,7 +19,7 @@ export const PostHeader = ({ post }: Props) => {
           href={`/blog/${post.categoryPath}`}
           className='text-pink-600 no-underline hover:underline underline-offset-4 font-semibold'
         >
-          {post.categoryPublicName}
+          {categoryPublicName}
         </Link>
       </div>
       <div className='flex justify-center gap-3 text-sm text-gray-500 dark:text-gray-400'>

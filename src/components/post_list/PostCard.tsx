@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Post } from '@/lib/post';
+import { Post, getCategoryPublicName } from '@/lib/post';
 import dayjs from 'dayjs';
 import { CalendarDays, Clock3 } from 'lucide-react';
 
@@ -11,6 +11,7 @@ interface Props {
 
 const PostCard = ({ post }: Props) => {
   const date = dayjs(post.date).locale('ko').format('YYYY년 MM월 DD일');
+  const categoryPublicName = getCategoryPublicName(post.categoryPath);
   return (
     <Link href={post.url}>
       <li className='flex flex-col gap-3 h-full rounded-md overflow-hidden shadow-md hover:shadow-xl transition border dark:border-slate-700 dark:hover:border-white'>
@@ -29,7 +30,7 @@ const PostCard = ({ post }: Props) => {
         <div className='p-4 pt-1 flex flex-col justify-between flex-1'>
           <div>
             <div className='text-sm lg:text-base text-pink-600 font-medium'>
-              {post.categoryPublicName}
+              {categoryPublicName}
             </div>
             <h2 className='text-lg sm:text-xl md:text-lg font-bold mb-3 mt-1'>{post.title}</h2>
           </div>

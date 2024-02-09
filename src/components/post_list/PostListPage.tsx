@@ -1,6 +1,11 @@
 import { CategoryButton } from './CategoryButton';
 import PostCard from './PostCard';
-import { getCategoryList, getCategoryPublicName, getSortedPostList } from '@/lib/post';
+import {
+  getCategoryDetailList,
+  getCategoryList,
+  getCategoryPublicName,
+  getSortedPostList,
+} from '@/lib/post';
 
 interface PostListProps {
   category?: string;
@@ -12,6 +17,7 @@ const PostListPage = async ({ category }: PostListProps) => {
     dirName,
     publicName: getCategoryPublicName(dirName),
   }));
+  getCategoryDetailList();
 
   return (
     <section className='max-w-[950px] w-full mx-auto px-4 mt-14'>

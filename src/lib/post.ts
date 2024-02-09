@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import fs from 'fs';
 import { sync } from 'glob';
 import matter from 'gray-matter';
@@ -17,7 +18,6 @@ export interface Post extends PostMatter {
   url: string;
   slug: string;
   categoryPath: string;
-  categoryPublicName: string;
   content: string;
   readingMinutes: number;
 }
@@ -50,14 +50,8 @@ export const parsePostAbstract = (postPath: string) => {
   const [categoryPath, slug] = filePath.split('/');
 
   const url = `/blog/${categoryPath}/${slug}`;
-  const categoryPublicName = getCategoryPublicName(categoryPath);
 
-  return {
-    url,
-    categoryPath,
-    categoryPublicName,
-    slug,
-  };
+  return { url, categoryPath, slug };
 };
 
 // MDX detail
@@ -105,6 +99,11 @@ export const getCategoryList = () => {
   const cgPaths: string[] = sync(`${POSTS_PATH}/*`);
   const cgList = cgPaths.map((path) => path.split('/').slice(-1)?.[0]);
   return cgList;
+};
+
+export const getCategoryDetailList = async () => {
+  const postList = await getPostList();
+  console.log(postList);
 };
 
 // post 상세 페이지 내용 조회
