@@ -96,15 +96,38 @@ export const getSortedPostList = async (category?: string) => {
   return sortPostList(postList);
 };
 
+export const getAllPostCount = async () => (await getPostList()).length;
+
 export const getCategoryList = () => {
   const cgPaths: string[] = sync(`${POSTS_PATH}/*`);
   const cgList = cgPaths.map((path) => path.split('/').slice(-1)?.[0]);
   return cgList;
 };
 
+export interface CategoryDetail {
+  dirName: string;
+  publicName: string;
+  count: number;
+}
+
 export const getCategoryDetailList = async () => {
   const postList = await getPostList();
-  console.log(postList);
+  const result: { [key: string]: number } = {};
+  for (const post of postList) {
+    const category = post.categoryPath;
+    if (result[category]) {
+      result[category] += 1;
+    } else {
+      result[category] = 1;
+    }
+  }
+  const detailList: CategoryDetail[] = Object.entries(result).map(([category, count]) => ({
+    dirName: category,
+    publicName: getCategoryPublicName(category),
+    count,
+  }));
+
+  return detailList;
 };
 
 // post 상세 페이지 내용 조회
