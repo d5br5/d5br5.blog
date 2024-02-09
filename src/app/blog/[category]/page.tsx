@@ -1,5 +1,5 @@
 import PostListPage from '@/components/post_list/PostListPage';
-import { getCategoryParamList } from '@/lib/post';
+import { getCategoryList } from '@/lib/post';
 
 type Props = {
   params: { category: string };
@@ -9,7 +9,8 @@ type Props = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  const paramList = getCategoryParamList();
+  const categoryList = getCategoryList();
+  const paramList = categoryList.map((category) => ({ category }));
   return paramList;
 }
 

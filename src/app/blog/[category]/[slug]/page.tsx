@@ -1,7 +1,7 @@
 import { PostBody } from '@/components/post_detail/PostBody';
 import { PostHeader } from '@/components/post_detail/PostHeader';
 import ScrollProgressBar from '@/layouts/ScrollProgressBar';
-import { getPostDetail, getPostParamList } from '@/lib/post';
+import { getPostDetail, getPostPaths, parsePostAbstract } from '@/lib/post';
 
 type Props = {
   params: { category: string; slug: string };
@@ -11,7 +11,10 @@ type Props = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  const paramList = getPostParamList();
+  const postPaths: string[] = getPostPaths();
+  const paramList = postPaths
+    .map((path) => parsePostAbstract(path))
+    .map((item) => ({ category: item.categoryPath, slug: item.slug }));
   return paramList;
 }
 
