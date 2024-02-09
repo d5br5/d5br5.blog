@@ -11,6 +11,7 @@ const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
 interface PostMatter {
   title: string;
   date: Date;
+  dateString: string;
   thumbnail: string;
 }
 
@@ -20,6 +21,7 @@ export interface Post extends PostMatter {
   categoryPath: string;
   content: string;
   readingMinutes: number;
+  categoryPublicName: string;
 }
 
 // 모든 MDX 파일 조회
@@ -48,10 +50,9 @@ export const parsePostAbstract = (postPath: string) => {
     .replace('.mdx', '');
 
   const [categoryPath, slug] = filePath.split('/');
-
   const url = `/blog/${categoryPath}/${slug}`;
-
-  return { url, categoryPath, slug };
+  const categoryPublicName = getCategoryPublicName(categoryPath);
+  return { url, categoryPath, categoryPublicName, slug };
 };
 
 // MDX detail
@@ -60,8 +61,8 @@ const parsePostDetail = async (postPath: string) => {
   const { data, content } = matter(file);
   const grayMatter = data as PostMatter;
   const readingMinutes = Math.ceil(readingTime(content).minutes);
-
-  return { ...grayMatter, content, readingMinutes };
+  const dateString = dayjs(grayMatter.date).locale('ko').format('YYYY년 MM월 DD일');
+  return { ...grayMatter, dateString, content, readingMinutes };
 };
 
 // category folder name을 public name으로 변경 : dir_name -> Dir Name
