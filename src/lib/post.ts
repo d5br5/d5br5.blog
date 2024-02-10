@@ -1,3 +1,4 @@
+import { CategoryDetail, HeadingItem, Post, PostMatter } from '@/config/types';
 import dayjs from 'dayjs';
 import fs from 'fs';
 import { sync } from 'glob';
@@ -7,22 +8,6 @@ import readingTime from 'reading-time';
 
 const BASE_PATH = '/src/posts';
 const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
-
-interface PostMatter {
-  title: string;
-  date: Date;
-  dateString: string;
-  thumbnail: string;
-}
-
-export interface Post extends PostMatter {
-  url: string;
-  slug: string;
-  categoryPath: string;
-  content: string;
-  readingMinutes: number;
-  categoryPublicName: string;
-}
 
 // 모든 MDX 파일 조회
 export const getPostPaths = (category?: string) => {
@@ -114,12 +99,6 @@ export const getCategoryList = () => {
   return cgList;
 };
 
-export interface CategoryDetail {
-  dirName: string;
-  publicName: string;
-  count: number;
-}
-
 export const getCategoryDetailList = async () => {
   const postList = await getPostList();
   const result: { [key: string]: number } = {};
@@ -145,4 +124,21 @@ export const getPostDetail = async (category: string, slug: string) => {
   const filePath = `${POSTS_PATH}/${category}/${slug}/content.mdx`;
   const detail = await parsePost(filePath);
   return detail;
+};
+
+export const parseToc = (content: string): HeadingItem[] => {
+  const regex = /^(#|##|###) (.*$)/gim;
+  return (
+    content.match(regex)?.map((heading: string) => ({
+      text: heading.replace('#', '').replace('#', '>').replace('#', '>'),
+      link: heading
+        .replace('# ', '')
+        .replace('#', '')
+        .replace('#', '')
+        .replace(/ /g, '-')
+        .toLowerCase()
+        .replace('?', ''),
+      indent: heading.match(/#/g)?.length || 0,
+    })) || []
+  );
 };

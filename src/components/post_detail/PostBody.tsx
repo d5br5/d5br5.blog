@@ -1,4 +1,5 @@
 import { MdxComponents } from '../mdx';
+import { Post } from '@/config/types';
 // @ts-expect-error no types
 import remarkA11yEmoji from '@fec/remark-a11y-emoji';
 import { MDXRemote } from 'next-mdx-remote/rsc';
@@ -10,13 +11,13 @@ import remarkGfm from 'remark-gfm';
 import remarkToc from 'remark-toc';
 
 interface Props {
-  children: string;
+  post: Post;
 }
 
-export const PostBody = ({ children }: Props) => {
+export const PostBody = ({ post }: Props) => {
   return (
     <MDXRemote
-      source={children}
+      source={post.content}
       options={{
         mdxOptions: {
           remarkPlugins: [

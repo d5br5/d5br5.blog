@@ -1,4 +1,5 @@
 import Giscus from '@/components/Giscus';
+import TableOfContent from '@/components/TableOfContent';
 import { PostBody } from '@/components/post_detail/PostBody';
 import { PostHeader } from '@/components/post_detail/PostHeader';
 import ScrollProgressBar from '@/layouts/ScrollProgressBar';
@@ -21,12 +22,14 @@ export function generateStaticParams() {
 
 const PostDetail = async ({ params: { category, slug } }: Props) => {
   const post = await getPostDetail(category, slug);
+
   return (
     <>
       <ScrollProgressBar />
       <div className='max-w-[750px] px-4 w-full mx-auto prose dark:prose-invert'>
         <PostHeader post={post} />
-        <PostBody>{post.content}</PostBody>
+        <TableOfContent post={post} />
+        <PostBody post={post} />
         <hr />
         <Giscus />
       </div>
