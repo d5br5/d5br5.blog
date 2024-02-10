@@ -4,7 +4,7 @@ import { getSitemapPostList } from '@/lib/post';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const postList = await getSitemapPostList();
-  const baseUrl = 'https://d5br5.dev';
+  const baseUrl = 'https://www.d5br5.dev';
   return [
     {
       url: baseUrl,
