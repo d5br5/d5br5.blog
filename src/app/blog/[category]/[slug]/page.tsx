@@ -24,7 +24,7 @@ const PostDetail = async ({ params: { category, slug } }: Props) => {
   return (
     <>
       <ScrollProgressBar />
-      <div className='max-w-[850px] px-4 w-full mx-auto prose dark:prose-invert'>
+      <div className='max-w-[750px] px-4 w-full mx-auto prose dark:prose-invert'>
         <PostHeader post={post} />
         <PostBody>{post.content}</PostBody>
         <hr />
