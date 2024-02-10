@@ -1,3 +1,4 @@
+import Giscus from '@/components/Giscus';
 import { PostBody } from '@/components/post_detail/PostBody';
 import { PostHeader } from '@/components/post_detail/PostHeader';
 import ScrollProgressBar from '@/layouts/ScrollProgressBar';
@@ -26,6 +27,8 @@ const PostDetail = async ({ params: { category, slug } }: Props) => {
       <div className='max-w-[850px] px-4 w-full mx-auto prose dark:prose-invert'>
         <PostHeader post={post} />
         <PostBody>{post.content}</PostBody>
+        <hr />
+        <Giscus />
       </div>
     </>
   );
