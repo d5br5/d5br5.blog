@@ -96,6 +96,16 @@ export const getSortedPostList = async (category?: string) => {
   return sortPostList(postList);
 };
 
+export const getSitemapPostList = async () => {
+  const postList = await getPostList();
+  const baseUrl = 'https://d5br5.dev';
+  const sitemapPostList = postList.map(({ url }) => ({
+    lastModified: new Date(),
+    url: `${baseUrl}${url}`,
+  }));
+  return sitemapPostList;
+};
+
 export const getAllPostCount = async () => (await getPostList()).length;
 
 export const getCategoryList = () => {
