@@ -28,8 +28,10 @@ const PostDetail = async ({ params: { category, slug } }: Props) => {
       <ScrollProgressBar />
       <div className='max-w-[750px] px-4 w-full mx-auto prose dark:prose-invert'>
         <PostHeader post={post} />
-        <TableOfContent post={post} />
-        <PostBody post={post} />
+        <article className='relative'>
+          <TableOfContent post={post} />
+          <PostBody post={post} />
+        </article>
         <hr />
         <Giscus />
       </div>

@@ -8,8 +8,8 @@ interface Props {
 const TableOfContent = ({ post }: Props) => {
   const toc = parseToc(post.content);
   return (
-    <div className='sticky top-0'>
-      <div className='absolute left-full w-[300px]'>
+    <div className='absolute top-0 left-full h-full'>
+      <div className='sticky z-10 top-0 w-[300px]'>
         <div>On this page</div>
         <div>
           {toc.map((item) => (
