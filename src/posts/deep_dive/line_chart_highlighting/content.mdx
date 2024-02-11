@@ -20,7 +20,7 @@ label에 mouse hover했을 때 해당 dataset만 강조하려고 한다.
  
 ---
 
-## 1차 Solution
+### 1차 Solution
 - chart option > legend에 `onHover`, `onLeave` 이벤트 핸들러 추가
 ```js {14,15}
 function handleHoverLineLegend(...) {
@@ -43,9 +43,7 @@ const chartOption = {
 }
 ```
 
----
-
-## 1차 Result
+### 1차 Result
 아래 이미지와 같이 매우 잘 동작하는 것을 확인할 수 있다. 깔끔!
 
 
@@ -54,7 +52,7 @@ const chartOption = {
 
 ---
 
-## 문제 상황
+## 문제 상황 1
 chart와 legend 사이의 간격을 조절하고 싶어졌다.
 chart.js 기본 legend를 사용하면, legend와 chart 사이 간격을 조절할 수 없다.
 legend가 canvas 내부에 같이 그려지기 때문이다.
@@ -76,9 +74,8 @@ Chart.js 공식 github에 다음과 같은 [issue](https://github.com/chartjs/Ch
 아쉽지만 결론은, chart.js의 내장 legend 말고 [HTML Legend](https://www.chartjs.org/docs/latest/samples/legend/html.html)를 사용하라! 였다.
 </Callout>
  
----
 
-## 2차 Solution : HTML Legend
+### 2차 Solution : HTML Legend
 [chart.js 공식 문서](https://www.chartjs.org/docs/latest/samples/legend/html.html)를 바탕으로, HTML legend를 구현해 보았다.
 기존 `onHover`, `onLeave` 이벤트 핸들러도 부착했다.
 
