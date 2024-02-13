@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { HeadingItem } from '@/config/types';
 import { cn } from '@/lib/utils';
 
@@ -13,8 +15,10 @@ const TableOfContentTop = ({ toc }: Props) => {
       <h2 id='table-of-contents-top'>On this page</h2>
       <ul>
         {toc.map((item) => (
-          <li key={item.link} className={cn(item.indent === 1 && 'ml-4', 'py-1')}>
-            {item.text}
+          <li key={item.link} className={cn(item.indent === 1 && 'ml-4', 'py-1 my-0 ')}>
+            <Link href={item.link} className='hover:text-pink-600 underline-offset-4'>
+              {item.text}
+            </Link>
           </li>
         ))}
       </ul>

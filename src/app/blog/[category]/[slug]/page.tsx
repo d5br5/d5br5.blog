@@ -24,6 +24,7 @@ export function generateStaticParams() {
 const PostDetail = async ({ params: { category, slug } }: Props) => {
   const post = await getPostDetail(category, slug);
   const toc = parseToc(post.content);
+  console.log(toc);
   return (
     <>
       <ScrollProgressBar />
