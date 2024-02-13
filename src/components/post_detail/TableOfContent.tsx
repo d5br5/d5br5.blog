@@ -10,7 +10,6 @@ interface Props {
 
 const TableOfContent = ({ post }: Props) => {
   const toc = parseToc(post.content);
-  console.log(toc);
   return (
     <aside className='absolute -top-[100px] left-full h-full not-prose hidden xl:block '>
       <div className='sticky z-10  top-[100px] w-[200px] mt-[100px] ml-[5rem]'>
