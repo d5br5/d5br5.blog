@@ -5,7 +5,7 @@ import { ArrowUpToLine, MessageSquareText } from 'lucide-react';
 
 export const ScrollTop = () => {
   const scrollTop = () => {
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
   return (
     <Button variant='outline' size='icon' onClick={scrollTop}>
@@ -15,7 +15,8 @@ export const ScrollTop = () => {
 };
 
 export const ScrollToComment = () => {
-  const scrollToGiscus = () => document.querySelector('.giscus')?.scrollIntoView();
+  const scrollToGiscus = () =>
+    document.querySelector('.giscus')?.scrollIntoView({ behavior: 'smooth' });
   return (
     <Button variant='outline' size='icon' onClick={scrollToGiscus}>
       <MessageSquareText size={16} />
