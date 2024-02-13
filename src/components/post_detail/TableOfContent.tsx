@@ -1,3 +1,4 @@
+import CopyLinkButton from '../common/CopyLinkButton';
 import { ScrollToComment, ScrollTop } from './TocButtons';
 import { Post } from '@/config/types';
 import { parseToc } from '@/lib/post';
@@ -29,6 +30,7 @@ const TableOfContent = ({ post }: Props) => {
         <div className='flex gap-2'>
           <ScrollTop />
           <ScrollToComment />
+          <CopyLinkButton />
         </div>
       </div>
     </aside>
