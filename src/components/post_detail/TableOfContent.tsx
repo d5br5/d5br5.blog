@@ -11,8 +11,8 @@ interface Props {
 const TableOfContent = ({ post }: Props) => {
   const toc = parseToc(post.content);
   return (
-    <aside className='absolute -top-[100px] left-full h-full not-prose hidden xl:block '>
-      <div className='sticky z-10  top-[100px] w-[200px] mt-[100px] ml-[5rem]'>
+    <aside className='absolute -top-[100px] left-full h-[calc(100%+150px)] -mb-[100px] not-prose hidden xl:block '>
+      <div className='sticky z-10  top-[100px] w-[200px] bottom-0 mt-[100px] ml-[5rem]'>
         <div className='px-4 py-2 border-l mb-4'>
           <div className='font-bold mb-1'>on this page</div>
           <ul className='text-xs'>
