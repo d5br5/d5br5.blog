@@ -1,7 +1,7 @@
-import Giscus from '@/components/Giscus';
-import TableOfContent from '@/components/TableOfContent';
+import Giscus from '@/components/post_detail/Giscus';
 import { PostBody } from '@/components/post_detail/PostBody';
 import { PostHeader } from '@/components/post_detail/PostHeader';
+import TableOfContent from '@/components/post_detail/TableOfContent';
 import ScrollProgressBar from '@/layouts/ScrollProgressBar';
 import { getPostDetail, getPostPaths, parsePostAbstract } from '@/lib/post';
 
