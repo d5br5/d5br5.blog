@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { Post } from '@/lib/post';
+import { Post } from '@/config/types';
 import { CalendarDays, Clock3 } from 'lucide-react';
 
 interface Props {
