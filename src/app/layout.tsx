@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' className='h-full scroll-smooth' suppressHydrationWarning>
-      <body className={cn(inter.className, 'min-h-screen flex flex-col')}>
+      <body className={cn(inter.className, 'flex min-h-screen flex-col')}>
         <ThemeProvider>
           <Header />
           <main className='flex flex-1 flex-col'>{children}</main>

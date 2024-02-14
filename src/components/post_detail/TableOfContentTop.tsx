@@ -15,8 +15,8 @@ const TableOfContentTop = ({ toc }: Props) => {
       <h2 id='table-of-contents-top'>On this page</h2>
       <ul>
         {toc.map((item) => (
-          <li key={item.link} className={cn(item.indent === 1 && 'ml-4', 'py-1 my-0 ')}>
-            <Link href={item.link} className='hover:text-pink-600 underline-offset-4'>
+          <li key={item.link} className={cn(item.indent === 1 && 'ml-4', 'my-0 py-1 ')}>
+            <Link href={item.link} className='underline-offset-4 hover:text-pink-600'>
               {item.text}
             </Link>
           </li>

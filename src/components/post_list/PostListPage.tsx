@@ -12,7 +12,7 @@ const PostListPage = async ({ category }: PostListProps) => {
   const allPostCount = await getAllPostCount();
 
   return (
-    <section className='max-w-[950px] w-full mx-auto px-4 mt-14'>
+    <section className='mx-auto mt-14 w-full max-w-[950px] px-4'>
       <section className='mb-10'>
         <ul className='flex gap-3'>
           <CategoryButton
@@ -33,7 +33,7 @@ const PostListPage = async ({ category }: PostListProps) => {
         </ul>
       </section>
       <section className=''>
-        <ul className='grid md:grid-cols-2 grid-cols-1 lg:gap-12 gap-8'>
+        <ul className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12'>
           {postList.map((post) => (
             <PostCard key={post.url + post.date} post={post} />
           ))}

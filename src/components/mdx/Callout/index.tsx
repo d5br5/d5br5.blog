@@ -43,7 +43,7 @@ export const Callout = (props: CalloutProps) => {
   const boxClassName = metaObj.boxClass;
 
   return (
-    <div className={cn('flex items-center my-6 px-5 py-4 gap-3 rounded-md', boxClassName)}>
+    <div className={cn('my-6 flex items-center gap-3 rounded-md px-5 py-4', boxClassName)}>
       <div>
         <Icon />
       </div>

@@ -8,7 +8,7 @@ export const ExternalLink = ({ children, href, ...props }: PropsWithChildren<Lin
       {...props}
       target='_blank'
       href={href.toString() || ''}
-      className='text-pink-600 no-underline hover:underline underline-offset-4'
+      className='text-pink-600 no-underline underline-offset-4 hover:underline'
     >
       {children}
     </a>

@@ -1,7 +1,6 @@
 import Link from 'next/link';
 
 import { Button } from '../ui/button';
-import { CategoryDetail } from '@/lib/post';
 
 interface Props {
   isCurrent: boolean;
