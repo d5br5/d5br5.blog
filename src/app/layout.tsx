@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className={cn(inter.className, 'flex min-h-screen flex-col')}>
         <ThemeProvider>
           <Header />
-          <main className='flex flex-1 flex-col'>{children}</main>
+          <main className='mt-[64px] flex flex-1 flex-col'>{children}</main>
           <Footer />
         </ThemeProvider>
         <Toaster />

@@ -24,10 +24,9 @@ export function generateStaticParams() {
 const PostDetail = async ({ params: { category, slug } }: Props) => {
   const post = await getPostDetail(category, slug);
   const toc = parseToc(post.content);
-  console.log(toc);
   return (
     <>
-      <ScrollProgressBar />
+      {/* <ScrollProgressBar /> */}
       <div className='prose mx-auto w-full max-w-[750px] px-4 dark:prose-invert'>
         <PostHeader post={post} />
         <TocTop toc={toc} />
