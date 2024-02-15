@@ -28,7 +28,8 @@ export const useSpy = (height: number) => {
       transitionPoint.current = scrollTop + height;
     }
 
-    setMarginTop(Math.min(0, -1 * height + transitionPoint.current - scrollTop));
+    const newMargin = Math.min(0, -1 * height + transitionPoint.current - scrollTop);
+    setMarginTop((prev) => (direction.current === 'DOWN' && prev < -height ? prev : newMargin));
 
     direction.current = nextDirection;
     prevScrollTop.current = scrollTop;
