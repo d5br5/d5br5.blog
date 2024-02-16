@@ -6,7 +6,7 @@ import { useSpyElem } from '@/hook/useSpy';
 import ThemeSwitch from '@/layouts/theme/Switch';
 
 export const Header = () => {
-  const { ref, marginTop } = useSpyElem(63);
+  const { ref, marginTop } = useSpyElem(64);
 
   return (
     <nav
