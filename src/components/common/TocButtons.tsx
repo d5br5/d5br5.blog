@@ -3,22 +3,27 @@
 import { Button } from '../ui/button';
 import { ArrowUpToLine, MessageSquareText } from 'lucide-react';
 
-export const ScrollTop = () => {
+interface ButtonProps {
+  size?: number;
+  className?: string;
+}
+
+export const ScrollTop = ({ size = 16, className }: ButtonProps) => {
   const scrollTop = () => {
     window.scrollTo({ top: 0 });
   };
   return (
-    <Button variant='outline' size='icon' onClick={scrollTop}>
-      <ArrowUpToLine size={16} />
+    <Button variant='outline' size='icon' onClick={scrollTop} className={className}>
+      <ArrowUpToLine size={size} />
     </Button>
   );
 };
 
-export const ScrollToComment = () => {
+export const ScrollToComment = ({ size = 16, className }: ButtonProps) => {
   const scrollToGiscus = () => document.querySelector('.giscus')?.scrollIntoView();
   return (
-    <Button variant='outline' size='icon' onClick={scrollToGiscus}>
-      <MessageSquareText size={16} />
+    <Button variant='outline' size='icon' onClick={scrollToGiscus} className={className}>
+      <MessageSquareText size={size} />
     </Button>
   );
 };
