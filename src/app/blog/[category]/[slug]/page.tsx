@@ -6,6 +6,7 @@ import { PostBody } from '@/components/post_detail/PostBody';
 import { PostHeader } from '@/components/post_detail/PostHeader';
 import TocSidebar from '@/components/post_detail/TableOfContentSidebar';
 import TocTop from '@/components/post_detail/TableOfContentTop';
+import { baseDomain } from '@/config/const';
 import { getPostDetail, getPostPaths, parsePostAbstract, parseToc } from '@/lib/post';
 
 type Props = {
@@ -14,8 +15,6 @@ type Props = {
 
 // 허용된 param 외 접근시 404
 export const dynamicParams = false;
-
-const baseDomain = 'https://www.d5br5.dev';
 
 export async function generateMetadata({ params: { category, slug } }: Props): Promise<Metadata> {
   const post = await getPostDetail(category, slug);
@@ -31,12 +30,9 @@ export async function generateMetadata({ params: { category, slug } }: Props): P
       title,
       description: post.desc,
       url: `${baseDomain}${post.url}`,
-      siteName: "Doh's Tech Blog",
-      type: 'website',
       images: [imageURL],
     },
     twitter: {
-      card: 'summary_large_image',
       title,
       description: post.desc,
       images: [imageURL],
