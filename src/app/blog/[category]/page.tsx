@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 import PostListPage from '@/components/post_list/PostListPage';
-import { baseDomain } from '@/config/const';
+import { baseDomain, blogName } from '@/config/const';
 import { getCategoryList, getCategoryPublicName } from '@/lib/post';
 
 type Props = {
@@ -19,7 +19,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params: { category } }: Props): Promise<Metadata> {
   const cg = getCategoryPublicName(category);
-  const title = `${cg} | Doh's Tech Blog`;
+  const title = `${cg} | ${blogName}`;
   const url = `${baseDomain}/${category}`;
 
   return {

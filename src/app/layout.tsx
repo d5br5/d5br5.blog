@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
 import { Toaster } from '@/components/ui/toaster';
-import { baseDomain, blogDesc, blogName } from '@/config/const';
+import { baseDomain, blogDesc, blogName, blogThumbnailURL } from '@/config/const';
 import '@/config/globals.css';
 import { Footer } from '@/layouts/Footer';
 import { Header } from '@/layouts/Header';
@@ -17,14 +17,16 @@ export const metadata: Metadata = {
   description: blogDesc,
   openGraph: {
     title: blogName,
+    description: blogDesc,
     siteName: blogName,
+    images: [blogThumbnailURL],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: blogName,
     description: blogDesc,
-    // images: [imageURL],
+    images: [blogThumbnailURL],
   },
 };
 
