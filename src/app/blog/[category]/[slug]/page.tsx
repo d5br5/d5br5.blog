@@ -1,3 +1,5 @@
+import { Metadata } from 'next';
+
 import FloatingButton from '@/components/common/FloatingButton';
 import Giscus from '@/components/post_detail/Giscus';
 import { PostBody } from '@/components/post_detail/PostBody';
@@ -12,6 +14,35 @@ type Props = {
 
 // 허용된 param 외 접근시 404
 export const dynamicParams = false;
+
+const baseDomain = 'https://www.d5br5.dev';
+
+export async function generateMetadata({ params: { category, slug } }: Props): Promise<Metadata> {
+  const post = await getPostDetail(category, slug);
+
+  const title = `${post.title} | D5BL5G`;
+  const imageURL = `${baseDomain}${post.thumbnail}`;
+
+  return {
+    title,
+    description: post.desc,
+
+    openGraph: {
+      title,
+      description: post.desc,
+      url: `${baseDomain}${post.url}`,
+      siteName: "Doh's Tech Blog",
+      type: 'website',
+      images: [imageURL],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: post.desc,
+      images: [imageURL],
+    },
+  };
+}
 
 export function generateStaticParams() {
   const postPaths: string[] = getPostPaths();
