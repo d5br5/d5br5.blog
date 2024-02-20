@@ -1,4 +1,4 @@
-import { CategoryButton } from './CategoryButton';
+import CategoryList from './CategoryList';
 import PostCard from './PostCard';
 import { getAllPostCount, getCategoryDetailList, getSortedPostList } from '@/lib/post';
 
@@ -12,26 +12,12 @@ const PostListPage = async ({ category }: PostListProps) => {
   const allPostCount = await getAllPostCount();
 
   return (
-    <section className='mx-auto mt-14 w-full max-w-[950px] px-4'>
-      <section className='mb-10'>
-        <ul className='flex gap-3'>
-          <CategoryButton
-            href='/blog'
-            isCurrent={!category}
-            displayName='All'
-            count={allPostCount}
-          />
-          {categoryList.map((cg) => (
-            <CategoryButton
-              key={cg.dirName}
-              href={`/blog/${cg.dirName}`}
-              displayName={cg.publicName}
-              isCurrent={cg.dirName === category}
-              count={cg.count}
-            />
-          ))}
-        </ul>
-      </section>
+    <section className='mx-auto mt-12 w-full max-w-[950px] px-4'>
+      <CategoryList
+        allPostCount={allPostCount}
+        categoryList={categoryList}
+        currentCategory={category}
+      />
       <section className=''>
         <ul className='grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-12'>
           {postList.map((post) => (
