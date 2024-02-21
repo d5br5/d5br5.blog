@@ -59,6 +59,9 @@ const config = {
       typography: {
         DEFAULT: {
           css: {
+            'h2, h3': {
+              scrollMarginTop: '5rem',
+            },
             '.callout-contents > p': {
               margin: 0,
             },

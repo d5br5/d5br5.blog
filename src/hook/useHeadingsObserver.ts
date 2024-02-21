@@ -5,7 +5,7 @@ export const useHeadingsObserver = (query: string) => {
   const [activeIdList, setActiveIdList] = useState<string[]>([]);
 
   useEffect(() => {
-    // const scrollMarginOption = { rootMargin: '-80px 0px -80px 0px' };
+    const scrollMarginOption = { rootMargin: '-32px 0px -80px 0px' };
 
     const handleObserver: IntersectionObserverCallback = (entries) => {
       entries.forEach((entry) => {
@@ -18,7 +18,7 @@ export const useHeadingsObserver = (query: string) => {
       });
     };
 
-    observer.current = new IntersectionObserver(handleObserver);
+    observer.current = new IntersectionObserver(handleObserver, scrollMarginOption);
 
     const elements = document.querySelectorAll(query);
     elements.forEach((elem) => observer.current?.observe(elem));
