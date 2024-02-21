@@ -8,6 +8,7 @@ import { Footer } from '@/layouts/Footer';
 import { Header } from '@/layouts/Header';
 import { Provider as ThemeProvider } from '@/layouts/theme/Provider';
 import { cn } from '@/lib/utils';
+import { Analytics } from '@vercel/analytics/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -44,6 +45,7 @@ export default function RootLayout({
           <Footer />
         </ThemeProvider>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
