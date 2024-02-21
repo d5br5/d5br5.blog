@@ -127,17 +127,17 @@ export const getPostDetail = async (category: string, slug: string) => {
 };
 
 export const parseToc = (content: string): HeadingItem[] => {
-  const regex = /^(##|###) (.*$)/gim;
+  const regex = /^(##|###|####) (.*$)/gim;
   const headingList = content.match(regex);
   return (
     headingList?.map((heading: string) => ({
-      text: heading.replace('##', '').replace('#', ''),
+      text: heading.replace('##', '').replace('#', '').replace('#', ''),
       link:
         '#' +
         heading
           .replace('# ', '')
           .replace('#', '')
-          .replace(/[\[\]:!@#$%^&*()+=,]/g, '')
+          .replace(/[\[\]:!@#$%^&*()+=,.]/g, '')
           .replace(/ /g, '-')
           .toLowerCase()
           .replace('?', ''),

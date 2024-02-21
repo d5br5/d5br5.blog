@@ -13,7 +13,7 @@ interface Props {
 }
 
 const TableOfContent = ({ toc }: Props) => {
-  const activeIdList = useHeadingsObserver('h2, h3');
+  const activeIdList = useHeadingsObserver('h2, h3, h4');
 
   return (
     <aside className='not-prose absolute -top-[200px] left-full -mb-[100px] hidden h-[calc(100%+150px)] xl:block '>
@@ -23,12 +23,14 @@ const TableOfContent = ({ toc }: Props) => {
           <ul className='text-xs'>
             {toc.map((item) => {
               const isH3 = item.indent === 1;
+              const isH4 = item.indent === 2;
               const isIntersecting = activeIdList.includes(item.link);
               return (
                 <li
                   key={item.link}
                   className={cn(
                     isH3 && 'ml-4',
+                    isH4 && 'ml-8',
                     isIntersecting && 'font-medium text-pink-600',
                     'py-1 transition'
                   )}
