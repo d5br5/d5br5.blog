@@ -2,18 +2,23 @@ import { useEffect, useRef, useState } from 'react';
 
 export const useHeadingsObserver = (query: string) => {
   const observer = useRef<IntersectionObserver>();
-  const [activeId, setActiveId] = useState('');
+  const [activeIdList, setActiveIdList] = useState<string[]>([]);
 
   useEffect(() => {
-    const scrollMarginOption = { rootMargin: '-10% 0% -35% 0px' };
+    // const scrollMarginOption = { rootMargin: '-80px 0px -80px 0px' };
 
     const handleObserver: IntersectionObserverCallback = (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) setActiveId(entry.target.id);
+        const targetId = `#${entry.target.id}`;
+        if (entry.isIntersecting) {
+          setActiveIdList((prev) => [...prev, targetId]);
+        } else {
+          setActiveIdList((prev) => prev.filter((elem) => elem !== targetId));
+        }
       });
     };
 
-    observer.current = new IntersectionObserver(handleObserver, scrollMarginOption);
+    observer.current = new IntersectionObserver(handleObserver);
 
     const elements = document.querySelectorAll(query);
     elements.forEach((elem) => observer.current?.observe(elem));
@@ -21,5 +26,5 @@ export const useHeadingsObserver = (query: string) => {
     return () => observer.current?.disconnect();
   }, [query]);
 
-  return activeId;
+  return activeIdList;
 };
