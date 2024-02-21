@@ -127,11 +127,11 @@ export const getPostDetail = async (category: string, slug: string) => {
 };
 
 export const parseToc = (content: string): HeadingItem[] => {
-  const regex = /^(##|###|####) (.*$)/gim;
+  const regex = /^(##|###) (.*$)/gim;
   const headingList = content.match(regex);
   return (
     headingList?.map((heading: string) => ({
-      text: heading.replace('##', '').replace('#', '').replace('#', ''),
+      text: heading.replace('##', '').replace('#', ''),
       link:
         '#' +
         heading
