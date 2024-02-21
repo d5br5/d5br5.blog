@@ -39,7 +39,7 @@ const CategoryList = ({
         <ul className='flex gap-3'>
           <CategoryButton
             href='/blog'
-            isCurrent={!currentCategory}
+            isCurrent={currentCategory === 'all'}
             displayName='All'
             count={allPostCount}
           />
