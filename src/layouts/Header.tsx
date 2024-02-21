@@ -3,8 +3,10 @@
 import Link from 'next/link';
 
 import ScrollProgressBar from '@/components/common/ScrollProgressBar';
+import { Button } from '@/components/ui/button';
 import { useSpyElem } from '@/hook/useSpy';
 import ThemeSwitch from '@/layouts/theme/Switch';
+import { Github } from 'lucide-react';
 
 export const Header = () => {
   const { ref, marginTop } = useSpyElem(65);
@@ -19,8 +21,13 @@ export const Header = () => {
         <div className='flex items-center text-lg font-medium'>
           <Link href='/blog'>D5BL5G</Link>
         </div>
-        <div>
+        <div className='flex gap-3'>
           <ThemeSwitch />
+          <Button asChild variant='ghost' size='icon'>
+            <Link href='https://github.com/d5br5' target='_blank'>
+              <Github className='size-[1.2rem]' />
+            </Link>
+          </Button>
         </div>
       </div>
       <ScrollProgressBar />
