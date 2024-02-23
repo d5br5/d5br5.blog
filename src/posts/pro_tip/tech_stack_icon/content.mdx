@@ -1,0 +1,252 @@
+---
+title: "[Github] 프로필 기술 스택 아이콘 꾸미기"
+date: 2024-02-23
+desc: github 프로필 꾸미기. 나 빼고 다 하고 있다.
+thumbnail: /posts/pro_tip/tech_stack_icon/thumbnail.jpg
+---
+
+## 기술 스택 아이콘?
+
+여러 깃허브를 돌아다니다 보면, 아래 이미지와 같은 기술 스택 아이콘 목록을 자주 볼 수 있다.
+본인의 전문성을 아이콘과 함께 깔끔하게 드러낼 수 있는 좋은 방법이라고 생각한다.
+
+
+![과한 사용은 오히려 신빙성이 떨어질 수도..](/posts/pro_tip/tech_stack_icon/88.jpg)
+
+---
+
+## 양식
+
+[Shields.io](https://shields.io/) 에서 제공하는 이미지 태그를 사용한다.
+
+[기술 명세 페이지](https://shields.io/badges) 에서 자세한 스펙을 확인할 수 있다.
+
+아래와 같은 코드를 삽입하면 해당 기술 스택 뱃지가 생성된다. 
+
+```html
+<img src="https://img.shields.io/badge/[기술명]-[배경색]?style=[모양타입]&logo=[아이콘명]&logoColor=[로고색]"/>
+```
+
+- 기술명
+- 배경색
+- 모양타입
+- 아이콘명
+- 로고색
+
+위 항목들을 본인이 원하는 스택에 맞게 변경해서 삽입하면 된다.
+
+### 0. 예시
+
+더 다양한 예시는 아래 부록에 만들어 두었다.
+
+<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
+
+```html
+<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
+```
+
+### 1. 기술명
+
+본인이 넣고 싶은 이름 넣으면 된다. 양식은 없다. 
+
+### 2. 배경색 / 4. 아이콘명
+
+[Simple Icons](https://simpleicons.org/) 사이트에서 아이콘과 그에 맞는 색상 코드를 얻을 수 있다. 
+
+![아이콘 및 색상코드 예시](/posts/pro_tip/tech_stack_icon/0.jpg)
+
+- 배경색
+  - 좌측 하단 색상 코드를 '#' 제외하고 입력하면된다.
+  - 코드 클릭시 클립보드에 자동으로 복사된다.
+
+- 아이콘명
+  - 위 이미지처럼 표시된 이름을 소문자로 입력하면 된다. 
+  - 아이콘 이름에 띄어쓰기가 포함된 경우, 띄어쓰기는 `%20` 으로 사용하면 된다.
+    - ruby on rails => `ruby%20on%20rails`
+    - Amazon AWS => `amazon%20aws`
+
+### 3. 모양
+
+5가지 옵션이 있다. 지정하지 않을 경우 `flat`이 기본 적용된다.
+
+- flat (default) <img src="https://img.shields.io/badge/javascript-F7DF1E?style=flat&logo=javascript&logoColor=black"/>
+
+- plastic <img src="https://img.shields.io/badge/javascript-F7DF1E?style=plastic&logo=javascript&logoColor=black"/>
+
+- flat-square <img src="https://img.shields.io/badge/javascript-F7DF1E?style=flat-square&logo=javascript&logoColor=black"/>
+
+- for-the-badge <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
+
+- social <img src="https://img.shields.io/badge/javascript-F7DF1E?style=social&logo=javascript&logoColor=black"/>
+
+
+### 5. 로고색
+
+로고에 적용될 색상이다. 
+
+hex, rgb, rgba, hsl, hsla and css named colors가 지원된다.
+
+- white
+- #FFF
+- rgb(255, 255, 255)
+- rgba(255, 255, 255, 0.1)
+- hsl(210 40% 98%)
+
+<Callout type="info">
+ 폰트 색상은 배경색에 따라 white / black 으로 자동 결정된다.
+ </Callout>
+
+---
+
+## 부록 : Stack Badge List
+
+<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
+```html
+<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
+```
+
+<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/react.js-61DAFB?style=for-the-badge&logo=react&logoColor=black"/>
+```html
+<img src="https://img.shields.io/badge/react.js-61DAFB?style=for-the-badge&logo=react&logoColor=black"/>
+```
+
+<img src="https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/angular.js-DD0031?style=for-the-badge&logo=angular&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/angular.js-DD0031?style=for-the-badge&logo=angular&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/express.js-000000?style=for-the-badge&logo=express&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/express.js-000000?style=for-the-badge&logo=express&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=next.js&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=next.js&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/nuxt.js-00DC82?style=for-the-badge&logo=nuxt.js&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/nuxt.js-00DC82?style=for-the-badge&logo=nuxt.js&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/nest.js-E0234E?style=for-the-badge&logo=nestjs&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/nest.js-E0234E?style=for-the-badge&logo=nestjs&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/django-092E20?style=for-the-badge&logo=django&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/mariaDB-003545?style=for-the-badge&logo=mariaDB&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/mariaDB-003545?style=for-the-badge&logo=mariaDB&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/mongoDB-47A248?style=for-the-badge&logo=MongoDB&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/mongoDB-47A248?style=for-the-badge&logo=MongoDB&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/postgresql-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/postgresql-4169E1?style=for-the-badge&logo=postgresql&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black"/>
+```html
+<img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black"/>
+```
+
+<img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/spring-6DB33F?style=for-the-badge&logo=spring&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/adobe-DA1F26?style=for-the-badge&logo=adobe%20creative%20cloud&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/adobe-DA1F26?style=for-the-badge&logo=adobe%20creative%20cloud&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/linux-FCC624?style=for-the-badge&logo=linux&logoColor=black"/>
+```html
+<img src="https://img.shields.io/badge/linux-FCC624?style=for-the-badge&logo=linux&logoColor=black"/>
+```
+
+<img src="https://img.shields.io/badge/kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/swift-F05138?style=for-the-badge&logo=swift&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/swift-F05138?style=for-the-badge&logo=swift&logoColor=white"/>
+```
+
+<img src="https://img.shields.io/badge/android-34A853?style=for-the-badge&logo=android&logoColor=white"/>
+```html
+<img src="https://img.shields.io/badge/android-34A853?style=for-the-badge&logo=android&logoColor=white"/>
+```
+
