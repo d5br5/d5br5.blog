@@ -137,7 +137,7 @@ export const parseToc = (content: string): HeadingItem[] => {
         heading
           .replace('# ', '')
           .replace('#', '')
-          .replace(/[\[\]:!@#$%^&*()+=,.]/g, '')
+          .replace(/[\[\]:!@#$/%^&*()+=,.]/g, '')
           .replace(/ /g, '-')
           .toLowerCase()
           .replace('?', ''),
