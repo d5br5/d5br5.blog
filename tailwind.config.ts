@@ -87,17 +87,37 @@ const config = {
             'code::after': {
               content: 'none',
             },
-            '[data-highlighted-line]': {
-              backgroundColor: 'rgba(253, 224, 71, 0.2)',
-            },
+
             pre: {
               paddingRight: 0,
               paddingLeft: 0,
+              color: 'var(--shiki-light)',
+              backgroundColor: 'var(--shiki-light-bg)',
+              border: '1px solid #e5e7eb',
             },
+
+            '.dark pre': {
+              backgroundColor: 'var(--shiki-dark-bg)',
+              color: 'var(--shiki-dark)',
+              border: '1px solid #374151',
+            },
+
             'pre > code > span': {
               paddingLeft: '1rem',
               paddingRight: '1rem',
             },
+
+            'pre code span': {
+              color: 'var(--shiki-light)',
+            },
+            '.dark pre code span': {
+              color: 'var(--shiki-dark)',
+            },
+
+            '[data-highlighted-line]': {
+              backgroundColor: 'rgba(253, 224, 71, 0.2)',
+            },
+
             u: {
               textUnderlineOffset: '4px',
               textDecorationThickness: 1,
