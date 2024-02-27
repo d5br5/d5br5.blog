@@ -352,6 +352,68 @@ const parsePostDetail = async (postPath: string) => {
 
 ### 3. 목록 페이지
 
+`src/posts` 폴더 안에 저장된 `content.mdx` 파일을 전부 탐색합니다.
+각 파일이 저장된 폴더명을 기반으로 category, 글 제목을 부여한 후, 그룹화합니다.
+
+폴더 내 파일 탐색에는 [Glob](https://www.daleseo.com/glob-patterns/)을 활용합니다. 설치해 줍시다.
+
+```shell
+npm install glob @types/glob
+```
+저장된 모든 게시글 목록을 조회하는 함수는 다음과 같이 작성할 수 있습니다.
+모든 mdx 파일의 경로를 추려내고, 각 file path별로 parsing을 수행합니다.
+
+```ts {10, 16, 17}
+import { sync } from 'glob';
+import path from 'path';
+
+const BASE_PATH = '/src/posts';
+const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
+
+// 모든 MDX 파일 조회
+export const getPostPaths = (category?: string) => {
+  const folder = category || '**';
+  const paths: string[] = sync(`${POSTS_PATH}/${folder}/**/*.mdx`);
+  return paths;
+};
+
+// 모든 포스트 목록 조회
+export const getPostList = async (category?: string): Promise<Post[]> => {
+  const paths: string[] = getPostPaths(category);
+  const posts = await Promise.all(paths.map((postPath) => parsePost(postPath)));
+  return posts;
+};
+```
+
+전체 게시글 뿐만 아니라 카테고리별 목록 조회도 가능하도록, `category`를 인자로 받았습니다.
+없는 경우 전체 게시글 조회 / 전달할 경우 카테고리별 조회입니다.
+
+불러온 post list를 render 해주면 끝입니다!
+
+```tsx
+const PostListPage = async ({ category }) => {
+  const postList = await getPostList(category);
+  const categoryList = await getCategoryDetailList();
+
+  return (
+    <section>
+      <CategoryList list={categoryList} />
+      <section>
+        <ul>
+          {postList.map((post) => (
+            <PostCard key={post.url + post.date} post={post} />
+          ))}
+        </ul>
+      </section>
+    </section>
+  );
+};
+```
+
+![post list page 화면](/posts/nextjs_blog/setup/1.jpg)
+
+
+
 ### 4. 상세 페이지
 
 
