@@ -8,7 +8,15 @@ thumbnail: /posts/pro_tip/tech_stack_icon/thumbnail.jpg
 <Callout type="warn">
 Next.js 14.1 버전을 기준으로 작성되었습니다.
 </Callout>
+
+<Callout type="info">
+전체 소스코드는 제 [Github Repo](https://github.com/d5br5/d5br5.blog)에서 확인 가능합니다. <del>(star 하나만,,)</del>
+</Callout>
+
+
+
 > 반말과 존댓말을 섞어 사용합니다. 양해 부탁드립니다..
+
 
 ## 직접 만드는 이유
 
@@ -87,7 +95,7 @@ public project라면, 그 블로그의 github repository도 저장해두세요.
 #### 1. Framework : [Next.js](https://nextjs.org/)
 
 프론트엔드 생태계에서 현재 가장 핫한 프레임워크가 아닐까 싶습니다.
-Next.js 를 사용하는 회사도 점점 많아지고 있는 것 같습니다.
+Next.js 를 사용하는 회사도 점점 많아지고 있는 것 같아요.
 최근에 pages router 방식에서 app router 방식으로 업데이트 되었는데,
 어떻게 달라졌는지 살펴보고 익숙해지고자 선택했습니다.
 
@@ -167,10 +175,10 @@ What import alias would you like configured? @/*
 
 ### 2. Tailwind, Shadcn
 
-tailwind css는 1번 단계에서 Next.js와 함께 설치 완료되었다.
-Headless component library인 shadcn/ui를 설치해보자.
+tailwind css는 1번 단계에서 Next.js와 함께 설치 완료되었습니다.
+Headless component library인 shadcn/ui를 설치합시다.
 
-[shadcn/ui 공식문서](https://ui.shadcn.com/docs/installation/next)를 참고하자.
+[shadcn/ui 공식문서](https://ui.shadcn.com/docs/installation/next)를 참고!
 
 ```shell
 npx shadcn-ui@latest init
@@ -189,11 +197,11 @@ Configure the import alias for utils: › @/lib/utils
 Are you using React Server Components? › yes
 ```
 
-`components.json` 파일이 생성됨과 동시에, 설치가 완료된다.
+`components.json` 파일이 생성됨과 동시에, 설치가 완료됩니다.
 
 ### 3. 디렉토리 구조 설계
 
-프로젝트 내부 폴더 구조는 다음과 같이 설계하였다.
+프로젝트 내부 폴더 구조는 다음과 같이 설계했습니다.
 
 ```
   public/
@@ -208,9 +216,24 @@ Are you using React Server Components? › yes
     posts: 게시글 mdx 파일 저장
 ```
 
-임시 게시글도 하나 만들어두자.
+---
+
+## 기능 개발
+
+> 저는 이렇게 개발했습니다. 참고만 해주세요! 반박시 여러분들의 코드가 맞습니다..
+
+### 1. 글 저장
+
+게시글은 `src/posts` 디렉토리에 저장했습니다.
+
+각 게시글 파일의 전체 path는 다음과 같습니다.
+
+`src/posts/category_name/post_title/content.mdx`
+
+기능 개발하면서 활용할 임시 게시글을 하나 만들겠습니다.
 
 `src/posts/category1/title1/content.mdx`
+
 ```markdown {1-6}
 ---
 title: "Next.js 블로그 만들기 (14.1 최신 버전 + tailwind)"
@@ -219,14 +242,116 @@ desc: FE 개발자라면 티스토리 말고 개인 블로그 하나쯤은,,
 thumbnail: /posts/nextjs_blog/setup/thumbnail.jpg
 ---
 
+#### 환영 
+
 안녕하세요. 이 글은 mdx파일로 작성되었습니다.
 ```
 
-위 코드에서 노란 음영 처리된 부분을 [Gray-matter](https://github.com/jonschlinkert/gray-matter)가 읽고 Metadata로 parsing 한다.
-(아래에서 자세하게 설명할 예정)
+### 2. 글 정보 parsing
 
----
+[Gray-matter](https://github.com/jonschlinkert/gray-matter)를 사용해서 mdx 파일을 parsing합니다. 설치해 줍시다.
 
-## 기능 개발
+```shell
+npm install --save gray-matter
+```
+parsing하는 함수는 다음과 같이 작성할 수 있습니다.
+게시글 파일을 `matter` 함수에 인자로 전달하고, `data`, `content`를 얻습니다.
+
+```ts {5-6}
+import fs from 'fs';
+import matter from 'gray-matter';
+
+const parsePost = async (postPath: string) => {
+  const file = fs.readFileSync(postPath, 'utf8');
+  const { data, content } = matter(file);
+};
+```
+
+
+
+`data`는 아래와 같습니다.
+mdx 파일의 상단, 두 줄의 '---'로 구분된 영역이 parsing된 것을 확인할 수 있습니다.
+
+```json
+{
+  title: 'Next.js 블로그 만들기 (14.1 최신 버전 + tailwind)',
+  date: 2024-02-26T00:00:00.000Z,
+  desc: 'FE 개발자라면 티스토리 말고 개인 블로그 하나쯤은,,',
+  thumbnail: '/posts/nextjs_blog/setup/thumbnail.jpg'
+}
+```
+
+`content`는 다음과 같습니다.
+상단 구분 영역의 아래 영역 전부가 하나의 string으로 전달됩니다. 
+
+```json
+#### 환영
+
+안녕하세요. 이 글은 mdx파일로 작성되었습니다.
+```
+
+기본적인 두 데이터에 살을 붙여, post data 객체를 완성하겠습니다.
+정보는 abstact, detail로 구분했습니다.
+
+- abstract : url, category, slug
+- detail : data, content, readingMinutes
+
+전체 코드는 다음과 같습니다.
+
+```ts {12-13, 27, 30, 38-41}
+import fs from 'fs';
+import path from 'path';
+import dayjs from 'dayjs';
+import matter from 'gray-matter';
+import readingTime from 'reading-time';
+
+const BASE_PATH = '/src/posts';
+const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
+
+// MDX 파일 파싱 : abstract / detail 구분
+const parsePost = async (postPath: string): Promise<Post> => {
+  const postAbstract = parsePostAbstract(postPath);
+  const postDetail = await parsePostDetail(postPath);
+  return { ...postAbstract, ...postDetail };
+};
+
+// MDX Abstract
+// url, cg path, cg name, slug
+export const parsePostAbstract = (postPath: string) => {
+  // category1/title1/content
+  const filePath = postPath
+    .slice(postPath.indexOf(BASE_PATH))
+    .replace(`${BASE_PATH}/`, '')
+    .replace('.mdx', '');
+
+  // category1, title1
+  const [category, slug] = filePath.split('/');
+
+  // /blog/category1/title1
+  const url = `/blog/${categoryPath}/${slug}`;
+
+  return { url, category, slug };
+};
+
+// MDX Detail
+const parsePostDetail = async (postPath: string) => {
+  const file = fs.readFileSync(postPath, 'utf8');
+  const { data, content } = matter(file);
+  const grayMatter = data as PostMatter;
+  const readingMinutes = Math.ceil(readingTime(content).minutes);
+  const dateString = dayjs(grayMatter.date).locale('ko').format('YYYY년 MM월 DD일');
+  return { ...grayMatter, dateString, content, readingMinutes };
+};
+
+```
+
+여러 파일에 대한 파싱 정보 리스트를 보여주면 <u>글 목록 페이지</u>인 것이고,
+파싱 정보 객체 하나를 가공해서 HTML 요소로 변환해 보여주면 <u>글 상세 페이지</u>인 것입니다!
+
+참 쉽죠?
+
+### 3. 목록 페이지
+
+### 4. 상세 페이지
 
 
