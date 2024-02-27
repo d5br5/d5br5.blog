@@ -412,8 +412,108 @@ const PostListPage = async ({ category }) => {
 
 ![post list page 화면](/posts/nextjs_blog/setup/1.jpg)
 
-
-
 ### 4. 상세 페이지
 
+앞서 말한대로, 게시글 파일 parsing 데이터를 UI로 변환하여 보여주면 됩니다.
+상세페이지 컴포넌트는 다음과 같이 작성할 수 있겠습니다.
 
+```tsx
+const PostDetail = async ({ params: { category, slug } }) => {
+  const post = await getPostDetail(category, slug);
+
+  return (
+    <div>
+      <PostHeader post={post} />
+      <PostBody post={post} />
+    </div>
+  );
+};
+```
+
+`PostHeader`는 단순 마크업 컴포넌트라 자세히 다루지 않겠습니다. 
+
+중요한 것은 `PostBody` 컴포넌트입니다.
+마크다운 형식으로 저장된 content를 HTML 요소로 변환해주어야 합니다!
+
+저는 [next-mdx-remote](https://github.com/hashicorp/next-mdx-remote#react-server-components-rsc--nextjs-app-directory-support)를 활용했습니다. 설치해 줍시다.
+
+```shell
+npm install next-mdx-remote
+```
+
+`PostBody` 컴포넌트의 큰 골격은 아래와 같습니다.
+아까 parsing했던 `content`를 props로 전달해주면, HTML 요소로 자동 변환됩니다.
+
+```tsx
+import { MDXRemote } from 'next-mdx-remote/rsc';
+
+const PostBody = ({ post }) => {
+  return (
+    <MDXRemote source={post.content}/>
+  );
+};
+```
+
+mdx plugin과 custom component도 함께 전달해줄 수 있습니다.
+
+```tsx
+import { MDXRemote } from 'next-mdx-remote/rsc';
+import { MdxComponents } from '../mdx';
+
+import remarkA11yEmoji from '@fec/remark-a11y-emoji';
+import rehypePrettyCode from 'rehype-pretty-code';
+import rehypeSlug from 'rehype-slug';
+import remarkBreaks from 'remark-breaks';
+import remarkGfm from 'remark-gfm';
+
+const PostBody = ({ post }) => {
+  return (
+    <MDXRemote 
+      source={post.content}
+      components={MdxComponents}  
+      options={{
+        mdxOptions: {
+          remarkPlugins: [remarkGfm, remarkA11yEmoji, remarkBreaks],
+          rehypePlugins: [
+            [
+              rehypePrettyCode,
+              {theme: {dark: 'github-dark-dimmed', light: 'github-light'}},
+            ],
+            rehypeSlug,
+          ],
+        },
+      }}
+    />
+  );
+};
+```
+
+사용한 mdx plugin은 다음과 같습니다.
+
+- remark plugins
+  - remarkGfm : 깃허브 Flavored 마크다운 지원
+  - remarkA11yEmoji : 이모티콘 접근성 향상
+  - remarkBreaks : markdown은 기본적으로 두 줄 개행인데, 한 줄로도 개행하게 해줍니다.
+  - [다른 plugin](https://github.com/remarkjs/remark/blob/main/doc/plugins.md)들도 취향에 맞게 설치 후 사용하시면 됩니다.
+- rehype plugins
+  - [rehypePrettyCode](https://rehype-pretty-code.netlify.app/) : 여러분이 현재 보고 계시는 글처럼 코드 블록을 아름답게 꾸며줍니다.
+  - rehypeSlug : 변환된 html 각 heading에 id를 부여해줍니다. 추후 ToC를 만들 때 활용됩니다.
+
+
+custom component는 다음과 같습니다.
+지정하지 않은 요소에는 MDX 기본 변환 요소가 사용됩니다.
+
+```tsx
+import { Callout } from './Callout';
+
+const MdxComponents: MDXComponents = {
+  a: ExternalLink as any,
+  img: Image as any,
+  blockquote: Callout,
+  Callout,
+};
+```
+
+여기까지 완료하면, 아래 이미지처럼 게시글 상세 페이지가 보여집니다.
+
+![게시글 상세 페이지 화면](/posts/nextjs_blog/setup/2.jpg)
