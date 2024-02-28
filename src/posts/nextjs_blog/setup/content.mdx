@@ -1,0 +1,541 @@
+---
+title: "Next.js 블로그 만들기 (14.1 최신 버전 + tailwind)"
+date: 2024-02-26
+desc: FE 개발자라면 티스토리 말고 개인 블로그 하나쯤은,,
+thumbnail: /posts/nextjs_blog/setup/thumbnail.png
+---
+
+![](/posts/nextjs_blog/setup/thumbnail.png)
+
+<Callout type="warn">
+Next.js 14.1 버전을 기준으로 작성되었습니다.
+</Callout>
+
+<Callout type="info">
+전체 소스코드는 제 [Github Repo](https://github.com/d5br5/d5br5.blog)에서 확인 가능합니다. <del>(star 하나만,,)</del>
+</Callout>
+
+
+## 직접 만드는 이유
+
+tistory, velog, naver, notion 등 블로그를 위한 플랫폼이 이미 존재합니다.
+손쉽게 사용할 수 있는 UI 커스텀, 통계, SEO 등 다양한 기능 또한 제공해줍니다.
+그럼에도 불구하고, 왜 직접 만들게 되었을까요?
+
+### 1. FE 개발자로서의 작업물
+
+블로그 자체가 하나의 작업물이기 때문에, 일종의 포트폴리오가 될 수 있습니다.
+그래도 적지 않은 기간동안 Front End 개발자로서 커리어를 쌓아 나갈 것인데,
+직접 만든 블로그 하나쯤 가지고 있으면 멋있지 않나요?
+
+다른 블로그 서비스에 종속되어 있으면 나중에 옮기기도 번거롭고, 
+데이터 손실 및 서비스 종료에 대한 위험도 있습니다.
+
+### 2. 컴팩트한 Customizing
+
+내가 원하는 대로 디자인할 수 있습니다.
+기존 블로그 서비스 또한 커스터마이징 기능을 제공하지만, 
+없애고 싶은 디자인마저 코드로 포함되어 있기 때문에 프로젝트 규모가 매우 큽니다.
+
+다른 사람들의 데이터와 섞여 있기 때문에 (물론 최적화가 잘 되어 있겠지만) 
+내 블로그에 접속했을 때 의도치 않은 속도 저하가 발생할 수 있을 것 같아요
+
+내가 원하는 디자인의 UI 코드만 포함시켜 프로젝트 규모를 최소화하여,
+추가/삭제의 유지보수 작업을 용이하게 하려고 합니다.
+
+---
+
+## 제작 과정
+
+> 기술 stack 을 정하기 전에 전체적인 흐름을 정리해보자
+
+### 1. 블로그 레퍼런스 정리
+
+잘 만든 블로그들을 따로 모아두면 좋습니다.
+이 사람은 이 기능을 어떤 방식으로 구현한 것일까? 궁금할 때 참고하면 많은 도움이 됩니다. 
+public project라면, 그 블로그의 github repository도 저장해두세요.
+
+저는 아래 블로그에서 많은 영감을 받았습니다.
+이 자리를 빌어 감사하다는 말씀 전합니다.
+
+- [정현수님 블로그](https://junghyeonsu.com/)
+- [김평안님 블로그](https://bepyan.github.io/)
+- [권용빈님 블로그](https://yiyb-blog.vercel.app/)
+- https://tailwind-nextjs-starter-blog.vercel.app/
+- https://nextjs-blog.sanity.build/
+
+### 2. 기능 정리
+
+블로그에서 구현하고자 하는 기능들을 정리해봅시다.
+필수적인 기능과, 부가적인 기능으로 나누어 개발의 우선순위를 정할 수 있습니다.
+이 블로그에 적용된 기능은 다음과 같습니다.
+
+#### 필수 기능
+
+- 게시글 목록 페이지 (전체, 카테고리별)
+- 게시글 상세 페이지
+- 댓글 기능
+
+#### 부가 기능
+
+- 다크/라이트 모드
+- 목차 사이드바 (TOC, Table of Content)
+- 최상단, 최하단으로 이동
+- 게시글 주소 복사
+- scroll progress status bar
+- 검색 엔진 최적화 (SEO)
+- reading-time parsing
+
+### 3. 기술 스택 정하기
+
+이 블로그에 적용된 주요 기술 stack은 다음과 같습니다.
+
+#### 1. Framework : [Next.js](https://nextjs.org/)
+
+프론트엔드 생태계에서 현재 가장 핫한 프레임워크가 아닐까 싶습니다.
+Next.js 를 사용하는 회사도 점점 많아지고 있는 것 같아요.
+최근에 pages router 방식에서 app router 방식으로 업데이트 되었는데,
+어떻게 달라졌는지 살펴보고 익숙해지고자 선택했습니다.
+
+#### 2. Design : [Tailwind CSS](https://tailwindcss.com/) + [Shadcn/ui](https://ui.shadcn.com/)
+
+이 또한 가장 핫한 디자인 라이브러리 아닐까요.
+tailwind를 처음 사용할 때에는, 익숙하지 않아서 그런건지는 몰라도 잘 받아들여지지 않고 어색했는데,
+지금은 tailwind를 사용하지 않으면 많이 허전합니다..
+class를 직접 작명하는 것이 생각보다 큰 overload 였음을 느끼게 해 줍니다.
+
+tailwind에 추가로, headless component lib인 shadcn을 사용했습니다. 
+tailwind 기반으로 스타일이 작성되어 있고, 디자인 자체가 깔끔하며, cutomizing이 용이합니다.
+
+#### 3. 글 작성 : [MDX](https://mdxjs.com/)
+
+글은 mdx파일로 작성해 프로젝트 내부 디렉토리에 저장합니다.
+아직 블로그 내부에서 post를 작성하고 수정하는 기능은 만들지 않았습니다. (굳이..? 싶습니다.)
+
+개발자라면 markdown 문법에도 익숙해져야 한다고 생각하여, 
+익숙해질 겸(편해서), markdown 문법을 선택했습니다.
+기본적인 md에 jsx 문법을 추가로 사용할 수 있는 mdx를 사용합니다.
+
+#### 4. 글 파싱 : [Gray-matter](https://github.com/jonschlinkert/gray-matter) + [Next-MDX-Remote](https://github.com/hashicorp/next-mdx-remote#react-server-components-rsc--nextjs-app-directory-support)
+
+작성된 mdx 파일의 메타 정보와 본문 내용을 파싱합니다.
+파싱된 정보들을 토대로 게시글 목록을 보여줍니다.
+
+- gray-matter : 글 제목, 설명, 작성일, 썸네일 파싱
+- next-mdx-remote : 글 본문을 html 형식으로 remark, rehype
+
+[Contentlayer](https://contentlayer.dev/)를 사용해보려 했으나, Next.js 14 버전은 지원을 안합니다.
+issue를 살펴보니, maintain을 안한지 1년정도 된 것 같더라구요.
+나중에 Next.js 버전 업을 하려고 할때, 충돌이 많이 날 것 같아 pass하였습니다.
+
+#### 5. 댓글 : [Giscus](https://giscus.app/)
+
+Github Discuss 시스템을 기반으로 작동하는 댓글 서비스입니다.
+[Utterance](https://github.com/utterance/utterances)에서 영감을 받아 만들었다고 합니다.
+둘 다 open source라 무료지만, Giscus가 조금 더 깔끔한 UI를 제공한다고 합니다.
+
+#### 6. 배포 : [Vercel](https://vercel.com/dashboard)
+
+정적 웹사이트 및 서버리스 함수를 배포하고 관리하는 데 사용되는 cloud platform입니다.
+Next.js는 vercel에서 만든 프레임워크입니다. 따라서 호환성이 매우 높습니다.
+
+github repository를 연동해두면 CI/CD 파이프라인도 자동으로 수행됩니다.
+개인적인 domain 주소도 구매하여 바로 연결할 수 있고, 페이지 분석 통계 tool도 제공합니다. 
+
+--- 
+
+## 개발 환경 Setup
+
+### 1. Next.js
+
+<Callout type="warn">
+[Node.js](https://nodejs.org/en) 18.17 or later version이 필요합니다.
+</Callout>
+
+
+[Next.js 공식 Docs](https://nextjs.org/docs/getting-started/installation)를 참고하여 install 해줍니다.
+
+```shell
+npx create-next-app@latest
+```
+> App router를 선택하는 것 잊지 말아주세요
+
+```terminal {2, 4, 6}
+What is your project named? my-app
+Would you like to use TypeScript? Yes
+Would you like to use ESLint? Yes
+Would you like to use Tailwind CSS? Yes
+Would you like to use `src/` directory? Yes
+Would you like to use App Router? (recommended) Yes
+Would you like to customize the default import alias (@/*)? Yes
+What import alias would you like configured? @/*
+```
+
+### 2. Tailwind, Shadcn
+
+tailwind css는 1번 단계에서 Next.js와 함께 설치 완료되었습니다.
+Headless component library인 shadcn/ui를 설치합시다.
+
+[shadcn/ui 공식문서](https://ui.shadcn.com/docs/installation/next)를 참고!
+
+```shell
+npx shadcn-ui@latest init
+```
+
+```terminal {1}
+Would you like to use TypeScript (recommended)? yes
+Which style would you like to use? › Default
+Which color would you like to use as base color? › Slate
+Where is your global CSS file? › › app/globals.css
+Do you want to use CSS variables for colors? › yes
+Are you using a custom tailwind prefix eg. tw-? (Leave blank if not) ...
+Where is your tailwind.config.js located? › tailwind.config.js
+Configure the import alias for components: › @/components
+Configure the import alias for utils: › @/lib/utils
+Are you using React Server Components? › yes
+```
+
+`components.json` 파일이 생성됨과 동시에, 설치가 완료됩니다.
+
+### 3. 디렉토리 구조 설계
+
+프로젝트 내부 폴더 구조는 다음과 같이 설계했습니다.
+
+```
+  public/
+    posts: 게시글 내부에 사용할 이미지 asset 저장
+  src/
+    app
+    hook
+    lib
+    components
+    config: 상수파일, 타입정의파일, global.css 등
+    layouts: Header, Footer, Theme Provider 등
+    posts: 게시글 mdx 파일 저장
+```
+
+---
+
+## 기능 개발
+
+> 저는 이렇게 개발했습니다. 참고만 해주세요! 반박시 여러분들의 코드가 맞습니다..
+
+### 1. 글 저장
+
+게시글은 `src/posts` 디렉토리에 저장했습니다.
+
+각 게시글 파일의 전체 path는 다음과 같습니다.
+
+`src/posts/category_name/post_title/content.mdx`
+
+기능 개발하면서 활용할 임시 게시글을 하나 만들겠습니다.
+
+`src/posts/category1/title1/content.mdx`
+
+```markdown {1-6}
+---
+title: "Next.js 블로그 만들기 (14.1 최신 버전 + tailwind)"
+date: 2024-02-26
+desc: FE 개발자라면 티스토리 말고 개인 블로그 하나쯤은,,
+thumbnail: /posts/nextjs_blog/setup/thumbnail.jpg
+---
+
+#### 환영 
+
+안녕하세요. 이 글은 mdx파일로 작성되었습니다.
+```
+---
+
+### 2. 글 정보 parsing
+
+[Gray-matter](https://github.com/jonschlinkert/gray-matter)를 사용해서 mdx 파일을 parsing합니다. 설치해 줍시다.
+
+```shell
+npm install --save gray-matter
+```
+parsing하는 함수는 다음과 같이 작성할 수 있습니다.
+게시글 파일을 `matter` 함수에 인자로 전달하고, `data`, `content`를 얻습니다.
+
+```ts {5-6}
+import fs from 'fs';
+import matter from 'gray-matter';
+
+const parsePost = async (postPath: string) => {
+  const file = fs.readFileSync(postPath, 'utf8');
+  const { data, content } = matter(file);
+};
+```
+
+`data`는 아래와 같습니다.
+mdx 파일의 상단, 두 줄의 '---'로 구분된 영역이 parsing된 것을 확인할 수 있습니다.
+
+```json
+{
+  title: 'Next.js 블로그 만들기 (14.1 최신 버전 + tailwind)',
+  date: 2024-02-26T00:00:00.000Z,
+  desc: 'FE 개발자라면 티스토리 말고 개인 블로그 하나쯤은,,',
+  thumbnail: '/posts/nextjs_blog/setup/thumbnail.jpg'
+}
+```
+
+`content`는 다음과 같습니다.
+상단 구분 영역의 아래 영역 전부가 하나의 string으로 전달됩니다. 
+
+```json
+#### 환영
+
+안녕하세요. 이 글은 mdx파일로 작성되었습니다.
+```
+
+기본적인 두 데이터에 살을 붙여, post data 객체를 완성하겠습니다.
+정보는 abstact, detail로 구분했습니다.
+
+- abstract : url, category, slug
+- detail : data, content, readingMinutes
+
+전체 코드는 다음과 같습니다.
+
+```ts {12-13, 27, 30, 38-41}
+import fs from 'fs';
+import path from 'path';
+import dayjs from 'dayjs';
+import matter from 'gray-matter';
+import readingTime from 'reading-time';
+
+const BASE_PATH = '/src/posts';
+const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
+
+// MDX 파일 파싱 : abstract / detail 구분
+const parsePost = async (postPath: string): Promise<Post> => {
+  const postAbstract = parsePostAbstract(postPath);
+  const postDetail = await parsePostDetail(postPath);
+  return { ...postAbstract, ...postDetail };
+};
+
+// MDX Abstract
+// url, cg path, cg name, slug
+export const parsePostAbstract = (postPath: string) => {
+  // category1/title1/content
+  const filePath = postPath
+    .slice(postPath.indexOf(BASE_PATH))
+    .replace(`${BASE_PATH}/`, '')
+    .replace('.mdx', '');
+
+  // category1, title1
+  const [category, slug] = filePath.split('/');
+
+  // /blog/category1/title1
+  const url = `/blog/${categoryPath}/${slug}`;
+
+  return { url, category, slug };
+};
+
+// MDX Detail
+const parsePostDetail = async (postPath: string) => {
+  const file = fs.readFileSync(postPath, 'utf8');
+  const { data, content } = matter(file);
+  const grayMatter = data as PostMatter;
+  const readingMinutes = Math.ceil(readingTime(content).minutes);
+  const dateString = dayjs(grayMatter.date).locale('ko').format('YYYY년 MM월 DD일');
+  return { ...grayMatter, dateString, content, readingMinutes };
+};
+
+```
+
+여러 파일에 대한 파싱 정보 리스트를 보여주면 <u>글 목록 페이지</u>인 것이고,
+파싱 정보 객체 하나를 가공해서 HTML 요소로 변환해 보여주면 <u>글 상세 페이지</u>인 것입니다!
+
+참 쉽죠?
+
+---
+
+### 3. 목록 페이지
+
+`src/posts` 폴더 안에 저장된 `content.mdx` 파일을 전부 탐색합니다.
+각 파일이 저장된 폴더명을 기반으로 category, 글 제목을 부여한 후, 그룹화합니다.
+
+폴더 내 파일 탐색에는 [Glob](https://www.daleseo.com/glob-patterns/)을 활용합니다. 설치해 줍시다.
+
+```shell
+npm install glob @types/glob
+```
+저장된 모든 게시글 목록을 조회하는 함수는 다음과 같이 작성할 수 있습니다.
+모든 mdx 파일의 경로를 추려내고, 각 file path별로 parsing을 수행합니다.
+
+```ts {10, 16, 17}
+import { sync } from 'glob';
+import path from 'path';
+
+const BASE_PATH = '/src/posts';
+const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
+
+// 모든 MDX 파일 조회
+export const getPostPaths = (category?: string) => {
+  const folder = category || '**';
+  const paths: string[] = sync(`${POSTS_PATH}/${folder}/**/*.mdx`);
+  return paths;
+};
+
+// 모든 포스트 목록 조회
+export const getPostList = async (category?: string): Promise<Post[]> => {
+  const paths: string[] = getPostPaths(category);
+  const posts = await Promise.all(paths.map((postPath) => parsePost(postPath)));
+  return posts;
+};
+```
+
+전체 게시글 뿐만 아니라 카테고리별 목록 조회도 가능하도록, `category`를 인자로 받았습니다.
+없는 경우 전체 게시글 조회 / 전달할 경우 카테고리별 조회입니다.
+
+불러온 post list를 render 해주면 끝입니다!
+
+```tsx {2, 10,11,12}
+const PostListPage = async ({ category }) => {
+  const postList = await getPostList(category);
+  const categoryList = await getCategoryDetailList();
+
+  return (
+    <section>
+      <CategoryList list={categoryList} />
+      <section>
+        <ul>
+          {postList.map((post) => (
+            <PostCard key={post.url + post.date} post={post} />
+          ))}
+        </ul>
+      </section>
+    </section>
+  );
+};
+```
+
+![post list page 화면](/posts/nextjs_blog/setup/1.jpg)
+
+---
+
+### 4. 상세 페이지
+
+앞서 말한대로, 게시글 파일 parsing 데이터를 UI로 변환하여 보여주면 됩니다.
+상세페이지 컴포넌트는 다음과 같이 작성할 수 있겠습니다.
+
+```tsx {2}
+const PostDetail = async ({ params: { category, slug } }) => {
+  const post = await getPostDetail(category, slug);
+
+  return (
+    <div>
+      <PostHeader post={post} />
+      <PostBody post={post} />
+    </div>
+  );
+};
+```
+
+`PostHeader`는 단순 마크업 컴포넌트라 자세히 다루지 않겠습니다. 
+
+중요한 것은 `PostBody` 컴포넌트입니다.
+마크다운 형식으로 저장된 content를 HTML 요소로 변환해주어야 합니다!
+
+저는 [next-mdx-remote](https://github.com/hashicorp/next-mdx-remote#react-server-components-rsc--nextjs-app-directory-support)를 활용했습니다. 설치해 줍시다.
+
+```shell
+npm install next-mdx-remote
+```
+
+`PostBody` 컴포넌트의 큰 골격은 아래와 같습니다.
+아까 parsing했던 `content`를 props로 전달해주면, HTML 요소로 자동 변환됩니다.
+
+```tsx
+import { MDXRemote } from 'next-mdx-remote/rsc';
+
+const PostBody = ({ post }) => {
+  return (
+    <MDXRemote source={post.content}/>
+  );
+};
+```
+
+mdx plugin과 custom component도 함께 전달해줄 수 있습니다.
+
+```tsx {14, 17-24}
+import { MDXRemote } from 'next-mdx-remote/rsc';
+import { MdxComponents } from '../mdx';
+
+import remarkA11yEmoji from '@fec/remark-a11y-emoji';
+import rehypePrettyCode from 'rehype-pretty-code';
+import rehypeSlug from 'rehype-slug';
+import remarkBreaks from 'remark-breaks';
+import remarkGfm from 'remark-gfm';
+
+const PostBody = ({ post }) => {
+  return (
+    <MDXRemote 
+      source={post.content}
+      components={MdxComponents}  
+      options={{
+        mdxOptions: {
+          remarkPlugins: [remarkGfm, remarkA11yEmoji, remarkBreaks],
+          rehypePlugins: [
+            [
+              rehypePrettyCode,
+              {theme: {dark: 'github-dark-dimmed', light: 'github-light'}},
+            ],
+            rehypeSlug,
+          ],
+        },
+      }}
+    />
+  );
+};
+```
+
+사용한 mdx plugin은 다음과 같습니다.
+
+- remark plugins
+  - remarkGfm : 깃허브 Flavored 마크다운 지원
+  - remarkA11yEmoji : 이모티콘 접근성 향상
+  - remarkBreaks : markdown은 기본적으로 두 줄 개행인데, 한 줄로도 개행하게 해줍니다.
+  - [다른 plugin](https://github.com/remarkjs/remark/blob/main/doc/plugins.md)들도 취향에 맞게 설치 후 사용하시면 됩니다.
+- rehype plugins
+  - [rehypePrettyCode](https://rehype-pretty-code.netlify.app/) : 여러분이 현재 보고 계시는 글처럼 코드 블록을 아름답게 꾸며줍니다.
+  - rehypeSlug : 변환된 html 각 heading에 id를 부여해줍니다. 추후 ToC를 만들 때 활용됩니다.
+
+
+custom component는 다음과 같습니다.
+지정하지 않은 요소에는 MDX 기본 변환 요소가 사용됩니다.
+
+```tsx
+import { Callout } from './Callout';
+
+const MdxComponents: MDXComponents = {
+  a: ExternalLink as any,
+  img: Image as any,
+  blockquote: Callout,
+  Callout,
+};
+```
+
+여기까지 완료하면, 아래 이미지처럼 게시글 상세 페이지가 보여집니다.
+
+![게시글 상세 페이지 화면](/posts/nextjs_blog/setup/2.jpg)
+
+---
+
+## 마무리하며
+
+여기까지만 하면 블로그의 필수적인 기능은 마무리됩니다.
+글을 저장하고, 보여줄 수만 있으면 되는 것 아니겠어요?
+
+하지만 아직은 뭔가 허전합니다.
+목차도 있었으면 좋겠고, dark/light theme도 적용하면 좋겠네요.
+scroll top/bottom 기능도, 댓글 기능도 있으면 좋을 것 같아요!
+
+부가적인 기능에 대한 구현 과정은 다음 게시글에서부터 다뤄보도록 하겠습니다.
+
+많은 관심 부탁드립니다.
+
+긴 글 읽어주셔서 감사합니다!!
+
+<Callout type="info">
+궁금한 점은 댓글 남겨주시면 답변 드리겠습니다. 좋은 하루 보내세요!
+</Callout>
