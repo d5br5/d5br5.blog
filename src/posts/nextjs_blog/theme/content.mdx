@@ -30,7 +30,9 @@ thumbnail: /posts/nextjs_blog/setup/thumbnail.png
 > 이 블로그에 다크/라이트 모드를 적용하는 것
 
 단순 전환 뿐만 아니라, <u>system 옵션도 추가</u>하려고 한다.
-(사용자 기기(핸드폰, 웹 브라우저) 자체의 다크/라이트 설정을 따라가는 것)
+(사용자 기기(핸드폰, PC, 웹 브라우저) 자체의 다크/라이트 설정을 따라가는 것)
+
+![맥북 테마 설정 화면](/posts/nextjs_blog/theme/3.jpg)
 
 system 설정을 따라가는 option이 최근 들어 자주 보이는 것 같다. (요새 트렌드인가..?)
 
@@ -38,9 +40,9 @@ system 설정을 따라가는 option이 최근 들어 자주 보이는 것 같�
 [tailwind](https://tailwindcss.com/docs/installation)와 [shadcn/ui](https://ui.shadcn.com/docs) 공식 웹페이지에도 
 세가지 옵션이 모두 적용되어 있는 것을 볼 수 있다.
 
-![dark/light/system option - tailwind css 공식 홈페이지](/posts/nextjs_blog/theme/1.jpg)
+![3 theme options (dark/light/system) - tailwind css 공식 홈페이지](/posts/nextjs_blog/theme/1.jpg)
 
-![dark/light/system option - shadcn/ui 공식 홈페이지](/posts/nextjs_blog/theme/2.jpg)
+![3 theme options (dark/light/system) - shadcn/ui 공식 홈페이지](/posts/nextjs_blog/theme/2.jpg)
 
 ---
 
@@ -78,7 +80,7 @@ export default function DarkThemeHandler() {
 ## Next-Themes 소개
 
 이번에도 직접 작업하려고 했으나, 엄청난 라이브러리를 발견하게 되었다.
-이름 그대로 Next.js 프로젝트에 손쉽게 theme를 적용하게 해주는 라이브러리다.
+이름 그대로 Next.js 프로젝트에 손쉽게 theme를 적용해주는 라이브러리다.
 
 Next-Themes
 - [NPM](https://www.npmjs.com/package/next-themes)
@@ -86,16 +88,217 @@ Next-Themes
 
 라이브러리의 주요 특징은 다음과 같다. (공식 github 발췌)
 
+1. 코드 단 2줄로 다크모드 완벽 적용
+1. <u>system 옵션 추가 (`prefers-color-scheme` 변수 활용)</u>
+1. <u>최초 load시 깜빡임 없음 (SSR, SSG 모두)</u>
+1. 탭, 윈도우 전환시 테마 유지
+1. 테마 전환시 번쩍임 없음
+1. 페이지별로 테마 구분 지정 가능
+1. class, data-theme 환경에서 모두 사용 가능
+1. `useTheme` hook 사용 가능
 
+나에게는 2, 3번이 중요했다.
+
+사용해보도록 하자!
 
 ---
 
-## 환경 설정
+## 라이브러리 적용
 
 <Callout type="warn">
 Next.js 14 버전 (app router), Tailwind CSS 를 사용하고 있습니다.
 </Callout>
 
 
+### 설치
+
+먼저, nexth-themes 라이브러리를 설치하자.
+
+```shell
+$ npm install next-themes
+# or
+$ yarn add next-themes
+```
+
+### Theme Provider 생성
+
+그 다음, `ThemeProvider` component를 만들어준다.
+
+`layout.tsx`에 바로 적용해도 되지만, 
+`use client`를 통해 client component로 사용하기 위해 분리했다.
+
+`layout.tsx`에 `use client` 선언하기는 좀 찝찝해서,,
 
 
+
+```tsx {8-10}
+'use client';
+
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+import { type ThemeProviderProps } from 'next-themes/dist/types';
+
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return (
+    <NextThemesProvider attribute='class' defaultTheme='system' {...props}>
+      {children}
+    </NextThemesProvider>
+  );
+}
+```
+
+### Theme Provider 적용
+
+만든 `ThemeProvider`를 `app/layout.tsx`에 적용하자.
+
+```tsx {6, 9-11}
+import { ThemeProvider } from "@/components/theme-provider"
+ 
+export default function RootLayout({ children }: RootLayoutProps) {
+  return (
+    <>
+      <html lang="en" suppressHydrationWarning>
+        <head />
+        <body>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </body>
+      </html>
+    </>
+  )
+}
+```
+
+### tailwind config 수정
+
+tailwind css config도 수정해주어야 한다.
+
+```ts {4}
+// tailwind.config.ts
+
+const config = {
+    darkMode : ['class'],
+    ...
+}
+```
+
+dark/light에서 사용할 color varible도 구분해서 정의하자.
+
+```css
+/* globals.css */
+
+:root {
+  --white: hsl(210 40% 98%);
+  --black: #121212;
+
+  --background: white;
+  --foreground: var(--black);
+
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+
+}
+
+.dark {
+  --background: var(--black);
+  --foreground: var(--white);
+
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+}
+```
+
+### 게시글 본문에 적용
+
+`PostDetail` 페이지에도 테마를 적용해주어야 한다.
+
+이 블로그는 현재 [Tailwind Typography Plugin](https://tailwindcss.com/docs/plugins#typography)이 적용되어 있다.
+
+heading, paragraph, div, img 등 html 요소에 대해
+tailwind에서 기본적으로 만들어둔 스타일링이 적용된다.
+
+적용할 문서 최상위 부모 태그에 `prose` classname을 부여하면 된다.
+자세한 내용은 위 링크를 참고하자.
+
+아무튼, 이 블로그에는 prose가 적용되어 있기 때문에,
+다크/라이트 모드를 추가 설정해주어야 한다.
+
+어렵지 않다!
+
+`dark:prose-invert` classname을 추가해주면 된다.
+
+``` tsx {4}
+const PostDetail = async ({ params: { category, slug } }: Props) => {
+  const post = await getPostDetail(category, slug);
+  return (
+    <div className='prose dark:prose-invert'>
+      <PostHeader post={post} />
+      <PostBody post={post} />
+    </div>
+  );
+};
+```
+
+### Theme Switch 버튼 생성
+
+테마 적용은 끝났다. 
+이제 테마를 전환할 수 있는 스위치 버튼 컴포넌트만 만들어주면 된다.
+
+shadcn/ui의 [Dropdown Component](https://ui.shadcn.com/docs/components/dropdown-menu)를 설치해서 사용했다.
+
+``` shell
+$ npx shadcn-ui@latest add dropdown-menu
+```
+
+버튼 컴포넌트는 다음과 같이 만들었다.
+원하는 파일에서 import해와서 사용하면 된다.
+
+``` tsx
+const ThemeSwitch = () => {
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  // useEffect only runs on the client, so now we can safely show the UI
+  useEffect(() => { setMounted(true) }, []);
+
+  if (!mounted) return null;
+
+  const Item = ({ t, Icon, label }) => (
+    <DropdownMenuItem onClick={() => setTheme(t)} >
+      <div className='flex items-center gap-2'>
+        <Icon width={14} /> {label}
+      </div>
+      {theme === t && <Dot />}
+    </DropdownMenuItem>
+  );
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant='ghost' size='icon'>
+          <Sun />
+          <Moon />
+          <span className='sr-only'>Toggle theme</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align='end'>
+        <Item t='light' label='Light' Icon={Sun} />
+        <Item t='dark' label='Dark' Icon={Moon} />
+        <Item t='system' label='System' Icon={Monitor} />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export default ThemeSwitch;
+
+```
+
+---
+
+## Reference
+
+- [Next-Themes](https://github.com/pacocoursey/next-themes)
+- [Shadcn/ui](https://ui.shadcn.com/docs/dark-mode/next)
+- [Tailwind Typography Docs ](https://tailwindcss.com/docs/plugins#typography)
+- [Tailwind Theme Configuration Docs](https://tailwindcss.com/docs/theme)

@@ -6,7 +6,7 @@ import { baseDomain, blogDesc, blogName, blogThumbnailURL } from '@/config/const
 import '@/config/globals.css';
 import { Footer } from '@/layouts/Footer';
 import { Header } from '@/layouts/Header';
-import { Provider as ThemeProvider } from '@/layouts/theme/Provider';
+import { ThemeProvider } from '@/layouts/theme/Provider';
 import { cn } from '@/lib/utils';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
