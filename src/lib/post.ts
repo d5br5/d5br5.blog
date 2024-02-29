@@ -59,19 +59,12 @@ export const getCategoryPublicName = (dirPath: string) =>
 
 // post를 날짜 최신순으로 정렬
 const sortPostList = (PostList: Post[]) => {
-  return PostList.sort((a: Post, b: Post) => {
-    const dateA = a.date;
-    const dateB = b.date;
-
-    if (dateA > dateB) return -1;
-    if (dateA < dateB) return 1;
-    return 0;
-  });
+  return PostList.sort((a, b) => (a.date > b.date ? -1 : 1));
 };
 
 // 모든 포스트 목록 조회. 블로그 메인 페이지에서 사용
 export const getPostList = async (category?: string): Promise<Post[]> => {
-  const postPaths: string[] = getPostPaths(category);
+  const postPaths = getPostPaths(category);
   const postList = await Promise.all(postPaths.map((postPath) => parsePost(postPath)));
   return postList;
 };
