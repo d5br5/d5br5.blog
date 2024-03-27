@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 import { Post } from '@/config/types';
-import { CalendarDays, Clock3 } from 'lucide-react';
+import { CalendarDays, Clock3, Eye } from 'lucide-react';
 
 interface Props {
   post: Post;
@@ -27,6 +27,12 @@ export const PostHeader = ({ post }: Props) => {
         <div className='flex items-center gap-1'>
           <Clock3 className='w-3.5' />
           <span>{post.readingMinutes}분</span>
+        </div>
+        <div className='flex items-center gap-1'>
+          <Eye className='w-3.5' />
+          <span>
+            <span id='busuanzi_value_page_pv' />
+          </span>
         </div>
       </div>
       <hr className='mt-5' />
