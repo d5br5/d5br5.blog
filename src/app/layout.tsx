@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 
 import { Toaster } from '@/components/ui/toaster';
 import { baseDomain, blogDesc, blogName, blogThumbnailURL } from '@/config/const';
@@ -47,6 +48,7 @@ export default function RootLayout({
           <Footer />
         </ThemeProvider>
         <Toaster />
+        <Script async src='//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js' />
         <Analytics />
         <SpeedInsights />
         <GoogleAnalytics gaId='G-TRBVGE9TYP' />
