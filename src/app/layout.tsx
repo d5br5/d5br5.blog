@@ -8,6 +8,7 @@ import { Footer } from '@/layouts/Footer';
 import { Header } from '@/layouts/Header';
 import { ThemeProvider } from '@/layouts/theme/Provider';
 import { cn } from '@/lib/utils';
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
@@ -48,6 +49,8 @@ export default function RootLayout({
         <Toaster />
         <Analytics />
         <SpeedInsights />
+        <GoogleAnalytics gaId='G-TRBVGE9TYP' />
+        <GoogleTagManager gtmId='G-TRBVGE9TYP' />
       </body>
     </html>
   );
