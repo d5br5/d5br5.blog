@@ -22,6 +22,12 @@ export const Footer = () => {
           />
         </Link>
       </div>
+      <a href='https://hits.sh/www.d5br5.dev/blog/'>
+        <img
+          alt='Hits'
+          src='https://hits.sh/www.d5br5.dev/blog.svg?view=today-total&style=for-the-badge&label=visitors&extraCount=1248&color=db2777&labelColor=db2777'
+        />
+      </a>
       <div>
         © 2024. <span className='font-semibold'>Doh Kim</span> all rights reserved.
       </div>
