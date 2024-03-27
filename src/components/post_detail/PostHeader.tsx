@@ -28,12 +28,6 @@ export const PostHeader = ({ post }: Props) => {
           <Clock3 className='w-3.5' />
           <span>{post.readingMinutes}분</span>
         </div>
-        <div className='flex items-center gap-1'>
-          <Eye className='w-3.5' />
-          <span>
-            <span id='busuanzi_value_page_pv' />
-          </span>
-        </div>
       </div>
       <hr className='mt-5' />
     </header>
