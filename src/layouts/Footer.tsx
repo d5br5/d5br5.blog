@@ -23,10 +23,6 @@ export const Footer = () => {
         </Link>
       </div>
       <div>
-        Total Visit <span id='busuanzi_value_site_pv' /> / Visitor{' '}
-        <span id='busuanzi_value_site_uv' />
-      </div>
-      <div>
         © 2024. <span className='font-semibold'>Doh Kim</span> all rights reserved.
       </div>
     </footer>
