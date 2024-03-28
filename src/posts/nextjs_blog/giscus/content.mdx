@@ -1,0 +1,199 @@
+---
+title: "기술 블로그에 댓글 기능 추가하기 (Giscus, Next.js)"
+date: 2024-03-15
+desc: 댓글 기능을 언제 다 직접 구현하고 앉아있냐,, ㅜㅜ
+thumbnail: /posts/nextjs_blog/giscus/thumbnail.jpg
+---
+
+<Callout type="warn"> Next.js 14 버전을 기준으로 작성되었습니다. (13 버전 호환 가능)</Callout>
+
+## 댓글 기능 도입
+
+> 글을 작성하고, 사용자에게 보여준다
+
+이것이 블로그의 가장 기본적인 기능이라고 할 수 있습니다.
+하지만, 이것만으로는 뭔가 심심합니다. 
+글을 읽고 궁금한 점이 생기거나, 의견을 남기고 싶을 때 댓글을 달 수 있으면 더 좋겠죠.
+
+이번 포스트에서는 블로그에 댓글 기능을 추가하는 방법을 알아보겠습니다.
+댓글 기능을 직접 구현하는 것은 꽤나 번거로운 일입니다.
+
+따라서, [Giscus](https://giscus.app/)를 사용하여 댓글 기능을 추가해보겠습니다.
+
+## Giscus란?
+
+> [Utterances](https://utteranc.es/)에서 영감을 받아 만들어진 오픈소스 서비스
+
+Utterances는 <u>Github Issue</u>를,
+Giscus는 <u>Github Discussion</u>을 이용하여 댓글 기능을 제공합니다.
+
+둘 다 잘 만들어진 서비스이지만, <u>Giscus의 장점이 더 많은 것 같아서</u> Giscus를 선택했습니다.
+
+<u>Giscus의 대표적인 특징</u>은 다음과 같습니다.
+
+- 대댓글 작성 가능
+- 댓글, 답글 수 확인 가능
+- 댓글 정렬 가능 (오래된 순, 새로운 순)
+- 게시물에 대한 반응
+- 다양한 테마 제공
+- 다국어 지원 (한국어 포함)
+- 지연 로딩 기능 (with 귀여운 UI)
+- configuration
+
+## Giscus 설치하기 전에
+
+앞서 말했듯이, Giscus는 Github Discussion을 기반으로 합니다.
+작성한 댓글, 답글은 Github Discussion에 저장됩니다.
+
+따라서, 먼저 <u>Github Discussion을 활성화</u>해야 합니다.
+
+댓글용 repository를 별도로 개설하는 분들도 계신데,
+저는 그냥 블로그와 같은 repository에 댓글을 저장하기로 했습니다.
+
+### 1. Github Discussion 활성화
+
+> Repository > Settings > 페이지 중간 부분의 Features > Discussions > 활성화
+
+
+![](/posts/nextjs_blog/giscus/1.png)
+
+### 2. 댓글 전용 Category 생성
+
+이미 만들어져 있는 카테고리를 사용해도 되지만, 
+댓글 전용 카테고리를 새로 만들었습니다. 
+
+![](/posts/nextjs_blog/giscus/2.png)
+
+카테고리 이름은 Comment로 하겠습니다.
+
+![](/posts/nextjs_blog/giscus/3.png)
+
+다음은 선택사항인데, 사용하지 않을 Discussion Category를 정리했습니다.
+
+![](/posts/nextjs_blog/giscus/4.png)
+
+## Giscus Github App 설치
+
+[Giscus Github App](https://github.com/apps/giscus) 에 접속하여, 설치를 진행합니다.
+
+![](/posts/nextjs_blog/giscus/5.png)
+
+![](/posts/nextjs_blog/giscus/6.png)
+
+
+## Giscus Customization
+
+[Giscus](https://giscus.app/)에 접속하여, Customization을 진행합니다.
+
+연동할 discussion이 있는 repository를 연결합니다.
+
+![](/posts/nextjs_blog/giscus/7.png)
+
+게시글과 Discussion을 mapping할 방법을 선택합니다.
+
+저는 `제목이 페이지 경로를 포함` 옵션을 선택했습니다. 큰 이유는 없습니다.
+Utterance에서 migration 하시는 분들은 보통 이 옵션을 선택하더라구요! (참고)
+
+Discussion Category는 앞서 만든 Comment를 선택합니다.
+
+![](/posts/nextjs_blog/giscus/8.png)
+
+그 외 기능과 테마를 선택하고 나면, 다음과 같이 script 코드가 생성됩니다. 
+
+![](/posts/nextjs_blog/giscus/9.png)
+
+이 태그를 원하는 위치에 추가하면, 댓글 기능이 성공적으로 적용됩니다.
+
+## Script 코드 적용하기
+
+Next.js 프로젝트에 위 스크립트를 그대로 적용하는 것은 부작용이 있을 수 있습니다. 
+
+- Next.js 는 `<Script/>` 태그 사용을 권장함
+- Theme 전환에 적절히 반응하지 않을 수 있음
+
+Next.js 에 맞게 적절히 코드를 변경해 보겠습니다.
+
+멋진 형님들이 [Utterances Issue](https://github.com/utterance/utterances/issues/161) 에 올려준 코드 스니펫을 참고했습니다.
+
+```tsx {21-31}
+'use client';
+
+import { useEffect, useRef } from 'react';
+import { useTheme } from 'next-themes';
+
+export default function Giscus() {
+  const ref = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+
+  // https://github.com/giscus/giscus/tree/main/styles/themes
+  const theme = resolvedTheme === 'dark' ? 'dark' : 'light';
+
+  useEffect(() => {
+    if (!ref.current || ref.current.hasChildNodes()) return;
+
+    const scriptElem = document.createElement('script');
+    scriptElem.src = 'https://giscus.app/client.js';
+    scriptElem.async = true;
+    scriptElem.crossOrigin = 'anonymous';
+
+    scriptElem.setAttribute('data-repo', 'd5br5/foo');
+    scriptElem.setAttribute('data-repo-id', 'R_foo');
+    scriptElem.setAttribute('data-category', 'Comments');
+    scriptElem.setAttribute('data-category-id', 'DIC_foo');
+    scriptElem.setAttribute('data-mapping', 'pathname');
+    scriptElem.setAttribute('data-strict', '0');
+    scriptElem.setAttribute('data-reactions-enabled', '1');
+    scriptElem.setAttribute('data-emit-metadata', '0');
+    scriptElem.setAttribute('data-input-position', 'bottom');
+    scriptElem.setAttribute('data-theme', theme);
+    scriptElem.setAttribute('data-lang', 'ko');
+
+    ref.current.appendChild(scriptElem);
+  }, [theme]);
+
+  // https://github.com/giscus/giscus/blob/main/ADVANCED-USAGE.md#isetconfigmessage
+  useEffect(() => {
+    const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+    iframe?.contentWindow?.postMessage({ giscus: { setConfig: { theme } } }, 'https://giscus.app');
+  }, [theme]);
+
+  return <section ref={ref} />;
+}
+
+```
+
+자동으로 생성되었던 script 내 데이터를,
+위 코드에 표시된 부분에 적절히 추가하면 됩니다.
+
+생성된 Giscus 컴포넌트를, 블로그 게시글 상세 페이지 하단에 배치하겠습니다.
+
+```tsx {8}
+const PostDetail = async ({ params: { category, slug } }: Props) => {
+  const post = await getPostDetail(category, slug);
+  return (
+    <div className='max-w-[850px] px-4 w-full mx-auto prose dark:prose-invert'>
+      <PostHeader post={post} />
+      <PostBody>{post.content}</PostBody>
+      <hr />
+      <Giscus />
+    </div>
+  );
+};
+```
+
+댓글창이 잘 적용된 것을 확인할 수 있습니다.!!
+
+![Giscus가 적용된 모습](/posts/nextjs_blog/giscus/10.png)
+
+
+궁금한 점은 댓글 남겨주세요. 반응은 큰 힘이 됩니다.
+
+감사합니다! 좋은 하루 보내세요
+
+
+## Reference
+
+- [Utterance Issue](https://github.com/utterance/utterances/issues/161)
+- [향로님 개발 블로그](https://jojoldu.tistory.com/704)
+- [김평안님 개발 블로그](https://bepyan.github.io/blog/nextjs-blog/6-comments)
+- [민상님 개발 블로그](https://velog.io/@minsang9735/NextJS%EB%A1%9C-%EB%B8%94%EB%A1%9C%EA%B7%B8%EB%A5%BC-%EB%A7%8C%EB%93%A4%EC%96%B4%EB%B3%B4%EC%9E%90#giscus)

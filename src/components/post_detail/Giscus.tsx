@@ -32,7 +32,7 @@ export default function Giscus() {
     scriptElem.setAttribute('data-lang', 'ko');
 
     ref.current.appendChild(scriptElem);
-  }, []);
+  }, [theme]);
 
   // https://github.com/giscus/giscus/blob/main/ADVANCED-USAGE.md#isetconfigmessage
   useEffect(() => {
