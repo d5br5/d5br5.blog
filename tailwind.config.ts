@@ -66,6 +66,10 @@ const config = {
               margin: 0,
             },
 
+            code: {
+              counterReset: 'line',
+            },
+
             // Inline code only
             ':not(pre) > code': {
               fontWeight: 'inherit',
@@ -88,6 +92,27 @@ const config = {
               content: 'none',
             },
 
+            'code > [data-line]::before': {
+              counterIncrement: 'line',
+              content: 'counter(line)',
+
+              /* Other styling */
+              display: 'inline-block',
+              width: '1rem',
+              marginRight: '1.2rem',
+              textAlign: 'right',
+              color: 'lightgrey',
+              fontSize: '0.75rem',
+            },
+
+            'code[data-line-numbers-max-digits="2"] > [data-line]::before': {
+              width: '2rem',
+            },
+
+            'code[data-line-numbers-max-digits="3"] > [data-line]::before': {
+              width: '3rem',
+            },
+
             pre: {
               paddingRight: 0,
               paddingLeft: 0,
@@ -103,7 +128,7 @@ const config = {
             },
 
             'pre > code > span': {
-              paddingLeft: '1rem',
+              paddingLeft: '0.6rem',
               paddingRight: '1rem',
             },
 
