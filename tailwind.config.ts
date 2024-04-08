@@ -77,8 +77,8 @@ const config = {
               fontFamily:
                 '"SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace',
               borderRadius: 3,
-              // border: '1px solid #e0e0e0',
               padding: '0.2em 0.4em',
+              overflowWrap: 'break-word',
             },
 
             'code::before': {

@@ -29,6 +29,8 @@ export async function generateMetadata({ params: { category, slug } }: Props): P
     openGraph: {
       title,
       description: post.desc,
+      type: 'article',
+      publishedTime: post.date.toISOString(),
       url: `${baseDomain}${post.url}`,
       images: [imageURL],
     },
