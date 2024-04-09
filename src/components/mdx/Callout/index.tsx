@@ -38,15 +38,19 @@ const metadata: IconType = {
 };
 
 export const Callout = (props: CalloutProps) => {
-  const metaObj = metadata[props.type || 'normal'];
+  const type = props.type || 'normal';
+  const metaObj = metadata[type];
   const Icon = metaObj.icon;
   const boxClassName = metaObj.boxClass;
 
   return (
     <div className={cn('my-6 flex items-center gap-3 rounded-md px-5 py-4', boxClassName)}>
-      <div>
-        <Icon />
-      </div>
+      {type !== 'normal' && (
+        <div>
+          <Icon />
+        </div>
+      )}
+
       <div className='callout-contents flex-1'>
         {props.title && <span style={{ fontWeight: 'bold' }}>{props.title}</span>}
         {props.children}
