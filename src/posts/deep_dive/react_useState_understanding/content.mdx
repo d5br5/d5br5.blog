@@ -1,0 +1,308 @@
+---
+title: React useState 동작 원리 이해하기
+date: 2024-04-02
+desc: useState도 모르면서 FE 개발자?
+thumbnail: /posts/deep_dive/react_useState_understanding/thumbnail.png
+---
+
+## 들어가기 전에
+
+React.js로 개발을 하면서, 제일 많이 사용하는 hook은 useState가 아닐까 싶다. (전역 상태관리 제외)
+마법과 같은 코드를 자연스럽게 사용해 왔었는데, 그 원리를 제대로 알고 있는가?!
+
+React에서는 컴포넌트 내 상태값을 관리하기 위해 지역변수를 사용하지 않는다.
+
+그 이유는 크게 다음과 같다.
+
+1. 지역 변수는 렌더링 간에 유지되지 않는다.
+2. 지역 변수의 변경은 새롭게 rendering을 trigger 하지 않는다.
+
+반대로 말하자면, state를 사용하는 이유는 다음과 같다. 
+
+1. state는 렌더링 간에 유지된다.
+2. state의 변경은 새롭게 rendering을 trigger 한다.
+
+대체 어떤 원리로 useState hook이 위와 같은 특성을 갖게 되는지 알아보자.
+
+> 당연한 말이지만, 모든 공부의 시작은 공식 문서이다. 
+이 글을 읽기 전에, [useState 공식 문서](https://react.dev/reference/react/useState)를 정독하고 오자.
+
+
+> 초급, 중급, 고급 순으로 심도 있게 살펴 본다. 필요에 따라 스킵하면서 읽기를 바랍니다.
+
+---
+## 기본 원리 : Closure (초급)
+
+> 아래 블로그의 코드를 참고했다. 감사합니다.
+[Deep dive: How do React hooks really work?](https://www.netlify.com/blog/2019/03/11/deep-dive-how-do-react-hooks-really-work/?source=post_page-----7b4825c16b9--------------------------------)
+
+useState의 내부 구조를 간단히 구현해 보았다.
+(실제 useState 코드와는 많은 차이가 있다. 흐름만 이해하자.)
+
+```tsx {5,10}
+const React = (function() {
+  let _val // state가 저장되는 변수
+  return {
+    useState(initialValue) {
+      _val = _val || initialValue      
+      function setState(newVal) {
+        _val = newVal // state 업데이트
+        render(); // 새로운 state를 기반으로 re-render
+      }      
+      return [_val, setState]
+    }
+  }
+})()
+```
+
+그리고, 다음과 같은 컴포넌트가 있다.
+
+```jsx {6}
+const Foo = () => {
+  const [foo, setFoo] = React.useState(0);
+  return (
+    <section>
+      <h1>{foo}</h1>
+      <button onClick={()=>{setFoo(1)}}> 1로 업데이트 </button>
+    </section>
+  )
+}
+```
+
+> 위 코드를 다시 살펴 보면, Foo는 그저 JSX 를 return하는 함수일 뿐이다!
+ 
+
+최초 mount시에 `React.useState(0)` 가 실행된다. 
+React 모듈 내 `_val`은 최초에 `undefined`이다. 
+
+`initialValue`를 `0`으로 전달해주었고, `_val` 에는 `0`이 할당된다. 
+따라서, 첫 mount시 `foo`가 `0`인 상태로 컴포넌트가 render 된다.
+
+버튼을 클릭하면, `setFoo(1)`이 실행된다.
+`_val`에 `1`을 할당하고, 리렌더링을 시작한다.
+업데이트된 컴포넌트는 `foo`가 `1`인 상태로 렌더링된다. 
+
+결과적으로, Foo 컴포넌트의 state는
+컴포넌트 내부가 아니라 컴포넌트 외부의 `_val` 변수에 저장되어 관리되는 것이다!
+(실제로 이렇게 간단하지는 않다.)
+
+---
+## Hook 리스트 관리 (중급)
+
+앞선 코드를 읽고 나면, 다음과 같은 질문이 생길 수 있다.
+
+- hook을 여러개 선언하면 어떻게 되나요?
+- hook의 개수만큼 변수를 새로 선언해서 관리하나요?
+- hook이 몇개인지 어떻게 미리 알고 변수를 선언하나요?
+
+다음 코드를 통해, 궁금증을 어느정도 해소할 수 있다.
+
+> 아래 블로그의 코드를 참고했다. 감사합니다.
+[React hooks: not magic, just arrays](https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e)
+
+```jsx {2,3,8, 17,18, 21} showLineNumbers
+const React = (function() {
+	let stateList = [];   // 컴포넌트 내 state value 목록
+	let setterList = [];  // 컴포넌트 내 state setter 목록
+	let cursor = 0;       // 현재 실행된 hook의 index
+	
+	return {
+      createSetter(cursor) {
+        return (newVal) => {stateList[cursor] = newVal};
+      },
+
+      useState(initialValue) {
+        // 첫 mount시에는, state, setter 목록이 비어 있으므로, 초기화
+        if(!setterList[cursor]) setterList.push(createSetter(cursor));
+        if(!stateList[cursor]) stateList.push(initialValue);
+        
+        // 현재 실행되는 hook 순서에 대응하는 value, setter 가져오기
+        const setter = setterList[cursor];
+        const state = stateList[cursor];
+        
+        cursor++;
+        return [state, setter];
+      },
+
+      render(Component) {
+        cursor= 0 
+        const Comp = Component()
+        Comp.render()
+        return Comp
+      }
+  }
+})()
+```
+
+다음과 같은 컴포넌트를 예시로, 위 코드를 이해해보자. 
+
+```jsx {2,3}
+const Foo = () => {
+	const [a, setA] = React.useState(0);
+	const [b, setB] = React.useState(true);
+	return (
+      <section>
+        <div>{a}</div>
+        <button onClick={()=>setA(1)}>button 1</button>
+        
+        <div>{b}</div>
+        <button onClick={()=>{setB(false)}}>button 2</button>
+      </section>
+	)
+}
+```
+
+---
+
+### 최초 mount
+
+0. 태초의 변수 상태는 다음과 같다.
+``` js
+stateList : [ ]
+setterList : [ ]
+cursor : 0
+```
+1. state a에 대한 hook을 실행한다.
+- `stateList[0]`, `setterList[0]` 은 모두 `undefined`이다. 초기화가 수행된다.
+- `stateList[0]` 에는, 전달해준 `initialValue`인 `0`이 할당된다.
+- `setterList[0]` 에는 `(newVal) => { stateList[0] = newVal }` 함수가 할당된다.
+- 다음에 실행될 hook을 위해, `cursor++` 가 수행된다.
+
+1-1. a hook 실행 결과, 변수 상태는 다음과 같다.
+``` js
+stateList : [0]
+setterList : [(newVal) => { stateList[0] = newVal }]
+cursor : 1
+```
+
+2. b 상태에 대한 useState hook을 실행한다. 
+- `stateList[1]`, `setterList[1]` 은 모두 `undefined`이다. 초기화가 수행된다.
+- `stateList[1]` 에는, 전달해준 `initialValue`인 `true`가 할당된다.
+- `setterList[1]` 에는 `(newVal) => { stateList[1] = newVal }` 함수가 할당된다.
+- 다음에 실행될 hook을 위해, cursor++ 가 수행된다.
+
+2-1. a hook 실행 결과, 변수 상태는 다음과 같다.
+``` js
+stateList : [0, true]
+setterList : [
+  (newVal) => { stateList[0] = newVal }, 
+  (newVal) => { stateList[1] = newVal } 
+]
+cursor : 2
+```
+
+따라서, 각 state는 다음과 같아지는 것이다.
+```js
+[ a, setA ] : [ 0, ( newVal ) => { stateList[0] = newVal } ]
+[ b, setB ] : [ true, ( newVal ) => { stateList[1] = newVal } ]
+```
+
+---
+
+### update render
+
+button2 를 클릭하는 상황을 상상해보자.
+
+`setB(false)`, 즉 `stateList[1] = false` 가 수행된다.
+
+변수 상태는 다음과 같아진다. 
+``` js
+stateList : [0, false]
+setterList : [
+  (newVal) => { stateList[0] = newVal }, 
+  (newVal) => { stateList[1] = newVal } 
+]
+cursor : 2
+```
+
+변수가 바뀌었으므로, render가 수행된다 (이 부분은 나중 소스코드를 통해 살펴본다.)
+
+render 수행시 `cursor`가 `0`으로 초기화되고, 앞서 살펴본 과정 1,2 가 동일하게 수행된다.
+`stateList`, `setterList`에는 각 `cursor`에 맞는 값이 이미 할당되어 있으므로, 
+초기화 과정은 수행되지 않는다.
+
+값을 불러와, 배열의 형태로 return 해준다. 
+
+---
+
+다음과 같은 상황을 상상해보자.
+
+최초 mount시에는 a → b → c 순서로 hook이 호출되고, 
+특정 조건에서는 a → c → b 순서로 hook이 호출되는 상황이라면?
+(조건문 안에서 사용한 `const`는 무시하자. 예시를 위한 코드이다)
+
+```jsx
+import {useState} from "react";
+
+const Foo = () => {
+  const [a, setA] = useState(0);
+
+  if(a===0){
+    const [b, setB] = useState(true);
+    const [c, setC] = useState('foo');
+  }else{
+    const [c, setC] = useState('foo');		
+    const [b, setB] = useState(true);
+  }
+  return (
+    <section>
+      <button onClick={()=>setA(1)}>a를 1로 업데이트</button>
+    </section>
+  )
+}
+```
+
+위와 같은 상황에서, 개발자는 `b`와 `c` 값을 올바르게 사용할 수 있을까?
+답은 ‘아니오’ 다.
+
+최초 마운트시 상태는, 
+```js
+b : true,
+c : 'foo'
+```
+
+button 클릭 이후에는(a가 1로 업데이트 된 이후에는),
+```js
+b : 'foo',
+c : true
+```
+
+당연히 이를 의도하고 코드를 짜는 개발자는 없을 것이지만, 이는 <u>명백한 anti-pattern</u>이다.
+(실행되기는 할 것이다. 리액트는 이에 대해서 경고(에러)를 띄운다.)
+
+<Callout type="warn">React 입장에서, b와 c 변수명은 알 바가 아니다.</Callout>
+
+<u>hook을 실행한 순서대로, list에서 값을 찾아 전달해주는 역할만 수행한다.</u>
+
+따라서, <u>렌더링시 hook의 순서가 유지되는 것이 매우 중요하다.</u>
+(관련 오류를 경험해본 개발자들은 그 원리를 이제 이해할 수 있을 것이다)
+
+이쯤에서, hook의 중요한 원칙을 살펴보자.
+
+> **Don’t call Hooks inside loops, conditions, or nested functions**
+훅을 조건문, 반복문, 중첩 함수 안에서 실행하지 말라
+> 
+
+우리는 이제 이 원칙의 뜻을 이해할 수 있다. 
+
+hook 실행이 불가능한 예외 상황을 미리 정해둔 것이 아니다.
+
+hook 실행 순서를 유지하는 것이 중요한 것이고, 
+실행 순서가 유지되지 않는 상황을 예시로 알려준 것이다. 
+
+여기까지 잘 따라왔다면, useState의 원리를 어느 정도 이해했을 것 같다.
+
+다음 포스트에서는 실제 React 라이브러리의 useState 소스코드를 뜯어보도록 하자.
+
+<Callout type="info">
+궁금한 점은 댓글 남겨주시면 아는 선에서 최대한 답변 드리겠습니다.
+잘못된 부분도 짚어주시면 수정하도록 하겠습니다.
+</Callout>
+
+---
+
+## Reference
+
+- [React 공식 문서](https://react.dev/reference/react/useState)
+- [Deep dive: How do React hooks really work?](https://www.netlify.com/blog/2019/03/11/deep-dive-how-do-react-hooks-really-work/?source=post_page-----7b4825c16b9--------------------------------)
+- [React hooks: not magic, just arrays](https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e)
