@@ -92,25 +92,25 @@ const config = {
               content: 'none',
             },
 
-            'code > [data-line]::before': {
+            'code[data-line-numbers] > [data-line]::before': {
               counterIncrement: 'line',
               content: 'counter(line)',
 
               /* Other styling */
               display: 'inline-block',
               width: '1rem',
-              marginRight: '1.2rem',
+              marginRight: '1.4rem',
               textAlign: 'right',
               color: 'lightgrey',
               fontSize: '0.75rem',
             },
 
             'code[data-line-numbers-max-digits="2"] > [data-line]::before': {
-              width: '2rem',
+              width: '1rem',
             },
 
             'code[data-line-numbers-max-digits="3"] > [data-line]::before': {
-              width: '3rem',
+              width: '2rem',
             },
 
             pre: {
@@ -128,7 +128,7 @@ const config = {
             },
 
             'pre > code > span': {
-              paddingLeft: '0.6rem',
+              paddingLeft: '1.1rem',
               paddingRight: '1rem',
             },
 
