@@ -171,10 +171,9 @@ export default function Giscus() {
 const PostDetail = async ({ params: { category, slug } }: Props) => {
   const post = await getPostDetail(category, slug);
   return (
-    <div className='max-w-[850px] px-4 w-full mx-auto prose dark:prose-invert'>
+    <div>
       <PostHeader post={post} />
-      <PostBody>{post.content}</PostBody>
-      <hr />
+      <PostBody post={post} />
       <Giscus />
     </div>
   );
