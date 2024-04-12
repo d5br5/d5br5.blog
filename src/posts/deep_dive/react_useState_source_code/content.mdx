@@ -106,7 +106,7 @@ React reconciler가 Shared package를 통해 동적으로 구현체를 주입합
 hook은 reconciler가 [renderWithHooks](https://github.com/facebook/react/blob/v16.12.0/packages/react-reconciler/src/ReactFiberHooks.js#L375)를 수행하면서 주입됩니다.
 (함수의 동작을 유추할 수 있는 아름다운 naming,,)
 
-```tsx
+```tsx {7, 9,10}
 function renderWithHooks(
 	current: Fiber | null,
 	workInProgress: Fiber,
@@ -157,7 +157,7 @@ function renderWithHooks(
 
 React element는 VDOM에 올라가기 전에, [React Fiber](https://github.com/facebook/react/blob/v16.12.0/packages/react-reconciler/src/ReactFiber.js#L255)로 변환됩니다.
 
-```tsx
+```tsx {19}
 function FiberNode(
   key: null | string,
   mode: TypeOfMode,
@@ -204,19 +204,18 @@ render phase에서 작업 후 commit phase를 지나 `current`로 병합됩니�
 
 ## 0. renderWithHooks
 
-```tsx
+```tsx {9,10}
 function renderWithHooks(
 	current: Fiber | null,
 	workInProgress: Fiber,
 	Component: any,
 ):any {
 	nextCurrentHook = current !== null ? current.memoizedState : null;
-  /* ... */
 	ReactCurrentDispatcher.current =
       nextCurrentHook === null
         ? HooksDispatcherOnMount
         : HooksDispatcherOnUpdate;
-  /* ... */
+    /* ... */
 }	
 ```
 
@@ -388,7 +387,7 @@ function dispatchAction(...) {
 
 #### 1. render phase에서 dispatch가 발생
 
-```ts showLineNumbers
+```ts showLineNumbers {18-22}
 if(renderPhaseDispatch){
 	const update: Update = {
 		action,
@@ -422,7 +421,7 @@ update 객체를 head로 하는 linked list(queue)를 만들어 Map에 삽입 (1
 
 #### 2. stale 상태에서 dispatch 발생
 
-```jsx showLineNumbers
+```jsx showLineNumbers {19, 29-31, 33}
 else {
 	const update: Update = {
 		action,
@@ -503,7 +502,7 @@ function basicStateReducer<S>(state: S, action: BasicStateAction<S>): S {
 
 updateReducer의 흐름을 살펴봅시다.
 
-```tsx {6, 14, 20, 22} showLineNumbers
+```tsx {6, 14, 20, 22, 24} showLineNumbers
 function updateReducer<S, I, A>(
   reducer: (S, A) => S,
   initialArg: I,
@@ -526,6 +525,7 @@ function updateReducer<S, I, A>(
   새로운 state를 hook.memoizedState에 저장
   
   const dispatch: Dispatch<A> = (queue.dispatch: any);
+
   return [hook.memoizedState, dispatch];
 }
 ```
@@ -795,7 +795,7 @@ queue.last.eagerState의 값이 memoizedState 값과 다르므로,
 hook.queue에 지정되어있는 update list를 모두 소모하면, 
 Fiber의 memoizedState 값은 다음과 같아집니다.
 
-```tsx
+```tsx {2,3 , 9, 17}
 {
 	memoizedState: false, // updated!
 	baseState: false, // updated!
