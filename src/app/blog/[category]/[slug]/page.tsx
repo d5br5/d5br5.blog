@@ -54,7 +54,7 @@ const PostDetail = async ({ params: { category, slug } }: Props) => {
   const post = await getPostDetail(category, slug);
   const toc = parseToc(post.content);
   return (
-    <div className='prose mx-auto w-full max-w-[750px] px-4 dark:prose-invert'>
+    <div className='prose mx-auto w-full max-w-[750px] px-5 dark:prose-invert sm:px-6'>
       <PostHeader post={post} />
       <TocTop toc={toc} />
       <article className='relative'>

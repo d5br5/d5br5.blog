@@ -13,6 +13,9 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        pretendard: ['Pretendard'],
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
@@ -61,6 +64,10 @@ const config = {
           css: {
             'h2, h3, h4': {
               scrollMarginTop: '5rem',
+            },
+            p: {
+              marginTop: '2rem',
+              marginBottom: '2rem',
             },
             '.callout-contents > p': {
               margin: 0,
