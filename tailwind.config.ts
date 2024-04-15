@@ -65,6 +65,10 @@ const config = {
             'h2, h3, h4': {
               scrollMarginTop: '5rem',
             },
+            p: {
+              marginTop: '2rem',
+              marginBottom: '2rem',
+            },
             '.callout-contents > p': {
               margin: 0,
             },
