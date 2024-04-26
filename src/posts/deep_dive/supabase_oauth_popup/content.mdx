@@ -217,7 +217,7 @@ const GoogleSignIn = () => {
 
     // clear popup and replace the route
     setPopup(null);
-    router.replace(`/api/auth/callback?code=${code}`);
+    router.replace(`/api?code=${code}`);
   };
 
   return (
