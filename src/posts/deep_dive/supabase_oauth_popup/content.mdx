@@ -1,0 +1,288 @@
+---
+title: Google login with Supabase (popup window)
+date: 2024-04-26
+desc: How to implement Google login with Supabase using a popup window
+thumbnail: /posts/deep_dive/supabase_oauth_popup/thumbnail.png
+---
+
+## 배경
+
+React.js 환경에서 popup을 구현했던 경험이 있는데, 이번에는 Next.js 환경에서 구현할 일이 생겼다.
+이전 경험의 도움을 받으려 했는데, 매끄럽게 흘러가지 않아 그 에러 처리 경험을 남긴다. 
+
+목적은 다음과 같다.
+
+> Next.js + Supabase 환경에서 구글 로그인을 popup을 통해 진행한다.
+
+흐름은 다음과 같다.
+
+- supabase auth 요청을 통해 google login url을 얻는다.
+- 새 window (popup)을 열어, google login url로 이동한다.
+- 구글 UI에서 로그인을 성공한다.
+- 원래 사이트의 callback 페이지로 이동한다.
+- 로그인 데이터를 기존 window에 전달하고, 팝업을 닫는다.
+
+---
+
+## 에러 발생
+
+기존처럼 진행했는데, 다음과 같은 에러를 마주쳤다.
+
+> Cross-Origin-Opener-Policy policy would block the window.postMessage call.
+
+![](/posts/deep_dive/supabase_oauth_popup/1.png)
+
+내용은,
+COOP (Cross-Origin-Opener-Policy) 로 인해 window.postMessage 메소드를 호출할 수 없다는 것.
+
+먼저 CORS는 많이 들어봤는데, COOP는 처음 들어보았다. 
+브라우저 관련된 다양한 정책이 있구나..
+
+COOP 정책에 대해 작성된 개발자 문서를 찾았다.
+> [MDN : Cross-Origin-Opener-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Opener-Policy)
+
+---
+
+### 해결 시도1
+
+헤더에 설정할 수 있는 정책 value는 다음 3가지다.
+
+- unsafe-none
+    - 기본값이다. COOP를 비활성화하는 데 사용된다.
+    - 새 창과 현재 페이지 간 출처 상태를 고려하지 않는다.
+    - 상호작용이 자유롭게 허용되므로 보안상의 위험을 초래할 수 있다.
+- same-origin
+    - 새 창과 현재 페이지가 동일한 origin을 가져야 한다.
+    - 동일 origin을 가진 경우에만 COOP 정책이 적용된다.
+- same-origin-allow-popups
+    - 새 창과 현재 페이지가 동일한 origin을 가져야 한다.
+    - user interaction에 의해 열린 경우 예외를 허용한다.
+    - 사용자가 팝업창을 열 때, 동일 origin이 아니더라도 COOP가 적용되지 않는다.
+
+header에 COOP 관련 설정을 추가했다.
+그랬더니 이번엔 `window.opener.postMessage()` 실행이 안된다.
+
+이런 오류가..!
+
+> Uncaught TypeError: Cannot read properties of null (reading 'postMessage')
+
+window.opener가 null이라는 것이다!
+실제로 window를 log로 찍어보니 다음이 opener가 null이었다.
+
+![](/posts/deep_dive/supabase_oauth_popup/2.png)
+
+COOP 관련 설정 이전에는 opener가 제대로 할당되어 있었다.
+
+![](/posts/deep_dive/supabase_oauth_popup/3.png)
+
+window opener 관련 개발자 문서를 찾아보았다.
+> [MDN : Window.opener property](https://developer.mozilla.org/en-US/docs/Web/API/Window/opener)
+
+![](/posts/deep_dive/supabase_oauth_popup/4.png)
+
+COOP 설정을 `same-origin`으로 하면, 다른 origin 다녀왔을 때 opener가 null이 된다는 것이다.
+
+google 로그인 페이지(다른 origin)를 다녀오기 때문에, 
+기존 브라우저 context 참조가 사라져 opener가 null이 된다는 것이다!
+(`same-origin-allow-popups`로 설정해도 동일한 현상이 나타난다.)
+
+COOP를 설정하면 google 다녀와서 opener가 null이 되어 message를 못 보내고,
+설정하지 않으면 기본 정책에 위반되어 보낼 수 없다고 하니
+나보고 어쩌란 말인가.. 
+
+---
+
+### 해결 시도2
+
+현재 코드의 경우 popup의 시작 url을 구글 로그인으로 설정되어 있다.
+
+- popup의 시작 origin이 현재와 달라서 그런가?
+- 본 사이트의 blank 페이지로 시작한 다음, redirect로 google 이동 시키면 괜찮아질까?
+- 그러면 시작 origin과 현재 origin이 같으니까 가능할수도??
+
+시도해봤지만, 안된다. ㅜㅜ
+
+stack overflow, reddit, github discussion 등 다양한 채널에서 검색해보았지만 답을 찾을 수 없었다.
+
+그러던 중, 새로운 개념을 찾았다.
+
+---
+
+## BroadcastChannel
+
+> [MDN : BroadcastChannel](https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel)
+
+오 신이시여.. 이름에서 느껴지는 정답의 기운..
+심지어 2022년에 출시된 따끈따끈한 API다!
+
+![](/posts/deep_dive/supabase_oauth_popup/5.jpg)
+
+BroadcastChannel 객체를 생성하여, 
+동일 origin 내 모든 브라우저 context에 전체 방송을 보낼 수 있다.
+
+팝업을 적용하기 전 로직은 다음과 같다.
+
+1. 로그인 페이지에서 supabase.auth 의 OAuth 메소드를 호출한다.
+    - 로그인 완료 후 redirect url은, ‘로그인을 처리하는 서버 페이지’로 지정한다.
+2. 로그인이 완료되면, code를 params에 포함시켜 ‘로그인을 처리하는 서버 페이지’로 이동한다.
+3. ‘로그인을 처리하는 서버 페이지’ 에서는 param에 포함된 code를 추출한다.
+4. 해당 code로 로그인을 수행한다.
+
+팝업을 적용하기 위해서는, 단계가 추가된다.
+
+1. 팝업에서 구글 로그인이 완료된 후 잠시 거쳐갈 callback 페이지를 구현한다.
+2. 로그인 완료 후 redirect url을, 해당 callback 페이지로 지정한다.
+3. callback 페이지에서 BroadcastChannel 객체를 활용해 부모 window에 code를 전달한다.
+4. 부모 window는, 전달 받은 code와 함께 ‘로그인을 처리하는 서버 페이지’로 이동한다.
+
+결국, 세가지 파트가 필요하다.
+
+1. 로그인 시작 페이지
+2. 팝업 마무리 callback 페이지
+3. 로그인을 처리하는 서버 페이지
+
+---
+
+## 구현 및 해결
+
+각 파트를 구현한 코드는 다음과 같다.
+
+### 1. 로그인 시작 페이지
+
+```tsx
+"use client";
+
+const GoogleSignIn = () => {
+  const [popup, setPopup] = useState<Window | null>(null);
+  const { toast } = useToast();
+  const router = useRouter();
+
+  useEffect(() => {
+    // If there is no popup, nothing to do
+    if (!popup) return;
+
+    // Listen for messages from the popup by creating a BroadcastChannel
+    const channel = new BroadcastChannel("popup-channel");
+    channel.addEventListener("message", getDataFromPopup);
+
+    // effect cleaner (when component unmount)
+    return () => {
+      channel.removeEventListener("message", getDataFromPopup);
+      setPopup(null);
+    };
+  }, [popup]);
+
+  const login = async () => {
+    const supabase = createClient();
+    const origin = location.origin;
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${origin}/auth/popup-callback`,
+        queryParams: { prompt: "select_account" },
+        skipBrowserRedirect: true,
+      },
+    });
+    if (error || !data) {
+      return toast({
+        title: "Login Failed",
+        description: "Failed to login with Google. Please try again.",
+        variant: "destructive",
+      });
+    }
+
+    const popup = openPopup(data.url);
+    setPopup(popup);
+  };
+
+  const openPopup = (url: string) => {
+    const width = 500;
+    const height = 600;
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
+    // window features for popup
+    const windowFeatures = `scrollbars=no, resizable=no, copyhistory=no, width=${width}, height=${height}, top=${top}, left=${left}`;
+    const popup = window.open(url, "popup", windowFeatures);
+    return popup;
+  };
+
+  const getDataFromPopup = (e: any) => {
+    // check origin
+    if (e.origin !== window.location.origin) return;
+
+    // get authResultCode from popup
+    const code = e.data?.authResultCode;
+    if (!code) return;
+
+    // clear popup and replace the route
+    setPopup(null);
+    router.replace(`/api?code=${code}`);
+  };
+
+  return (
+    <Button onClick={login} variant="outline">
+      Google Login {popup ? "processing..." : ""}
+    </Button>
+  );
+};
+
+export default GoogleSignIn;
+```
+
+### 2. 팝업 마무리 callback 페이지
+
+```tsx
+"use client";
+
+const PopupCallback = () => {
+  const [mounted, setMounted] = useState(false);
+  const params = useSearchParams();
+  const code = params.get("code");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!code) return;
+    // Send the code to the parent window
+    const channel = new BroadcastChannel("popup-channel");
+    channel.postMessage({ authResultCode: code });
+    window.close();
+  }, []);
+
+  if (!mounted) return null;
+
+  // Close the popup if there is no code
+  if (!code) {
+    window.close();
+  }
+
+  return null;
+};
+
+export default PopupCallback;
+```
+
+### 3. 로그인 처리 API handler
+
+```tsx
+export async function GET(request: Request) {
+  // The `/auth/callback` route is required for the server-side auth flow implemented
+  // by the SSR package. It exchanges an auth code for the user's session.
+  // https://supabase.com/docs/guides/auth/server-side/nextjs
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
+  const origin = requestUrl.origin;
+
+  if (code) {
+    const supabase = createClient();
+    await supabase.auth.exchangeCodeForSession(code);
+  }
+
+  // URL to redirect to after sign up process completes
+  return NextResponse.redirect(`${origin}/user`);
+}
+```
+
