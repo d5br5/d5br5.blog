@@ -1,0 +1,162 @@
+---
+title: 정적파일 배포용 AWS 환경 구축 (S3, CloudFront)
+date: 2024-05-15
+desc: 이미지를 변경할 때마다 웹사이트를 새로 배포하시나요?
+thumbnail: /posts/deep_dive/s3_cloudfront/thumbnail.jpg
+---
+
+### 목적
+
+정적 이미지를 public url로 배포하는 방법을 살펴본다.
+
+  - 정적 파일 저장소로, <u>AWS S3</u>를 사용
+  - 보안 및 cache를 위한 CDN으로, <u>AWS CloudFront</u>를 사용
+  - 간결한 url을 위해, <u>AWS Route53</u> 으로 대체 도메인 라우팅
+
+---
+
+### 서론
+
+웹사이트를 만들 때, 이미지 파일을 포함시켜야 하는 경우가 많다. 
+크게 다음과 같이 2가지 방법을 사용한다.
+
+1. 소스코드 저장소에 이미지 파일을 포함시키고, 코드에서 직접 import
+2. cloud 서비스에 이미지 파일을 업로드하고, public url을 사용
+
+1번 방식의 단점은,
+이미지를 변경하고 싶을 때 저장소 내에서 직접 수정해야 한다는 것이다.
+저장소를 변경했으므로, 다시 배포해야만 웹사이트에 반영된다!
+
+그런 문제로, 활발하게 운영되는 웹사이트들은 대부분 2번 방식을 사용한다.
+클라우드 서비스에 이미지 파일을 업로드하고, public url을 얻는 방법을  알아보자.
+
+
+<Callout type="info">이 글에서는, AWS Cloud를 사용합니다. 계정을 생성하고, 로그인하는 과정은 생략합니다.</Callout>
+
+---
+
+### 파일 저장소 : AWS S3
+
+먼저 [AWS S3](https://ap-northeast-2.console.aws.amazon.com/s3/get-started?region=ap-northeast-2&bucketType=general&region=ap-northeast-2) 에 접속하여, 파일 저장소인 Bucket을 생성한다.
+
+![](/posts/deep_dive/s3_cloudfront/aws1.jpg)
+
+![AWS S3 bucket 생성 옵션](/posts/deep_dive/s3_cloudfront/aws2.jpg)
+
+bucket 이름 외에 특별히 custom한 부분은 없다.
+원하는 부분 있으면 변경해도 상관 없다. 본인 목적에 맞게 설정!
+
+중요한 부분은, <u>모든 퍼블릭 액세스 차단이 활성화 상태</u>라는 것!
+s3 bucket에 직접 접근하지 못하게 하고, cloudfront를 통해서만 접근할 수 있게 해야 한다는 점.
+그 이유는 아래에서 살펴보겠다.
+
+버킷 생성을 완료하면, 버킷 목록에 잘 표시된다.
+
+![생성된 버킷 목록](/posts/deep_dive/s3_cloudfront/aws3.jpg)
+
+버킷에 파일을 하나 업로드하자.
+
+![이미지 파일을 버킷에 업로드](/posts/deep_dive/s3_cloudfront/aws4.jpg)
+
+업로드한 파일이 목록에 잘 표시된다.
+
+![버킷에 업로드된 이미지 파일](/posts/deep_dive/s3_cloudfront/aws5.jpg)
+
+파일 이름을 클릭하면, 파일 정보가 표시된다.
+속성 탭에서, 객체 URL을 확인할 수 있다.
+
+![업로드된 이미지 파일 정보](/posts/deep_dive/s3_cloudfront/aws6.jpg)
+
+이 URL로 한 번 접속해보자!
+`Access Denied` 라는 에러 코드와 함께 접근이 막힌 것을 확인할 수 있다.
+
+![이미지 파일 접근 금지](/posts/deep_dive/s3_cloudfront/aws7.jpg)
+
+버킷을 생성할 때, `모든 퍼블릭 액세스 차단` 옵션을 활성화했기 때문이다.
+이 옵션 때문에, 버킷에 저장된 모든 객체는 URL로 직접 접근이 불가능하다.
+
+S3 객체 직접 접근을 차단해야 하는 이유는 무엇일까? 
+의도된 사용자가 아닌 악성 사용자들이 bucket에 무수한 요청 (PUT, POST, GET, …)을 보내,
+버킷 소유주가 AWS로부터 막대한 비용을 청구받은 사례가 심심치 않게 발생하고 있다. (개인, 기업 포함)
+
+객체 URL을 보면, 많은 정보가 담겨 있다는 것을 확인할 수 있는데,
+이 정보들은 악성 사용자들에게 먹잇감으로 활용될 수 있다.
+
+- bucket name
+- AWS region
+- filename
+
+버킷에 대한 권한, 보안 설정을 철저히 하면 무한 과금을 막을 수 있고
+AWS도 이제는 이런 사례에 대해 비용을 청구하지 않는다고는 하지만,
+어떤 참신한 공격이 새로 생길지 모르는 일이다.
+
+이미지 파일에 직접 접근할 수 없으니,
+CDN(CloudFront)를 통해 우회하여 접근하는 방법을 알아보자.
+
+---
+
+### CDN : CloudFront
+
+<Callout type="info" title="CDN(Content Delivery Network)이란?">
+콘텐츠를 효율적으로 제공하기 위해 전 세계 여러 위치에 데이터를 분산 배치하는 네트워크 시스템 
+사용자 요청한 콘텐츠를 가장 가까운 서버에서 제공해 전송 시간을 줄이고 로딩 속도를 향상
+높은 트래픽을 효율적으로 관리하고, 웹사이트의 성능과 사용자 경험 향상
+지리적으로 분산된 사용자에게 콘텐츠를 신속하게 제공
+글로벌한 사용자들에게 동일한 사용자 경험 제공
+</Callout>
+
+![CDN이란?](/posts/deep_dive/s3_cloudfront/cdn1.png)
+
+[AWS CloudFront](https://us-east-1.console.aws.amazon.com/cloudfront/v4/home?region=us-east-1#/distributions)에 접속하여, 새로운 배포를 생성한다
+
+![](/posts/deep_dive/s3_cloudfront/aws8.jpg)
+
+origin domain 입력란에서, 아까 생성한 bucket을 선택한다.
+원본 액세스 권한을 설정하고, Create new OAC 버튼으로 새로운 OAC를 생성하자
+
+![cloudfront 배포 생성 옵션](/posts/deep_dive/s3_cloudfront/aws10.jpg)
+
+딱히 변경할 설정은 없다.
+
+![OAC 생성 옵션](/posts/deep_dive/s3_cloudfront/aws11.jpg)
+
+생성하고 나면 아까 없던 경고가 표시되는데, 이 부분은 나중에 설정하게 된다. 넘어가자.
+
+![](/posts/deep_dive/s3_cloudfront/aws12.jpg)
+
+아래 옵션을 설정하고, 배포 생성 단계를 마무리하자.
+
+- 기본 캐시 동작 옵션 > 뷰어 프로토콜 정책을 [Redirect HTTP to HTTPS]로 변경
+- 웹 애플리케이션 방화벽(WAF) > 보안 보호 비활성화
+
+![cloudfront 배포 생성 완료 화면](/posts/deep_dive/s3_cloudfront/aws13.jpg)
+
+cloudfront 배포가 성공적으로 완료되었음을 확인할 수 있다.
+
+cloudfront가 bucket에 접근할 수 있도록, bucket의 정책을 업데이트 해주어야 한다.
+우측 상단 [정책 복사] 버튼을 클릭하여 복사한 후, 정책 업데이트 링크로 이동한다.
+
+버킷 > 권한 탭에서 버킷 정책 편집으로 진입한다.
+
+![버킷 권한 확인](/posts/deep_dive/s3_cloudfront/aws14.jpg)
+
+아까 복사한 정책을 붙여넣고, 변경사항을 저장한다.
+
+![버킷 권한 편집](/posts/deep_dive/s3_cloudfront/aws15.jpg)
+
+그러면 이제 cloudfront로 버킷 객체에 접근이 가능해진다.
+`{cloudfront 배포도메인명}/{S3경로파일명}` 으로 접근이 가능하다.
+
+![객체 URL 접근 성공](/posts/deep_dive/s3_cloudfront/aws16.jpg)
+
+아까처럼 경고가 뜨지 않고, 정상적으로 접근이 가능한 것을 확인할 수 있다.
+
+여기까지, 정적 리소스 파일의 public url을 얻는 방법을 알아보았다.
+
+---
+
+### Reference
+
+- [우아한 형제들 기술 블로그](https://techblog.woowahan.com/6217/)
+- [주노님 velog](https://velog.io/@junho5336/AWS-S3-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0)
+- [삼콩님 tistory](https://three-beans.tistory.com/entry/AWSCloudFront-CloudFront%EB%A1%9C-S3-%EC%BB%A8%ED%85%90%EC%B8%A0-%EC%A0%9C%EA%B3%B5%ED%95%98%EA%B8%B0-%E2%91%A1-CloudFront-%EB%8C%80%EC%B2%B4-%EB%8F%84%EB%A9%94%EC%9D%B8-%EA%B5%AC%EC%84%B1)
