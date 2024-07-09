@@ -19,10 +19,10 @@ export default function Giscus() {
     scriptElem.async = true;
     scriptElem.crossOrigin = 'anonymous';
 
-    scriptElem.setAttribute('data-repo', process.env.NEXT_GISCUS_REPO_NAME!);
-    scriptElem.setAttribute('data-repo-id', process.env.NEXT_GISCUS_REPO_ID!);
+    scriptElem.setAttribute('data-repo', 'd5br5/d5br5.blog');
+    scriptElem.setAttribute('data-repo-id', 'R_kgDOLJ1aMw');
     scriptElem.setAttribute('data-category', 'Comments');
-    scriptElem.setAttribute('data-category-id', process.env.NEXT_GISCUS_CATEGORY_ID!);
+    scriptElem.setAttribute('data-category-id', 'DIC_kwDOLJ1aM84CdGpy');
     scriptElem.setAttribute('data-mapping', 'pathname');
     scriptElem.setAttribute('data-strict', '0');
     scriptElem.setAttribute('data-reactions-enabled', '1');
