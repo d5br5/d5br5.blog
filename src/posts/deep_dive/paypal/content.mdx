@@ -1,0 +1,318 @@
+---
+title: Next.js 플랫폼에 Paypal 결제 연동하기
+date: 2024-06-29
+desc: 떼돈을 벌어보자
+thumbnail: /posts/deep_dive/paypal/thumbnail.png
+---
+
+## 페이팔 계정 생성
+
+웹사이트에 결제 모듈을 연동하기 위해서는, 페이팔 개발자 계정이 필요합니다.
+business 계정을 생성하고, 로그인하면 다음과 같은 화면을 볼 수 있습니다.
+
+![paypal 로그인 화면](/posts/deep_dive/paypal/1.jpg)
+
+우측 상단 개발자 탭을 클릭하여 개발자 대시보드로 이동합니다.
+
+![paypal 개발자 대시보드](/posts/deep_dive/paypal/2.jpg)
+
+기본으로 sandbox 모드인 것을 확인할 수 있습니다.
+Testing Tools 메뉴 > Sandbox Accounts 메뉴로 이동합니다.
+
+![paypal sandbox 계정 목록](/posts/deep_dive/paypal/3.jpg)
+
+Business 계정을 선택하고, View/Edit Account 를 선택합니다.
+
+![paypal sandbox 계정 정보](/posts/deep_dive/paypal/4.jpg)
+
+REST API apps 파트에 있는 정보를, FE 프로젝트 내 .env 파일에 저장합니다.
+
+```bash
+# API route 에서 사용할 환경 변수
+PAYPAL_CLIENT_ID="<cliend id>"
+PAYPAL_CLIENT_SECRET="<client secret>"
+
+# 브라우저 내 paypal client에서 사용할 환경 변수
+NEXT_PUBLIC_PAYPAL_CLIENT_ID="<client id>"
+```
+
+## Front-end 구현
+
+paypal component를 렌더링할 라이브러리를 설치합니다.
+
+```bash
+npm install @paypal/react-paypal-js
+```
+
+server와 통신을 주고받을 유틸 함수를 작성합니다.
+
+```typescript
+// remote.ts 
+
+type ServerFetchResult = {
+  ok: boolean;
+  code: number;
+  msg?: string;
+  data?: any;
+};
+
+export const SERVER_POST = async (url: string, body: Object = {}) => {
+  const res: ServerFetchResult = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  }).then((res) => res.json());
+
+  return res;
+};
+```
+
+페이팔 컴포넌트를 구현합니다.
+구현해야할 부분은 크게 2가지입니다.
+
+1. createOrder
+    - 주문 생성 요청을 보내고, orderID를 응답 받아 return
+    - 이 orderID는 onApprove 함수의 인자로 전달된다.
+2. onApprove
+    - orderID를 전달 받아, 실제 결제 수행 요청
+    - 결제 결과에 따라 성공/실패 페이지로 이동
+
+페이팔 버튼의 스타일은 [공식문서](https://developer.paypal.com/sdk/js/reference)를 참고해주세요.
+
+![paypal 버튼 스타일 가이드](/posts/deep_dive/paypal/5.jpg)
+
+
+구현된 코드는 다음과 같습니다.
+
+```typescript
+"use client";
+
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { SERVER_POST } from "@/utils/remote";
+
+const Paypal = ({ price }: { price: number }) => {
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!;
+
+  return (
+    <PayPalScriptProvider options={{ clientId, locale: "en_US" }}>
+      <PayPalButtons
+        style={{
+          color: "gold",
+          shape: "pill",
+          label: "paypal",
+          layout: "vertical",
+          height: 50,
+          tagline: false,
+        }}
+        // createOrder 함수의 결과는 orderID를 반환. 이를 onApprove에 전달
+        createOrder={async () => {
+          const apiURL = "/api/paypal/order/create";
+          const res = await SERVER_POST(apiURL, { price });
+          return res.ok ? res.data.id : null;
+        }}
+        onApprove={async (data) => {
+          const { orderID } = data;
+          const apiURL = "/api/paypal/order/capture";
+          const res = await SERVER_POST(apiURL, { orderID });
+          // 결제 결과를 DB에 저장하고, toast를 띄우고, 결과 페이지로 redirect
+        }}
+      />
+    </PayPalScriptProvider>
+  );
+};
+
+export default Paypal;
+```
+
+FE 코드 작성을 완료하면, 다음과 같이 paypal 버튼이 정상적으로 표시되는 것을 확인할 수 있습니다.
+BE 구현이 안되어 있어 버튼 클릭시 에러가 발생할 수 있습니다.
+
+![](/posts/deep_dive/paypal/6.jpg)
+
+
+## Back-end 구현
+
+Paypal component의 createOrder, onApprove 내부에서 호출할 API를 구현합니다.
+
+1. paypal API 센터와 통신할 access token 생성합니다.
+
+```typescript
+// src/utils/paypal/token.js
+
+const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = process.env;
+
+const env = process.env.NODE_ENV;
+const isDev = env === "development";
+
+// dev, prod 환경에서의 api base 주소가 다름
+export const base = isDev
+  ? "https://api-m.sandbox.paypal.com"
+  : "https://api-m.paypal.com";
+
+export const generateAccessToken = async () => {
+  if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
+    throw new Error("MISSING_API_CREDENTIALS");
+  }
+  const auth = Buffer.from(
+    PAYPAL_CLIENT_ID + ":" + PAYPAL_CLIENT_SECRET
+  ).toString("base64");
+  const response = await fetch(`${base}/v1/oauth2/token`, {
+    method: "POST",
+    body: "grant_type=client_credentials",
+    headers: {
+      Authorization: `Basic ${auth}`,
+    },
+  });
+
+  const data = await response.json();
+  return data.access_token;
+};
+```
+
+2. createOrder API를 구현합니다.
+  
+```typescript 
+// api/paypal/order/create/route.ts
+
+import { base, generateAccessToken } from "@/utils/paypal/token";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(request: NextRequest) {
+  const reqPayload = await request.json();
+  const { price } = reqPayload;
+
+  if (!price) {
+    return NextResponse.json({
+      ok: false,
+      code: 400,
+      msg: "Invalid Price",
+    });
+  }
+
+  try {
+    const accessToken = await generateAccessToken();
+    const url = `${base}/v2/checkout/orders`;
+
+    const payload = {
+      intent: "CAPTURE",
+      purchase_units: [
+        {
+          amount: {
+            currency_code: "USD",
+            value: price,
+          },
+        },
+      ],
+    };
+
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    const jsonResponse = await response.json();
+    return NextResponse.json({
+      code: response.status,
+      ok: true,
+      data: jsonResponse,
+    });
+  } catch (err) {
+    return NextResponse.json({
+      ok: false,
+      code: 500,
+      msg: "Internal Server Error",
+    });
+  }
+}
+```
+
+3. captureOrder API를 구현합니다.
+
+```typescript
+// api/paypal/order/capture/route.ts
+
+import { base, generateAccessToken } from "@/utils/paypal/token";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(request: NextRequest) {
+  const payload = await request.json();
+  const { orderID } = payload;
+
+  if (!orderID) {
+    return NextResponse.json({
+      ok: false,
+      code: 400,
+      msg: "Invalid Order ID",
+    });
+  }
+
+  try {
+    const accessToken = await generateAccessToken();
+    const url = `${base}/v2/checkout/orders/${orderID}/capture`;
+
+    const response = await fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      method: "POST",
+    });
+
+    const jsonResponse = await response.json();
+    return NextResponse.json({
+      code: response.status,
+      ok: true,
+      data: jsonResponse,
+    });
+  } catch (err) {
+    return NextResponse.json({
+      ok: false,
+      code: 500,
+      msg: "Internal Server Error",
+    });
+  }
+}
+```
+
+BE 구현을 완료하고, 다시 버튼을 클릭해보면 paypal 팝업이 정상적으로 표시됩니다.
+로그인 혹은 신용카드 정보를 입력하여 결제를 진행할 수 있습니다.
+
+![paypal 결제 팝업](/posts/deep_dive/paypal/7.jpg)
+
+페이팔 개발자 센터에 접속하면 각종 테스트 정보를 확인할 수 있습니다.
+성공/실패 테스트를 해보면서, 각 결과에 맞는 처리를 수행하면 됩니다.
+
+![paypal 결제 테스트정보](/posts/deep_dive/paypal/8.jpg)
+
+## Production 배포
+
+개발 환경에서 테스트가 마무리 되었다면, live 환경으로 배포해봅시다.
+변경해주어야 하는 것은 크게 2가지입니다.
+
+1. paypal API url 변경
+    - 개발환경 : https://api-m.sandbox.paypal.com/
+    - production : https://api-m.paypal.com/
+2. 환경 변수 변경
+    - 라이브 환경 전용 credential을 발급받아 교체
+
+### 라이브 환경 credential 발급
+
+![live 환경 credential 발급](/posts/deep_dive/paypal/9.jpg)
+
+1. 개발자 대시보드 > Apps & Credentials 접속합니다.
+2. 우측 상단 live 환경으로 전환하고, Create App 으로 신규 앱을 생성합니다.
+3. 생성된 App의 client id와 secret code를 복사해 환경 변수에 저장합시다.
+
+production 배포 플랫폼을 사용한다면, 해당 플랫폼 내 환경변수 탭에 입력하면 됩니다.
+
+여기까지, Next.js 플랫폼에 Paypal 결제 모듈을 연동하는 방법에 대해 알아보았습니다.
+
+## Reference
+- https://developer.paypal.com/studio/checkout/standard/integrate
+- https://developer.paypal.com/sdk/js/reference

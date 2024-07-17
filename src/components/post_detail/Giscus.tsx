@@ -4,6 +4,10 @@ import { useEffect, useRef } from 'react';
 
 import { useTheme } from 'next-themes';
 
+const repoName = process.env.NEXT_PUBLIC_GISCUS_REPO_NAME || '';
+const repoId = process.env.NEXT_PUBLIC_GISCUS_REPO_ID || '';
+const categoryId = process.env.NEXT_PUBLIC_GISCUS_CATEGORY_ID || '';
+
 export default function Giscus() {
   const ref = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
@@ -19,10 +23,10 @@ export default function Giscus() {
     scriptElem.async = true;
     scriptElem.crossOrigin = 'anonymous';
 
-    scriptElem.setAttribute('data-repo', 'd5br5/d5br5.blog');
-    scriptElem.setAttribute('data-repo-id', 'R_kgDOLJ1aMw');
+    scriptElem.setAttribute('data-repo', repoName);
+    scriptElem.setAttribute('data-repo-id', repoId);
     scriptElem.setAttribute('data-category', 'Comments');
-    scriptElem.setAttribute('data-category-id', 'DIC_kwDOLJ1aM84CdGpy');
+    scriptElem.setAttribute('data-category-id', categoryId);
     scriptElem.setAttribute('data-mapping', 'pathname');
     scriptElem.setAttribute('data-strict', '0');
     scriptElem.setAttribute('data-reactions-enabled', '1');
