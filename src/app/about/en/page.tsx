@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 
+import LanguageSelector from '../_components/language-selector';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -148,6 +149,7 @@ export default function AboutPageKorean() {
       </div>
     </Section> */}
       </Section>
+      <LanguageSelector />
     </main>
   );
 }
