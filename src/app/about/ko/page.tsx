@@ -16,17 +16,17 @@ export const metadata: Metadata = {
 
 export default function AboutPageKorean() {
   return (
-    <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 pt-9 sm:p-9 md:p-16 print:p-12'>
+    <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 pt-12 sm:p-9 md:p-16 print:p-12'>
       <Section className='mx-auto w-full max-w-2xl space-y-8 print:space-y-4'>
-        <div className='flex items-center justify-between'>
-          <div className='flex-1 space-y-1.5'>
+        <div className='flex flex-col-reverse items-center justify-between gap-4 sm:flex-row'>
+          <div className='flex-1 space-y-1.5 text-center sm:text-start'>
             <h1 className='mb-4 text-3xl font-bold'>{RESUME_DATA_KO.name}</h1>
             <p className='max-w-md text-pretty text-muted-foreground print:text-[12px]'>
               {RESUME_DATA_KO.about}
             </p>
             <p className='max-w-md items-center text-pretty text-sm text-muted-foreground'>
               <a
-                className='inline-flex gap-x-1.5 align-baseline leading-none hover:underline'
+                className='inline-flex items-center gap-x-1.5 align-baseline leading-none hover:underline'
                 href={RESUME_DATA_KO.locationLink}
                 target='_blank'
               >
@@ -34,7 +34,7 @@ export default function AboutPageKorean() {
                 {RESUME_DATA_KO.location}
               </a>
             </p>
-            <div className='flex gap-x-1 pt-1 text-sm text-muted-foreground print:hidden'>
+            <div className='flex justify-center gap-x-2 pt-1 text-sm text-muted-foreground sm:justify-start print:hidden'>
               {RESUME_DATA_KO.contact.social.map((social) => (
                 <Button key={social.name} className='size-8' variant='outline' size='icon' asChild>
                   <a href={social.url} target='_blank'>
@@ -66,7 +66,7 @@ export default function AboutPageKorean() {
         </div>
         <Section>
           <h2 className='text-2xl font-bold'>About</h2>
-          <p className='whitespace-pre-wrap text-pretty leading-8 text-muted-foreground print:text-[12px]'>
+          <p className='whitespace-normal text-pretty leading-8 text-muted-foreground sm:whitespace-pre-wrap print:text-[12px]'>
             {RESUME_DATA_KO.summary}
           </p>
         </Section>
@@ -87,7 +87,9 @@ export default function AboutPageKorean() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardDescription className='text-sm'>{work.description}</CardDescription>
+                <CardDescription className='text-pretty text-sm'>
+                  {work.description}
+                </CardDescription>
 
                 <h4 className='mt-7 font-semibold  leading-none print:text-[12px]'>{work.title}</h4>
                 {work.points && (

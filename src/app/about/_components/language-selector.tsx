@@ -28,7 +28,7 @@ export default function LanguageSelector() {
   return (
     <D.DropdownMenu>
       <D.DropdownMenuTrigger asChild>
-        <Button className='fixed bottom-10 right-10' variant='outline' size='icon'>
+        <Button className='fixed bottom-7 right-7' variant='outline' size='icon'>
           <GlobeIcon className='size-5' />
         </Button>
       </D.DropdownMenuTrigger>
