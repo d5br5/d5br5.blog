@@ -76,7 +76,7 @@ export default function AboutPageKorean() {
             {RESUME_DATA_EN.work.map((work) => (
               <Card key={work.company}>
                 <CardHeader className='mb-3'>
-                  <div className='flex items-center justify-between gap-x-2 text-base'>
+                  <div className='flex flex-col items-start justify-between gap-1 gap-x-2 text-base sm:flex-row sm:items-center'>
                     <h3 className='inline-flex items-center justify-center gap-x-1 text-lg font-semibold leading-none'>
                       <a className='hover:underline' href={work.link} target='_blank'>
                         {work.company}
@@ -109,7 +109,7 @@ export default function AboutPageKorean() {
             {RESUME_DATA_EN.education.map((education) => (
               <Card key={education.school}>
                 <CardHeader>
-                  <div className='flex items-center justify-between gap-x-2 text-base'>
+                  <div className='flex flex-col items-start justify-between gap-1 gap-x-2 text-base sm:flex-row sm:items-center'>
                     <h3 className='text-lg font-semibold leading-none'>{education.school}</h3>
                     <div className='text-sm tabular-nums text-gray-500'>
                       {education.start} - {education.end}
