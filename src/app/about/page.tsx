@@ -4,7 +4,7 @@ import { ProjectCard } from '@/components/common/project-card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Section } from '@/components/ui/section';
 import { RESUME_DATA } from '@/data/resume-data';
 import { GlobeIcon, MailIcon } from 'lucide-react';
@@ -16,11 +16,11 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className='container relative mx-auto scroll-my-12 overflow-auto p-4 md:p-16 print:p-12'>
+    <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 sm:p-9 md:p-16 print:p-12'>
       <section className='mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-4'>
         <div className='flex items-center justify-between'>
           <div className='flex-1 space-y-1.5'>
-            <h1 className='text-2xl font-bold'>{RESUME_DATA.name}</h1>
+            <h1 className='text-3xl font-bold'>{RESUME_DATA.name}</h1>
             <p className='max-w-md text-pretty font-mono text-sm text-muted-foreground print:text-[12px]'>
               {RESUME_DATA.about}
             </p>
@@ -37,7 +37,7 @@ export default function AboutPage() {
             <div className='flex gap-x-1 pt-1 font-mono text-sm text-muted-foreground print:hidden'>
               {RESUME_DATA.contact.social.map((social) => (
                 <Button key={social.name} className='size-8' variant='outline' size='icon' asChild>
-                  <a href={social.url}>
+                  <a href={social.url} target='_blank'>
                     <social.icon className='size-4' />
                   </a>
                 </Button>
@@ -65,20 +65,20 @@ export default function AboutPage() {
           </Avatar>
         </div>
         <Section>
-          <h2 className='text-xl font-bold'>About</h2>
+          <h2 className='text-2xl font-bold'>About</h2>
           <p className='whitespace-pre-wrap text-pretty font-mono text-sm text-muted-foreground print:text-[12px]'>
             {RESUME_DATA.summary}
           </p>
         </Section>
         <Section>
-          <h2 className='text-xl font-bold'>Work Experience</h2>
-          <div className='-mx-3 space-y-3'>
+          <h2 className='text-2xl font-bold'>Work Experience</h2>
+          <div className='space-y-4'>
             {RESUME_DATA.work.map((work) => (
               <Card key={work.company}>
-                <CardHeader>
+                <CardHeader className='mb-3'>
                   <div className='flex items-center justify-between gap-x-2 text-base'>
-                    <h3 className='inline-flex items-center justify-center gap-x-1 font-semibold leading-none'>
-                      <a className='hover:underline' href={work.link}>
+                    <h3 className='inline-flex items-center justify-center gap-x-1 text-lg font-semibold leading-none'>
+                      <a className='hover:underline' href={work.link} target='_blank'>
                         {work.company}
                       </a>
                     </h3>
@@ -86,24 +86,31 @@ export default function AboutPage() {
                       {work.start} - {work.end ?? 'Present'}
                     </div>
                   </div>
-
-                  <h4 className='font-mono text-sm leading-none print:text-[12px]'>{work.title}</h4>
                 </CardHeader>
-                <CardContent className='mt-2 text-xs print:text-[10px]'>
-                  {work.description}
-                </CardContent>
+                <CardDescription className='text-sm'>{work.description}</CardDescription>
+
+                <h4 className='mt-5 font-semibold  leading-none print:text-[12px]'>{work.title}</h4>
+                {work.points && (
+                  <ul className='mt-4 list-disc space-y-2 text-sm'>
+                    {work.points.map((point, index) => (
+                      <li key={index} className='ml-5 text-muted-foreground'>
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </Card>
             ))}
           </div>
         </Section>
         <Section>
-          <h2 className='text-xl font-bold'>Education</h2>
-          <div className='-mx-3 space-y-3'>
+          <h2 className='text-2xl font-bold'>Education</h2>
+          <div className='space-y-3'>
             {RESUME_DATA.education.map((education) => (
               <Card key={education.school}>
                 <CardHeader>
                   <div className='flex items-center justify-between gap-x-2 text-base'>
-                    <h3 className='font-semibold leading-none'>{education.school}</h3>
+                    <h3 className='text-lg font-semibold leading-none'>{education.school}</h3>
                     <div className='text-sm tabular-nums text-gray-500'>
                       {education.start} - {education.end}
                     </div>
@@ -115,7 +122,7 @@ export default function AboutPage() {
           </div>
         </Section>
         <Section>
-          <h2 className='text-xl font-bold'>Skills</h2>
+          <h2 className='text-2xl font-bold'>Skills</h2>
           <div className='flex flex-wrap gap-1'>
             {RESUME_DATA.skills.map((skill) => (
               <Badge className='print:text-[10px]' key={skill}>
@@ -125,9 +132,9 @@ export default function AboutPage() {
           </div>
         </Section>
 
-        <Section className='print-force-new-page scroll-mb-16'>
-          <h2 className='text-xl font-bold'>Projects</h2>
-          <div className='-mx-3 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 print:gap-2'>
+        {/* <Section className='print-force-new-page scroll-mb-16'>
+          <h2 className='text-2xl font-bold'>Projects</h2>
+          <div className='grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 print:gap-2'>
             {RESUME_DATA.projects.map((project) => (
               <ProjectCard
                 key={project.title}
@@ -138,7 +145,7 @@ export default function AboutPage() {
               />
             ))}
           </div>
-        </Section>
+        </Section> */}
       </section>
     </main>
   );
