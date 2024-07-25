@@ -15,15 +15,15 @@ export const metadata: Metadata = {
 
 export default function AboutPageKorean() {
   return (
-    <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 sm:p-9 md:p-16 print:p-12'>
-      <section className='mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-4'>
+    <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 pt-9 sm:p-9 md:p-16 print:p-12'>
+      <Section className='mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-4'>
         <div className='flex items-center justify-between'>
           <div className='flex-1 space-y-1.5'>
-            <h1 className='text-3xl font-bold'>{RESUME_DATA_EN.name}</h1>
-            <p className='max-w-md text-pretty  text-sm text-muted-foreground print:text-[12px]'>
+            <h1 className='mb-4 text-3xl font-bold'>{RESUME_DATA_EN.name}</h1>
+            <p className='max-w-md text-pretty text-muted-foreground print:text-[12px]'>
               {RESUME_DATA_EN.about}
             </p>
-            <p className='max-w-md items-center text-pretty  text-xs text-muted-foreground'>
+            <p className='max-w-md items-center text-pretty text-sm text-muted-foreground'>
               <a
                 className='inline-flex gap-x-1.5 align-baseline leading-none hover:underline'
                 href={RESUME_DATA_EN.locationLink}
@@ -33,7 +33,7 @@ export default function AboutPageKorean() {
                 {RESUME_DATA_EN.location}
               </a>
             </p>
-            <div className='flex gap-x-1 pt-1  text-sm text-muted-foreground print:hidden'>
+            <div className='flex gap-x-1 pt-1 text-sm text-muted-foreground print:hidden'>
               {RESUME_DATA_EN.contact.social.map((social) => (
                 <Button key={social.name} className='size-8' variant='outline' size='icon' asChild>
                   <a href={social.url} target='_blank'>
@@ -49,7 +49,7 @@ export default function AboutPageKorean() {
                 </Button>
               )}
             </div>
-            <div className='hidden flex-col gap-x-1  text-sm text-muted-foreground print:flex print:text-[12px]'>
+            <div className='hidden flex-col gap-x-1 text-sm text-muted-foreground print:flex print:text-[12px]'>
               {RESUME_DATA_EN.contact.email ? (
                 <a href={`mailto:${RESUME_DATA_EN.contact.email}`}>
                   <span className='underline'>{RESUME_DATA_EN.contact.email}</span>
@@ -65,7 +65,7 @@ export default function AboutPageKorean() {
         </div>
         <Section>
           <h2 className='text-2xl font-bold'>About</h2>
-          <p className='text-pretty  text-sm text-muted-foreground print:text-[12px]'>
+          <p className='text-pretty leading-8 text-muted-foreground print:text-[12px]'>
             {RESUME_DATA_EN.summary}
           </p>
         </Section>
@@ -88,7 +88,7 @@ export default function AboutPageKorean() {
                 </CardHeader>
                 <CardDescription className='text-sm'>{work.description}</CardDescription>
 
-                <h4 className='mt-5 font-semibold  leading-none print:text-[12px]'>{work.title}</h4>
+                <h4 className='mt-7 font-semibold  leading-none print:text-[12px]'>{work.title}</h4>
                 {work.points && (
                   <ul className='mt-4 list-disc space-y-2 text-sm'>
                     {work.points.map((point, index) => (
@@ -115,7 +115,7 @@ export default function AboutPageKorean() {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className='mt-2 text-sm print:text-[12px]'>
+                <CardContent className='mt-2 text-base print:text-[12px]'>
                   {education.degree}
                 </CardContent>
               </Card>
@@ -147,7 +147,7 @@ export default function AboutPageKorean() {
         ))}
       </div>
     </Section> */}
-      </section>
+      </Section>
     </main>
   );
 }

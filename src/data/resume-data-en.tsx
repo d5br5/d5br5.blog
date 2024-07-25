@@ -45,7 +45,7 @@ export const RESUME_DATA_EN = {
         'A B2B forex/payment fintech company operating a white-label cryptocurrency exchange',
       points: [
         'Development of cryptocurrency spot, futures exchanges, and admin pages.',
-        'Implementation of dark mode and introduction of a design system. Renewal of the main page.',
+        'Implementation of dark mode and introduction of a design system.',
         'Integration of third-party payment services using pop-ups.',
         'Search Engine Optimization (SEO)',
         'Improvement of trading chart usability and code structure.',
