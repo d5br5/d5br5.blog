@@ -1,7 +1,7 @@
 import IconGithub from '@/components/icon/Github';
 import IconLinkedin from '@/components/icon/LinkedIn';
 
-export const RESUME_DATA = {
+export const RESUME_DATA_KO = {
   name: '김도형, Doh Kim',
   initials: 'DH',
   location: 'Seoul, South Korea, KST',
