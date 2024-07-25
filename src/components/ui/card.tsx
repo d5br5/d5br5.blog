@@ -43,7 +43,7 @@ const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDi
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('text-pretty font-mono text-sm text-muted-foreground', className)}
+      className={cn('text-pretty text-sm text-muted-foreground', className)}
       {...props}
     />
   )
