@@ -2,7 +2,7 @@
 title: Next.js 플랫폼에 Paypal 결제 연동하기
 date: 2024-06-29
 desc: 떼돈을 벌어보자
-thumbnail: /posts/deep_dive/paypal/thumbnail.png
+thumbnail: /posts/paypal/thumbnail.png
 ---
 
 ## 페이팔 계정 생성
@@ -10,20 +10,20 @@ thumbnail: /posts/deep_dive/paypal/thumbnail.png
 웹사이트에 결제 모듈을 연동하기 위해서는, 페이팔 개발자 계정이 필요합니다.
 business 계정을 생성하고, 로그인하면 다음과 같은 화면을 볼 수 있습니다.
 
-![paypal 로그인 화면](/posts/deep_dive/paypal/1.jpg)
+![paypal 로그인 화면](/posts/paypal/1.jpg)
 
 우측 상단 개발자 탭을 클릭하여 개발자 대시보드로 이동합니다.
 
-![paypal 개발자 대시보드](/posts/deep_dive/paypal/2.jpg)
+![paypal 개발자 대시보드](/posts/paypal/2.jpg)
 
 기본으로 sandbox 모드인 것을 확인할 수 있습니다.
 Testing Tools 메뉴 > Sandbox Accounts 메뉴로 이동합니다.
 
-![paypal sandbox 계정 목록](/posts/deep_dive/paypal/3.jpg)
+![paypal sandbox 계정 목록](/posts/paypal/3.jpg)
 
 Business 계정을 선택하고, View/Edit Account 를 선택합니다.
 
-![paypal sandbox 계정 정보](/posts/deep_dive/paypal/4.jpg)
+![paypal sandbox 계정 정보](/posts/paypal/4.jpg)
 
 REST API apps 파트에 있는 정보를, FE 프로젝트 내 .env 파일에 저장합니다.
 
@@ -81,7 +81,7 @@ export const SERVER_POST = async (url: string, body: Object = {}) => {
 
 페이팔 버튼의 스타일은 [공식문서](https://developer.paypal.com/sdk/js/reference)를 참고해주세요.
 
-![paypal 버튼 스타일 가이드](/posts/deep_dive/paypal/5.jpg)
+![paypal 버튼 스타일 가이드](/posts/paypal/5.jpg)
 
 
 구현된 코드는 다음과 같습니다.
@@ -129,7 +129,7 @@ export default Paypal;
 FE 코드 작성을 완료하면, 다음과 같이 paypal 버튼이 정상적으로 표시되는 것을 확인할 수 있습니다.
 BE 구현이 안되어 있어 버튼 클릭시 에러가 발생할 수 있습니다.
 
-![](/posts/deep_dive/paypal/6.jpg)
+![](/posts/paypal/6.jpg)
 
 
 ## Back-end 구현
@@ -283,12 +283,12 @@ export async function POST(request: NextRequest) {
 BE 구현을 완료하고, 다시 버튼을 클릭해보면 paypal 팝업이 정상적으로 표시됩니다.
 로그인 혹은 신용카드 정보를 입력하여 결제를 진행할 수 있습니다.
 
-![paypal 결제 팝업](/posts/deep_dive/paypal/7.jpg)
+![paypal 결제 팝업](/posts/paypal/7.jpg)
 
 페이팔 개발자 센터에 접속하면 각종 테스트 정보를 확인할 수 있습니다.
 성공/실패 테스트를 해보면서, 각 결과에 맞는 처리를 수행하면 됩니다.
 
-![paypal 결제 테스트정보](/posts/deep_dive/paypal/8.jpg)
+![paypal 결제 테스트정보](/posts/paypal/8.jpg)
 
 ## Production 배포
 
@@ -303,7 +303,7 @@ BE 구현을 완료하고, 다시 버튼을 클릭해보면 paypal 팝업이 정
 
 ### 라이브 환경 credential 발급
 
-![live 환경 credential 발급](/posts/deep_dive/paypal/9.jpg)
+![live 환경 credential 발급](/posts/paypal/9.jpg)
 
 1. 개발자 대시보드 > Apps & Credentials 접속합니다.
 2. 우측 상단 live 환경으로 전환하고, Create App 으로 신규 앱을 생성합니다.

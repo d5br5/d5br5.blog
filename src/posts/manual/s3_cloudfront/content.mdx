@@ -2,7 +2,7 @@
 title: 정적파일 배포용 AWS 환경 구축 (S3, CloudFront)
 date: 2024-05-15
 desc: 이미지를 변경할 때마다 웹사이트를 새로 배포하시나요?
-thumbnail: /posts/deep_dive/s3_cloudfront/thumbnail.jpg
+thumbnail: /posts/s3_cloudfront/thumbnail.jpg
 ---
 
 ### 목적
@@ -39,9 +39,9 @@ thumbnail: /posts/deep_dive/s3_cloudfront/thumbnail.jpg
 
 먼저 [AWS S3](https://ap-northeast-2.console.aws.amazon.com/s3/get-started?region=ap-northeast-2&bucketType=general&region=ap-northeast-2) 에 접속하여, 파일 저장소인 Bucket을 생성한다.
 
-![](/posts/deep_dive/s3_cloudfront/aws1.jpg)
+![](/posts/s3_cloudfront/aws1.jpg)
 
-![AWS S3 bucket 생성 옵션](/posts/deep_dive/s3_cloudfront/aws2.jpg)
+![AWS S3 bucket 생성 옵션](/posts/s3_cloudfront/aws2.jpg)
 
 bucket 이름 외에 특별히 custom한 부분은 없다.
 원하는 부분 있으면 변경해도 상관 없다. 본인 목적에 맞게 설정!
@@ -52,25 +52,25 @@ s3 bucket에 직접 접근하지 못하게 하고, cloudfront를 통해서만 �
 
 버킷 생성을 완료하면, 버킷 목록에 잘 표시된다.
 
-![생성된 버킷 목록](/posts/deep_dive/s3_cloudfront/aws3.jpg)
+![생성된 버킷 목록](/posts/s3_cloudfront/aws3.jpg)
 
 버킷에 파일을 하나 업로드하자.
 
-![이미지 파일을 버킷에 업로드](/posts/deep_dive/s3_cloudfront/aws4.jpg)
+![이미지 파일을 버킷에 업로드](/posts/s3_cloudfront/aws4.jpg)
 
 업로드한 파일이 목록에 잘 표시된다.
 
-![버킷에 업로드된 이미지 파일](/posts/deep_dive/s3_cloudfront/aws5.jpg)
+![버킷에 업로드된 이미지 파일](/posts/s3_cloudfront/aws5.jpg)
 
 파일 이름을 클릭하면, 파일 정보가 표시된다.
 속성 탭에서, 객체 URL을 확인할 수 있다.
 
-![업로드된 이미지 파일 정보](/posts/deep_dive/s3_cloudfront/aws6.jpg)
+![업로드된 이미지 파일 정보](/posts/s3_cloudfront/aws6.jpg)
 
 이 URL로 한 번 접속해보자!
 `Access Denied` 라는 에러 코드와 함께 접근이 막힌 것을 확인할 수 있다.
 
-![이미지 파일 접근 금지](/posts/deep_dive/s3_cloudfront/aws7.jpg)
+![이미지 파일 접근 금지](/posts/s3_cloudfront/aws7.jpg)
 
 버킷을 생성할 때, `모든 퍼블릭 액세스 차단` 옵션을 활성화했기 때문이다.
 이 옵션 때문에, 버킷에 저장된 모든 객체는 URL로 직접 접근이 불가능하다.
@@ -105,31 +105,31 @@ CDN(CloudFront)를 통해 우회하여 접근하는 방법을 알아보자.
 글로벌한 사용자들에게 동일한 사용자 경험 제공
 </Callout>
 
-![CDN이란?](/posts/deep_dive/s3_cloudfront/cdn1.png)
+![CDN이란?](/posts/s3_cloudfront/cdn1.png)
 
 [AWS CloudFront](https://us-east-1.console.aws.amazon.com/cloudfront/v4/home?region=us-east-1#/distributions)에 접속하여, 새로운 배포를 생성한다
 
-![](/posts/deep_dive/s3_cloudfront/aws8.jpg)
+![](/posts/s3_cloudfront/aws8.jpg)
 
 origin domain 입력란에서, 아까 생성한 bucket을 선택한다.
 원본 액세스 권한을 설정하고, Create new OAC 버튼으로 새로운 OAC를 생성하자
 
-![cloudfront 배포 생성 옵션](/posts/deep_dive/s3_cloudfront/aws10.jpg)
+![cloudfront 배포 생성 옵션](/posts/s3_cloudfront/aws10.jpg)
 
 딱히 변경할 설정은 없다.
 
-![OAC 생성 옵션](/posts/deep_dive/s3_cloudfront/aws11.jpg)
+![OAC 생성 옵션](/posts/s3_cloudfront/aws11.jpg)
 
 생성하고 나면 아까 없던 경고가 표시되는데, 이 부분은 나중에 설정하게 된다. 넘어가자.
 
-![](/posts/deep_dive/s3_cloudfront/aws12.jpg)
+![](/posts/s3_cloudfront/aws12.jpg)
 
 아래 옵션을 설정하고, 배포 생성 단계를 마무리하자.
 
 - 기본 캐시 동작 옵션 > 뷰어 프로토콜 정책을 [Redirect HTTP to HTTPS]로 변경
 - 웹 애플리케이션 방화벽(WAF) > 보안 보호 비활성화
 
-![cloudfront 배포 생성 완료 화면](/posts/deep_dive/s3_cloudfront/aws13.jpg)
+![cloudfront 배포 생성 완료 화면](/posts/s3_cloudfront/aws13.jpg)
 
 cloudfront 배포가 성공적으로 완료되었음을 확인할 수 있다.
 
@@ -138,16 +138,16 @@ cloudfront가 bucket에 접근할 수 있도록, bucket의 정책을 업데이�
 
 버킷 > 권한 탭에서 버킷 정책 편집으로 진입한다.
 
-![버킷 권한 확인](/posts/deep_dive/s3_cloudfront/aws14.jpg)
+![버킷 권한 확인](/posts/s3_cloudfront/aws14.jpg)
 
 아까 복사한 정책을 붙여넣고, 변경사항을 저장한다.
 
-![버킷 권한 편집](/posts/deep_dive/s3_cloudfront/aws15.jpg)
+![버킷 권한 편집](/posts/s3_cloudfront/aws15.jpg)
 
 그러면 이제 cloudfront로 버킷 객체에 접근이 가능해진다.
 `{cloudfront 배포도메인명}/{S3경로파일명}` 으로 접근이 가능하다.
 
-![객체 URL 접근 성공](/posts/deep_dive/s3_cloudfront/aws16.jpg)
+![객체 URL 접근 성공](/posts/s3_cloudfront/aws16.jpg)
 
 아까처럼 경고가 뜨지 않고, 정상적으로 접근이 가능한 것을 확인할 수 있다.
 
