@@ -2,7 +2,7 @@
 title: Google login with Supabase (popup window)
 date: 2024-04-26
 desc: How to implement Google login with Supabase using a popup window
-thumbnail: /posts/deep_dive/supabase_oauth_popup/thumbnail.png
+thumbnail: /posts/supabase_oauth_popup/thumbnail.png
 ---
 
 ## 배경
@@ -30,7 +30,7 @@ React.js 환경에서 popup을 구현했던 경험이 있는데, 이번에는 Ne
 
 > Cross-Origin-Opener-Policy policy would block the window.postMessage call.
 
-![](/posts/deep_dive/supabase_oauth_popup/1.png)
+![](/posts/supabase_oauth_popup/1.png)
 
 내용은,
 COOP (Cross-Origin-Opener-Policy) 로 인해 window.postMessage 메소드를 호출할 수 없다는 것.
@@ -69,16 +69,16 @@ header에 COOP 관련 설정을 추가했다.
 window.opener가 null이라는 것이다!
 실제로 window를 log로 찍어보니 다음이 opener가 null이었다.
 
-![](/posts/deep_dive/supabase_oauth_popup/2.png)
+![](/posts/supabase_oauth_popup/2.png)
 
 COOP 관련 설정 이전에는 opener가 제대로 할당되어 있었다.
 
-![](/posts/deep_dive/supabase_oauth_popup/3.png)
+![](/posts/supabase_oauth_popup/3.png)
 
 window opener 관련 개발자 문서를 찾아보았다.
 > [MDN : Window.opener property](https://developer.mozilla.org/en-US/docs/Web/API/Window/opener)
 
-![](/posts/deep_dive/supabase_oauth_popup/4.png)
+![](/posts/supabase_oauth_popup/4.png)
 
 COOP 설정을 `same-origin`으로 하면, 다른 origin 다녀왔을 때 opener가 null이 된다는 것이다.
 
@@ -115,7 +115,7 @@ stack overflow, reddit, github discussion 등 다양한 채널에서 검색해�
 오 신이시여.. 이름에서 느껴지는 정답의 기운..
 심지어 2022년에 출시된 따끈따끈한 API다!
 
-![](/posts/deep_dive/supabase_oauth_popup/5.jpg)
+![](/posts/supabase_oauth_popup/5.jpg)
 
 BroadcastChannel 객체를 생성하여, 
 동일 origin 내 모든 브라우저 context에 전체 방송을 보낼 수 있다.
