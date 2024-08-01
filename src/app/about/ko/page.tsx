@@ -1,4 +1,7 @@
+import React from 'react';
+
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 import LanguageSelector from '../_components/language-selector';
 import { ProjectCard } from '@/components/common/project-card';
@@ -16,7 +19,11 @@ export const metadata: Metadata = {
   description: RESUME_DATA_KO.summary,
 };
 
-export default async function AboutPageKorean() {
+export default async function AboutPageKorean({
+  project_modal,
+}: {
+  project_modal: React.ReactNode;
+}) {
   const projectList = await getSortedProjectList('ko');
   console.log(projectList);
   return (
@@ -144,15 +151,17 @@ export default async function AboutPageKorean() {
           <h2 className='text-2xl font-bold'>Projects</h2>
           <div className='grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 print:gap-2'>
             {projectList.map((project) => (
-              <ProjectCard
-                key={project.title}
-                title={project.title}
-                description={project.desc}
-                // tags={project.techStack}
-                // link={'link' in project ? project.link.href : undefined}
-              />
+              <Link key={project.slug} href={`/project/${project.slug}/${project.locale}`} passHref>
+                <ProjectCard
+                  title={project.title}
+                  description={project.desc}
+                  // tags={project.techStack}
+                  // link={'link' in project ? project.link.href : undefined}
+                />
+              </Link>
             ))}
           </div>
+          {project_modal}
         </Section>
       </Section>
       <LanguageSelector />

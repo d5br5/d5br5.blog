@@ -22,7 +22,8 @@ const parseProject = async (postPath: string, locale: string) => {
   const grayMatter = data as ProjectMatter;
   const startMonthString = dayjs(grayMatter.startMonth).locale(locale).format('YYYY년 MM월 DD일');
   const endMonthString = dayjs(grayMatter.endMonth).locale(locale).format('YYYY년 MM월 DD일');
-  return { ...grayMatter, content, startMonthString, endMonthString };
+  const { url, slug } = parseProjectAbstract(postPath);
+  return { ...grayMatter, content, startMonthString, endMonthString, url, slug, locale };
 };
 
 // project를 날짜 최신순으로 정렬

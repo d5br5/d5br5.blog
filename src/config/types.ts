@@ -35,9 +35,10 @@ export interface ProjectMatter {
 }
 
 export interface Project extends ProjectMatter {
-  // url: string;
-  // slug: string;
+  url: string;
+  slug: string;
   startMonthString: string;
   endMonthString: string;
   content: string;
+  locale: string;
 }
