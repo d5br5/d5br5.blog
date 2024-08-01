@@ -7,24 +7,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Section } from '@/components/ui/section';
-import { RESUME_DATA_EN } from '@/data/resume-data-en';
-import { RESUME_DATA_KO } from '@/data/resume-data-ko';
+import { DATAS, Locale } from '@/config/types';
 import { getSortedProjectList } from '@/lib/project';
 import { cn } from '@/lib/utils';
 import { GlobeIcon, MailIcon } from 'lucide-react';
 
-const DATAS = {
-  en: {
-    data: RESUME_DATA_EN,
-    aboutClassName: '',
-  },
-  ko: {
-    data: RESUME_DATA_KO,
-    aboutClassName: 'sm:whitespace-pre-wrap whitespace-normal',
-  },
-};
-
-type Locale = keyof typeof DATAS;
 interface Props {
   params: {
     locale: Locale;
@@ -43,7 +30,7 @@ export function generateMetadata({ params: { locale } }: Props): Metadata {
   };
 }
 
-export default async function AboutPageEnglish({ params: { locale } }: Props) {
+export default async function AboutPage({ params: { locale } }: Props) {
   const RESUME_DATA = DATAS[locale].data;
   const projectList = await getSortedProjectList(locale);
   return (

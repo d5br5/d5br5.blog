@@ -1,5 +1,5 @@
-import { Project, ProjectMatter } from '@/config/types';
-import dayjs from 'dayjs';
+import { Locale, Project, ProjectMatter } from '@/config/types';
+import { format } from 'date-fns';
 import fs from 'fs';
 import { sync } from 'glob';
 import matter from 'gray-matter';
@@ -15,15 +15,21 @@ export const getProjectPaths = (locale?: string) => {
   return projectPaths;
 };
 
+const monthFormat = {
+  en: 'MMMM yyyy',
+  ko: 'yyyy년 M월',
+};
+
 // MDX detail
-const parseProject = async (postPath: string, locale: string) => {
+const parseProject = async (postPath: string, locale: Locale) => {
   const file = fs.readFileSync(postPath, 'utf8');
   const { data, content } = matter(file);
   const grayMatter = data as ProjectMatter;
-  const startMonthString = dayjs(grayMatter.startMonth).locale(locale).format('YYYY년 MM월 DD일');
-  const endMonthString = dayjs(grayMatter.endMonth).locale(locale).format('YYYY년 MM월 DD일');
-  const { url, slug } = parseProjectAbstract(postPath);
-  return { ...grayMatter, content, startMonthString, endMonthString, url, slug, locale };
+  const startMonthString = format(grayMatter.startMonth, monthFormat[locale]);
+  const endMonthString = format(grayMatter.endMonth, monthFormat[locale]);
+  const slug = getProjectSLug(postPath);
+
+  return { ...grayMatter, content, startMonthString, endMonthString, slug, locale };
 };
 
 // project를 날짜 최신순으로 정렬
@@ -32,20 +38,18 @@ const sortProjectList = (projectList: Project[]) => {
 };
 
 // MDX의 개요 파싱
-export const parseProjectAbstract = (postPath: string) => {
+export const getProjectSLug = (postPath: string) => {
   const path = postPath
     .slice(postPath.indexOf(BASE_PATH))
     .replace(`${BASE_PATH}/`, '')
     .replace('.mdx', '');
 
-  const [slug, locale] = path.split('/');
-
-  const url = `/project/${slug}`;
-  return { url, slug, locale };
+  const [slug] = path.split('/');
+  return slug;
 };
 
 // 모든 프로젝트 목록 조회. 이력서 하단에서 사용
-export const getProjectList = async (locale: string): Promise<Project[]> => {
+export const getProjectList = async (locale: Locale): Promise<Project[]> => {
   const projectPaths = getProjectPaths(locale);
   const projectList = await Promise.all(
     projectPaths.map((postPath) => parseProject(postPath, locale))
@@ -53,13 +57,13 @@ export const getProjectList = async (locale: string): Promise<Project[]> => {
   return projectList;
 };
 
-export const getSortedProjectList = async (locale: string) => {
+export const getSortedProjectList = async (locale: Locale) => {
   const projectList = await getProjectList(locale);
   return sortProjectList(projectList);
 };
 
 // project 상세 페이지 내용 조회
-export const getProjectDetail = async (slug: string, locale: string) => {
+export const getProjectDetail = async (slug: string, locale: Locale) => {
   const filePath = `${PROJECT_PATH}/${slug}/${locale}.mdx`;
   const detail = await parseProject(filePath, locale);
   return detail;

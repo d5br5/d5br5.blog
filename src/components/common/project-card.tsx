@@ -1,35 +1,19 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Project } from '@/config/types';
 
 interface Props {
-  title: string;
-  description: string;
-  // tags: readonly string[];
-  link?: string;
+  project: Project;
 }
 
-export function ProjectCard({ title, description, link }: Props) {
+export function ProjectCard({ project }: Props) {
+  const { title, desc } = project;
   return (
     <Card className='flex flex-col overflow-hidden p-4'>
       <CardHeader className=''>
         <div className='space-y-1'>
-          <CardTitle className='text-base'>
-            {link ? (
-              <a
-                href={link}
-                target='_blank'
-                className='inline-flex items-center gap-1 hover:underline'
-              >
-                {title} <span className='size-1 rounded-full bg-green-500'></span>
-              </a>
-            ) : (
-              title
-            )}
-          </CardTitle>
-          <div className='hidden  text-xs underline print:visible'>
-            {link?.replace('https://', '').replace('www.', '').replace('/', '')}
-          </div>
-          <CardDescription className=' text-xs print:text-[10px]'>{description}</CardDescription>
+          <CardTitle className='text-base'>{title}</CardTitle>
+          <CardDescription className=' text-xs print:text-[10px]'>{desc}</CardDescription>
         </div>
       </CardHeader>
       {/* <CardContent className='mt-auto flex'>

@@ -1,3 +1,6 @@
+import { RESUME_DATA_EN } from '@/data/resume-data-en';
+import { RESUME_DATA_KO } from '@/data/resume-data-ko';
+
 export interface PostMatter {
   title: string;
   date: Date;
@@ -29,16 +32,28 @@ export interface HeadingItem {
 
 export interface ProjectMatter {
   title: string;
-  startMonth: Date;
-  endMonth: Date;
   desc: string;
+  startMonth: string;
+  endMonth: string;
 }
 
 export interface Project extends ProjectMatter {
-  url: string;
   slug: string;
   startMonthString: string;
   endMonthString: string;
   content: string;
   locale: string;
 }
+
+export const DATAS = {
+  en: {
+    data: RESUME_DATA_EN,
+    aboutClassName: '',
+  },
+  ko: {
+    data: RESUME_DATA_KO,
+    aboutClassName: 'sm:whitespace-pre-wrap whitespace-normal',
+  },
+};
+
+export type Locale = keyof typeof DATAS;

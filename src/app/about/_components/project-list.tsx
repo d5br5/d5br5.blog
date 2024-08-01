@@ -16,12 +16,7 @@ export default function ProjectList({ list }: Props) {
         {list.map((project) => (
           <Fragment key={project.slug}>
             <D.DialogTrigger>
-              <ProjectCard
-                title={project.title}
-                description={project.desc}
-                // tags={project.techStack}
-                // link={'link' in project ? project.link.href : undefined}
-              />
+              <ProjectCard project={project} />
             </D.DialogTrigger>
             <D.DialogContent className='px-0'>
               <div className='max-h-[80vh] overflow-y-scroll'>
