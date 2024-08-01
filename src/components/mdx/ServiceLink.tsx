@@ -1,6 +1,5 @@
 import Link from 'next/link';
 
-import IconGithub from '../icon/Github';
 import { Button } from '../ui/button';
 import { ExternalLink } from 'lucide-react';
 
