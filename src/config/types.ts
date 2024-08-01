@@ -35,6 +35,7 @@ export interface ProjectMatter {
   desc: string;
   startMonth: string;
   endMonth: string;
+  tags: string;
 }
 
 export interface Project extends ProjectMatter {

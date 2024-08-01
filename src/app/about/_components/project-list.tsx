@@ -19,9 +19,11 @@ export default function ProjectList({ list }: Props) {
               <ProjectCard project={project} />
             </D.DialogTrigger>
             <D.DialogContent className='px-0'>
+              <D.DialogTitle className='text-center text-xl'>{project.title}</D.DialogTitle>
               <div className='max-h-[80vh] overflow-y-scroll'>
                 <ProjectBody project={project} />
               </div>
+              <D.DialogDescription className='sr-only'></D.DialogDescription>
             </D.DialogContent>
           </Fragment>
         ))}
