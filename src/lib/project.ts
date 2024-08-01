@@ -16,7 +16,7 @@ export const getProjectPaths = (locale?: string) => {
 };
 
 const monthFormat = {
-  en: 'MMMM yyyy',
+  en: 'MMMM, yyyy',
   ko: 'yyyy년 M월',
 };
 
