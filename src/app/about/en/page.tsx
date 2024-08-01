@@ -1,14 +1,13 @@
 import { Metadata } from 'next';
 
 import LanguageSelector from '../_components/language-selector';
-import { ProjectCard } from '@/components/common/project-card';
+import ProjectList from '../_components/project-list';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { Section } from '@/components/ui/section';
 import { RESUME_DATA_EN } from '@/data/resume-data-en';
-import { getSortedProjectList } from '@/lib/project';
 import { GlobeIcon, MailIcon } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -16,10 +15,7 @@ export const metadata: Metadata = {
   description: RESUME_DATA_EN.summary,
 };
 
-export default async function AboutPageEnglish() {
-  const projectList = await getSortedProjectList('en');
-  console.log(projectList);
-
+export default function AboutPageEnglish() {
   return (
     <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 pt-12 sm:p-9 md:p-16 print:p-12'>
       <Section className='mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-4'>
@@ -143,17 +139,7 @@ export default async function AboutPageEnglish() {
 
         <Section className='print-force-new-page scroll-mb-16'>
           <h2 className='text-2xl font-bold'>Projects</h2>
-          <div className='grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 print:gap-2'>
-            {projectList.map((project) => (
-              <ProjectCard
-                key={project.title}
-                title={project.title}
-                description={project.desc}
-                // tags={project.techStack}
-                // link={'link' in project ? project.link.href : undefined}
-              />
-            ))}
-          </div>
+          <ProjectList locale='en' />
         </Section>
       </Section>
       <LanguageSelector />
