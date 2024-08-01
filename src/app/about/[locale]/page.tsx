@@ -48,7 +48,7 @@ export default async function AboutPageEnglish({ params: { locale } }: Props) {
   const projectList = await getSortedProjectList(locale);
   return (
     <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 pt-12 sm:p-9 md:p-16 print:p-12'>
-      <Section className='mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-4'>
+      <Section className='mx-auto w-full max-w-2xl space-y-8 print:space-y-4'>
         <div className='flex flex-col-reverse items-center justify-between gap-4 sm:flex-row'>
           <div className='flex-1 space-y-1.5 text-center sm:text-start'>
             <h1 className='mb-4 text-3xl font-bold'>{RESUME_DATA.name}</h1>
