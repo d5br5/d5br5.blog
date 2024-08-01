@@ -26,3 +26,18 @@ export interface HeadingItem {
   link: string;
   indent: number;
 }
+
+export interface ProjectMatter {
+  title: string;
+  startMonth: Date;
+  endMonth: Date;
+  desc: string;
+}
+
+export interface Project extends ProjectMatter {
+  // url: string;
+  // slug: string;
+  startMonthString: string;
+  endMonthString: string;
+  content: string;
+}
