@@ -1,15 +1,14 @@
 import { ProjectCard } from '@/components/common/project-card';
-import { getSortedProjectList } from '@/lib/project';
+import { Project } from '@/config/types';
 
 interface Props {
-  locale: string;
+  list: Project[];
 }
 
-export default async function ProjectList({ locale }: Props) {
-  const projectList = await getSortedProjectList(locale);
+export default async function ProjectList({ list }: Props) {
   return (
     <div className='grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 print:gap-2'>
-      {projectList.map((project) => (
+      {list.map((project) => (
         <ProjectCard
           key={project.slug}
           title={project.title}

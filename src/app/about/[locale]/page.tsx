@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/
 import { Section } from '@/components/ui/section';
 import { RESUME_DATA_EN } from '@/data/resume-data-en';
 import { RESUME_DATA_KO } from '@/data/resume-data-ko';
+import { getSortedProjectList } from '@/lib/project';
 import { cn } from '@/lib/utils';
 import { GlobeIcon, MailIcon } from 'lucide-react';
 
@@ -42,8 +43,9 @@ export function generateMetadata({ params: { locale } }: Props): Metadata {
   };
 }
 
-export default function AboutPageEnglish({ params: { locale } }: Props) {
+export default async function AboutPageEnglish({ params: { locale } }: Props) {
   const RESUME_DATA = DATAS[locale].data;
+  const projectList = await getSortedProjectList(locale);
   return (
     <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 pt-12 sm:p-9 md:p-16 print:p-12'>
       <Section className='mx-auto w-full max-w-2xl space-y-8 bg-white print:space-y-4'>
@@ -172,7 +174,7 @@ export default function AboutPageEnglish({ params: { locale } }: Props) {
 
         <Section className='print-force-new-page scroll-mb-16'>
           <h2 className='text-2xl font-bold'>Projects</h2>
-          <ProjectList locale={locale} />
+          <ProjectList list={projectList} />
         </Section>
       </Section>
       <LanguageSelector />
