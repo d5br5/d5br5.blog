@@ -20,7 +20,7 @@ export const ProjectBody = ({ project }: Props) => {
   const { gitRepoUrl, link } = project;
   return (
     <Suspense fallback={<>Loading...</>}>
-      <div className='prose project px-5'>
+      <div className='prose project px-5 dark:prose-invert'>
         {(link || gitRepoUrl) && (
           <div className='mt-1 flex flex-wrap justify-center gap-4'>
             {gitRepoUrl && <GitRepo url={gitRepoUrl} />}
