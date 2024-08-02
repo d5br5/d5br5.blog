@@ -9,7 +9,7 @@ interface Props {
 
 export default function ProjectList({ list }: Props) {
   return (
-    <div className='grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 print:gap-2'>
+    <div className='grid grid-cols-1 gap-3 sm:grid-cols-2 print:grid-cols-3 print:gap-2'>
       {list.map((project) => (
         <D.Dialog key={project.slug}>
           <D.DialogTrigger>

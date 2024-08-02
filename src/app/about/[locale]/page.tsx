@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
-import LanguageSelector from '../_components/language-selector';
-import ProjectList from '../_components/project-list';
+import LanguageSelector from '../../../components/about/language-selector';
+import ProjectList from '../../../components/about/project-list';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

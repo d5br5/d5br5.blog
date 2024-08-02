@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 
 import { MdxComponents } from '../mdx';
-import { GitRepo } from '@/app/about/_components/GitRepo';
-import { ServiceLink } from '@/app/about/_components/ServiceLink';
+import { GitRepo } from '@/components/about/git-repo';
+import { ServiceLink } from '@/components/about/service-link';
 import { Project } from '@/config/types';
 // @ts-expect-error no types
 import remarkA11yEmoji from '@fec/remark-a11y-emoji';
@@ -20,7 +20,7 @@ export const ProjectBody = ({ project }: Props) => {
   const { gitRepoUrl, serviceUrl, startMonthString, endMonthString } = project;
   return (
     <Suspense fallback={<>Loading...</>}>
-      <div className='project prose px-5'>
+      <div className='prose project px-5'>
         {(serviceUrl || gitRepoUrl) && (
           <div className='mt-1 flex flex-wrap justify-center gap-4'>
             {gitRepoUrl && <GitRepo url={gitRepoUrl} />}
