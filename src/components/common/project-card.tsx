@@ -11,7 +11,7 @@ export function ProjectCard({ project }: Props) {
   const tagList = tags.split(',').map((item) => item.trim());
 
   return (
-    <Card className='flex flex-col overflow-hidden p-4'>
+    <Card className='flex h-full flex-col overflow-hidden p-4'>
       <CardHeader className=''>
         <div>
           <CardTitle className='text-base'>{title}</CardTitle>

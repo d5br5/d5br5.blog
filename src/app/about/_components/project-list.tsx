@@ -1,5 +1,3 @@
-import { Fragment } from 'react';
-
 import { ProjectCard } from '@/components/common/project-card';
 import { ProjectBody } from '@/components/project-detail/project-body';
 import * as D from '@/components/ui/dialog';
@@ -17,7 +15,7 @@ export default function ProjectList({ list }: Props) {
           <D.DialogTrigger>
             <ProjectCard project={project} />
           </D.DialogTrigger>
-          <D.DialogContent className='gap-0 px-0 pb-1'>
+          <D.DialogContent className='gap-0 px-0 pb-3'>
             <D.DialogTitle className='text-center text-xl'>{project.title}</D.DialogTitle>
             <div className='mt-1 text-center text-sm text-gray-500'>
               {project.startMonthString} - {project.endMonthString}
