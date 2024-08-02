@@ -11,16 +11,12 @@ export function ProjectCard({ project }: Props) {
   const tagList = tags.split(',').map((item) => item.trim());
 
   return (
-    <Card className='flex h-full flex-col overflow-hidden p-4'>
+    <Card className='flex h-full flex-col overflow-hidden p-4 text-left'>
       <CardHeader className=''>
         <div>
-          <CardTitle className='text-base'>
-            <div className='relative m-auto w-fit'>
-              {project.title}
-              {project.link && (
-                <div className='absolute -right-2.5 top-2.5 size-1 rounded-full bg-green-500' />
-              )}
-            </div>
+          <CardTitle className='flex items-center gap-1.5 text-base'>
+            {title}
+            {link && <div className='size-1 rounded-full bg-green-500' />}
           </CardTitle>
           <CardDescription className='mt-1'>
             {startMonthString} - {endMonthString}
