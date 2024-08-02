@@ -17,14 +17,14 @@ interface Props {
 }
 
 export const ProjectBody = ({ project }: Props) => {
-  const { gitRepoUrl, serviceUrl, startMonthString, endMonthString } = project;
+  const { gitRepoUrl, link } = project;
   return (
     <Suspense fallback={<>Loading...</>}>
       <div className='prose project px-5'>
-        {(serviceUrl || gitRepoUrl) && (
+        {(link || gitRepoUrl) && (
           <div className='mt-1 flex flex-wrap justify-center gap-4'>
             {gitRepoUrl && <GitRepo url={gitRepoUrl} />}
-            {serviceUrl && <ServiceLink url={serviceUrl} />}
+            {link && <ServiceLink url={link} />}
           </div>
         )}
         <MDXRemote

@@ -7,14 +7,21 @@ interface Props {
 }
 
 export function ProjectCard({ project }: Props) {
-  const { title, desc, startMonthString, endMonthString, tags } = project;
+  const { title, desc, startMonthString, endMonthString, tags, link } = project;
   const tagList = tags.split(',').map((item) => item.trim());
 
   return (
     <Card className='flex h-full flex-col overflow-hidden p-4'>
       <CardHeader className=''>
         <div>
-          <CardTitle className='text-base'>{title}</CardTitle>
+          <CardTitle className='text-base'>
+            <div className='relative m-auto w-fit'>
+              {project.title}
+              {project.link && (
+                <div className='absolute -right-2.5 top-2.5 size-1 rounded-full bg-green-500' />
+              )}
+            </div>
+          </CardTitle>
           <CardDescription className='mt-1'>
             {startMonthString} - {endMonthString}
           </CardDescription>

@@ -1,4 +1,4 @@
-import { ProjectCard } from '@/components/common/project-card';
+import { ProjectCard } from '@/components/about/project-card';
 import { ProjectBody } from '@/components/project-detail/project-body';
 import * as D from '@/components/ui/dialog';
 import { Project } from '@/config/types';
@@ -16,7 +16,14 @@ export default function ProjectList({ list }: Props) {
             <ProjectCard project={project} />
           </D.DialogTrigger>
           <D.DialogContent className='gap-0 px-0 pb-3'>
-            <D.DialogTitle className='text-center text-xl'>{project.title}</D.DialogTitle>
+            <D.DialogTitle className='text-center text-xl'>
+              <div className='relative m-auto w-fit'>
+                {project.title}
+                {project.link && (
+                  <div className='absolute -right-3 top-3 size-1 rounded-full bg-green-500' />
+                )}
+              </div>
+            </D.DialogTitle>
             <div className='mt-1 text-center text-sm text-gray-500'>
               {project.startMonthString} - {project.endMonthString}
             </div>
