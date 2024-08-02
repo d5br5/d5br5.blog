@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import LanguageSelector from '@/components/about/language-selector';
 import ScrollProgressBar from '@/components/common/ScrollProgressBar';
 import { Button } from '@/components/ui/button';
 import { useSpyElem } from '@/hook/useSpy';
@@ -15,9 +16,12 @@ const navList = [
   { name: 'About', href: '/about' },
 ];
 
+const localePathList = ['/about'];
+
 export const Header = () => {
   const { ref, marginTop } = useSpyElem(65);
   const pathname = usePathname();
+  const isLocalePath = localePathList.some((path) => pathname.startsWith(path));
 
   return (
     <nav
@@ -42,6 +46,9 @@ export const Header = () => {
             </Link>
           ))}
         </div>
+
+        {isLocalePath && <LanguageSelector className='hidden sm:flex' />}
+
         <div className='flex gap-3'>
           <ThemeSwitch />
           <Button asChild variant='ghost' size='icon'>
