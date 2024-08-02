@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import IconGithub from '../icon/Github';
-import { Button } from '../ui/button';
+import IconGithub from '@/components/icon/Github';
+import { Button } from '@/components/ui/button';
 
 interface Props {
   url: string;

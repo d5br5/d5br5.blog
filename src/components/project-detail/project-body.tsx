@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
 
 import { MdxComponents } from '../mdx';
+import { GitRepo } from '@/app/about/_components/GitRepo';
+import { ServiceLink } from '@/app/about/_components/ServiceLink';
 import { Project } from '@/config/types';
 // @ts-expect-error no types
 import remarkA11yEmoji from '@fec/remark-a11y-emoji';
@@ -15,9 +17,16 @@ interface Props {
 }
 
 export const ProjectBody = ({ project }: Props) => {
+  const { gitRepoUrl, serviceUrl, startMonthString, endMonthString } = project;
   return (
     <Suspense fallback={<>Loading...</>}>
       <div className='prose px-5'>
+        {(serviceUrl || gitRepoUrl) && (
+          <div className='mt-1 flex flex-wrap justify-center gap-4'>
+            {gitRepoUrl && <GitRepo url={gitRepoUrl} />}
+            {serviceUrl && <ServiceLink url={serviceUrl} />}
+          </div>
+        )}
         <MDXRemote
           source={project.content}
           options={{

@@ -36,6 +36,8 @@ export interface ProjectMatter {
   startMonth: string;
   endMonth: string;
   tags: string;
+  gitRepoUrl?: string;
+  serviceUrl?: string;
 }
 
 export interface Project extends ProjectMatter {
