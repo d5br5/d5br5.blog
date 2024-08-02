@@ -70,22 +70,6 @@ export const RESUME_DATA_EN = {
     },
   ],
   skills: ['Javascript', 'Typescript', 'React.js', 'Vue.js', 'Next.js'],
-  projects: [
-    {
-      title: 'Parabol',
-      techStack: ['Full Stack Developer', 'TypeScript', 'React', 'Node.js', 'GraphQL'],
-      description: 'The Agile meeting co-pilot that delivers better meetings with less effort',
-      link: {
-        label: 'github.com',
-        href: 'https://parabol.co/',
-      },
-    },
-    {
-      title: 'Canal Digital GO',
-      techStack: ['Lead Android Developer', 'Android', 'Kotlin'],
-      description: 'Video streaming mobile application for Canal Digital subscribers',
-    },
-  ],
 } as const;
 
 export type RESUME = typeof RESUME_DATA_EN;

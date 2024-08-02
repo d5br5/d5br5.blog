@@ -1,0 +1,34 @@
+---
+title: 'Web Game: Minesweeper'
+desc: 'A web implementation of the classic Windows Minesweeper game'
+startMonth: '2021-03'
+endMonth: '2021-04'
+tags: 'FE, HTML, CSS, Javascript'
+gitRepoUrl: 'https://github.com/d5br5/GAME_Minesweeper'
+link: 'https://d5br5.github.io/GAME_Minesweeper'
+---
+
+![](https://user-images.githubusercontent.com/40906871/143425699-118edb42-cf06-4813-9bc7-9bdd492f8bca.JPG)
+
+###  Purpose
+
+- To create a web version of the classic Windows Minesweeper game that I frequently played.
+- To understand that, while the game appears simple on the surface, its internal implementation can be challenging.
+- To implement the game using plain JavaScript without relying on external libraries.
+
+### Tech Stack
+
+> HTML, CSS, Javascript
+
+### Main Features
+
+- Map Generation
+  - Accepts input for the map size (x, y) and the number of mines (z).
+- Mouse Click
+  - Left Click: Opens the selected cell. If a mine is present, the game ends.
+  - Right Click: Places a flag and shows the remaining mine count.
+- Opened Cells
+  - Displays the number of surrounding mines for the selected cell.
+  - If the surrounding mine count is 0, all adjacent cells open.
+- Dashboard
+  - Displays elapsed time, remaining mine count, and the number of safe cells.

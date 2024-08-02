@@ -1,0 +1,50 @@
+---
+title: 'Self Studio Comprehensive Search Service'
+desc: 'A service to check detailed information such as location and price of self-studios'
+startMonth: '2021-11'
+endMonth: '2022-07'
+tags: 'Full-Stack, Next.js, Recoil, Firebase, MUI'
+gitRepoUrl: 'https://github.com/d5br5/WEB_Prism_Station'
+---
+
+![](https://user-images.githubusercontent.com/40906871/144601334-d84a102f-6679-4dd3-8586-ffce91f747b5.png)
+
+> The rapidly growing ‘Self Studio’ market among the MZ generation
+
+### Overview
+
+- A service to check the location, detailed information, etc. of self-studios based on the Naver Map API.
+- Captured the trend of the rapidly growing self-studio market (10 in 2018 → 300 in 2021, nationwide).
+- Previous inconveniences:
+  - When searching for ‘self studio’, results also included general photo studios.
+  - Difficulties in comprehensive comparison of prices and locations.
+- Allows checking and comparing refined information through the map API.
+
+
+### Tech Stack - v1
+
+<img src="https://user-images.githubusercontent.com/40906871/180707405-c51d7035-09f2-4c33-96fd-b8df870d4382.png" alt="drawing" width="800"/>
+
+### Tech Stack - v2
+
+<img src="https://user-images.githubusercontent.com/40906871/201814634-bacbf46b-cb7f-49e1-9674-c35e6c6ffd09.png" alt="drawing" width="800"/>
+
+### Main Features
+
+- Check the location of self-studios via the map API.
+- After logging in, users can favorite businesses and write suggestion posts.
+- User authentication: JWT.
+- Check detailed information such as rating, price, and contact information for each studio.
+- Maintain user information upon refresh through Recoil persist.
+
+### Achievements
+
+- Measured user metrics through Google Analytics.
+- Non-paid promotion mainly on women’s communities.
+- First-week MVP test results: approximately 1,800 visitors and around 9,000 business connections.
+- Customer suggestions: requests for regional expansion, requests for missing business additions, etc.
+
+### Insights
+
+- As a developer, there seemed to be many shortcomings and a mountain of additional features to implement, but many people used the service. While raising the completion level is important, ensuring that the overall functions work smoothly already accounts for more than half the success.
+- The user count per page indicated that map view users were more than ten times higher than list view users. The list page turned out to be unnecessary from a UI/UX perspective. Removing the list view and enhancing the map view would be cleaner and more convenient for consumers. Focus and prioritization are necessary.

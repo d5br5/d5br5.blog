@@ -1,0 +1,47 @@
+---
+title: '투자 시뮬레이터: 로보 어드바이저'
+desc: '주식, 채권 등 여러 자산을 고려한 포트폴리오 생성 AI 시뮬레이터'
+startMonth: '2022-04'
+endMonth: '2022-08'
+tags: 'FE, React, Redux, Chart.js'
+gitRepoUrl: 'https://github.com/d5br5/WEB_Robo_Advisor'
+---
+
+![](https://user-images.githubusercontent.com/40906871/180706515-44108979-795a-40c8-b23e-570c4f80c804.png)
+
+### 개요
+ 
+- 주식, 채권 등 여러 자산을 고려한 포트폴리오 생성 시뮬레이터
+- 두가지 서비스로 구성
+    - 자산배분 : 현재 보유한 이 종목들의 비중을 어떻게 가져갔어야 지금 수익률이 최대였을까?
+    - 트레이딩 : 종목 상관없이, 내가 구상한 매매 전략으로 진행하면 일년 후에는 어떻게 될까?
+- 시뮬레이션 정보를 제출하면, 연동된 AI model이 분석결과 생성
+- 진행한 시뮬레이션 히스토리 내역을 확인하여 실제 투자에 참고
+
+### Tech Stack
+
+![](https://user-images.githubusercontent.com/40906871/175820678-644b0195-4939-4b46-bd8b-627c93c3a630.png)
+
+
+### Role
+
+> 자산배분, 트레이딩 시뮬레이터 서비스 전반의 front-end 개발
+
+#### 기능 구현
+- authentication: google auth
+- form control: react-hook-form
+- state control: redux, useState
+- fetch: Axios, interceptors
+- data plot: chart.js
+
+#### UI/UX 개선
+- 목적에 맞게 chart type 다양화 (line, pie, zoom, log, etc)
+- bootstrap, className 혼용 → styled-component로 통일
+- 반응형 작업
+- modal 내부 사용자 동작 간소화
+
+#### 렌더링 최적화
+- React.memo, useMemo, useCallback 적용
+- useState의 함수형 업데이트 사용
+- 코드 스플리팅: React.lazy, Suspense 적용
+- 적용 결과 47% 성능 향상 (모든 페이지 평균)

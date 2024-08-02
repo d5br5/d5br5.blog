@@ -1,0 +1,50 @@
+---
+title: 'Investment Simulator: Robo Advisor'
+desc: 'A portfolio creation AI simulator considering various assets like stocks and bonds'
+startMonth: '2022-04'
+endMonth: '2022-08'
+tags: 'FE, React, Redux, Chart.js'
+gitRepoUrl: 'https://github.com/d5br5/WEB_Robo_Advisor'
+---
+
+![](https://user-images.githubusercontent.com/40906871/180706515-44108979-795a-40c8-b23e-570c4f80c804.png)
+
+### Overview
+
+- A portfolio creation simulator considering various assets like stocks and bonds.
+- Composed of two main services:
+    - Asset Allocation: How should the proportions of the currently held stocks have been adjusted to maximize returns?
+    - Trading: Regardless of the stock, how will my trading strategy perform after one year?
+- Submit simulation information and the connected AI model generates analysis results.
+- Review the history of conducted simulations to inform actual investment decisions.
+
+### Tech Stack
+
+![](https://user-images.githubusercontent.com/40906871/175820678-644b0195-4939-4b46-bd8b-627c93c3a630.png)
+
+
+### Role
+
+> Front-end development of the overall asset allocation and trading simulator services.
+
+#### Feature Implementation
+
+- Authentication: Google Auth
+- Form control: react-hook-form
+- State control: Redux, useState
+- Data fetching: Axios, interceptors
+- Data plotting: chart.js
+
+#### UI/UX Improvements
+
+- Diversified chart types according to the purpose (line, pie, zoom, log, etc.)
+- Unified use of styled-components instead of mixing bootstrap and className
+- Implemented responsive design
+- Simplified user interactions within modals
+
+#### Rendering Optimization
+
+- Applied React.memo, useMemo, and useCallback
+- Used functional updates for useState
+- Implemented code splitting: React.lazy, Suspense
+- Resulted in a 47% performance improvement (average across all pages)
