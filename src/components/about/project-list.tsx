@@ -27,7 +27,7 @@ export default function ProjectList({ list }: Props) {
             <div className='mt-1 text-center text-sm text-gray-500'>
               {project.startMonthString} - {project.endMonthString}
             </div>
-            <div className='mt-2 max-h-[80vh] overflow-y-scroll'>
+            <div className='mt-2 max-h-[60vh] overflow-y-scroll sm:max-h-[70vh]'>
               <ProjectBody project={project} />
             </div>
             <D.DialogDescription className='sr-only'></D.DialogDescription>

@@ -154,6 +154,10 @@ const config = {
               marginTop: '0px !important',
             },
 
+            '.project p,ul,li': {
+              fontSize: 15,
+            },
+
             u: {
               textUnderlineOffset: '4px',
               textDecorationThickness: 1,
