@@ -20,7 +20,7 @@ export const ProjectBody = ({ project }: Props) => {
   const { gitRepoUrl, serviceUrl, startMonthString, endMonthString } = project;
   return (
     <Suspense fallback={<>Loading...</>}>
-      <div className='prose px-5'>
+      <div className='project prose px-5'>
         {(serviceUrl || gitRepoUrl) && (
           <div className='mt-1 flex flex-wrap justify-center gap-4'>
             {gitRepoUrl && <GitRepo url={gitRepoUrl} />}

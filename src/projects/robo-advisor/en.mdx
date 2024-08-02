@@ -1,23 +1,22 @@
 ---
-title: '투자 시뮬레이터: 로보 어드바이저'
-desc: '주식, 채권 등 여러 자산을 고려한 포트폴리오 생성 시뮬레이터. AI model을 활용해 과거 데이터 분석 및 미래 데이터 예측'
+title: 'Investment Simulator: Robo Advisor'
+desc: 'A portfolio creation simulator considering various assets like stocks and bonds. Uses AI models to analyze past data and predict future trends.'
 startMonth: '2022-04'
 endMonth: '2022-08'
 tags: 'React, Redux, styled-component, chart.js, Axios, google auth'
 gitRepoUrl: 'https://github.com/d5br5/WEB_Robo_Advisor'
-serviceUrl: 'https://www.naver.com'
 ---
 
 ![](https://user-images.githubusercontent.com/40906871/180706515-44108979-795a-40c8-b23e-570c4f80c804.png)
 
-### 개요
- 
-- 주식, 채권 등 여러 자산을 고려한 포트폴리오 생성 시뮬레이터
-- 두가지 서비스로 구성
-    - 자산배분 : 현재 보유한 이 종목들의 비중을 어떻게 가져갔어야 지금 수익률이 최대였을까?
-    - 트레이딩 : 종목 상관없이, 내가 구상한 매매 전략으로 진행하면 일년 후에는 어떻게 될까?
-- 시뮬레이션 정보를 제출하면, 연동된 AI model이 분석결과 생성
-- 진행한 시뮬레이션 히스토리 내역을 확인하여 실제 투자에 참고
+### Overview
+
+- A portfolio creation simulator considering various assets like stocks and bonds.
+- Composed of two main services:
+    - Asset Allocation: How should the proportions of the currently held stocks have been adjusted to maximize returns?
+    - Trading: Regardless of the stock, how will my trading strategy perform after one year?
+- Submit simulation information and the connected AI model generates analysis results.
+- Review the history of conducted simulations to inform actual investment decisions.
 
 ### Tech Stack
 
@@ -26,26 +25,26 @@ serviceUrl: 'https://www.naver.com'
 
 ### Role
 
-> 자산배분, 트레이딩 시뮬레이터 서비스 전반의 front-end 개발
+> Front-end development of the overall asset allocation and trading simulator services.
 
-#### 기능 구현
+#### Feature Implementation
 
-- authentication: google auth
-- form control: react-hook-form
-- state control: redux, useState
-- fetch: Axios, interceptors
-- data plot: chart.js
+- Authentication: Google Auth
+- Form control: react-hook-form
+- State control: Redux, useState
+- Data fetching: Axios, interceptors
+- Data plotting: chart.js
 
-#### UI/UX 개선
+#### UI/UX Improvements
 
-- 목적에 맞게 chart type 다양화 (line, pie, zoom, log, etc)
-- bootstrap, className 혼용 → styled-component로 통일
-- 반응형 작업
-- modal 내부 사용자 동작 간소화
+- Diversified chart types according to the purpose (line, pie, zoom, log, etc.)
+- Unified use of styled-components instead of mixing bootstrap and className
+- Implemented responsive design
+- Simplified user interactions within modals
 
-#### 렌더링 최적화
+#### Rendering Optimization
 
-- React.memo, useMemo, useCallback 적용
-- useState의 함수형 업데이트 사용
-- 코드 스플리팅: React.lazy, Suspense 적용
-- 적용 결과 47% 성능 향상 (모든 페이지 평균)
+- Applied React.memo, useMemo, and useCallback
+- Used functional updates for useState
+- Implemented code splitting: React.lazy, Suspense
+- Resulted in a 47% performance improvement (average across all pages)

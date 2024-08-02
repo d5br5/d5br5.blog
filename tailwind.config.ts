@@ -150,6 +150,10 @@ const config = {
               backgroundColor: 'rgba(253, 224, 71, 0.2)',
             },
 
+            '.project img': {
+              marginTop: '0px !important',
+            },
+
             u: {
               textUnderlineOffset: '4px',
               textDecorationThickness: 1,
