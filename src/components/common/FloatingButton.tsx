@@ -15,6 +15,7 @@ const FloatingButton = () => {
   const handleOutsideClick = () => setVisible(false);
 
   const buttonRef = useOutsideClick<HTMLButtonElement>(handleOutsideClick);
+  const url = window.document.location.href;
 
   return (
     <div className='group fixed bottom-4 right-4 xl:hidden'>
@@ -29,6 +30,7 @@ const FloatingButton = () => {
           <Bolt size={22} />
         </Button>
         <CopyLinkButton
+          url={url}
           size={22}
           className={cn('absolute bottom-0 right-0 transition', visible && '-translate-y-12')}
         />
