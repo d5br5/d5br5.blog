@@ -10,7 +10,7 @@ import { Check, Copy, XCircle } from 'lucide-react';
 interface ButtonProps {
   size?: number;
   className?: string;
-  url: string;
+  url?: string;
   variant?: 'outline' | 'default';
 }
 
@@ -39,8 +39,9 @@ const CopyLinkButton = ({ size = 16, className, url, variant = 'outline' }: Butt
   const failToast = () => toast({ title: FailToastTitle, variant: 'destructive' });
 
   const handleCopy = async () => {
+    const copyUrl = url ? url : window.document.location.href;
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(copyUrl);
       setCopied(true);
       successToast();
     } catch (e) {
