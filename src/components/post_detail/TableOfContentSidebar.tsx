@@ -14,6 +14,7 @@ interface Props {
 
 const TableOfContent = ({ toc }: Props) => {
   const activeIdList = useHeadingsObserver('h2, h3');
+  const url = window.document.location.href;
 
   return (
     <aside className='not-prose absolute -top-[200px] left-full -mb-[100px] hidden h-[calc(100%+150px)] xl:block '>
@@ -42,7 +43,7 @@ const TableOfContent = ({ toc }: Props) => {
         <div className='flex gap-2'>
           <ScrollTop />
           <ScrollToComment />
-          <CopyLinkButton />
+          <CopyLinkButton url={url} />
         </div>
       </div>
     </aside>

@@ -5,14 +5,16 @@ import { useState } from 'react';
 import { Button } from '../ui/button';
 import { useToast } from '../ui/use-toast';
 import useWatchTimeout from '@/hook/useWatchTimeout';
-import { Check, Link, XCircle } from 'lucide-react';
+import { Check, Copy, XCircle } from 'lucide-react';
 
 interface ButtonProps {
   size?: number;
   className?: string;
+  url: string;
+  variant?: 'outline' | 'default';
 }
 
-const CopyLinkButton = ({ size = 16, className }: ButtonProps) => {
+const CopyLinkButton = ({ size = 16, className, url, variant = 'outline' }: ButtonProps) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 
@@ -37,8 +39,6 @@ const CopyLinkButton = ({ size = 16, className }: ButtonProps) => {
   const failToast = () => toast({ title: FailToastTitle, variant: 'destructive' });
 
   const handleCopy = async () => {
-    const url = window.document.location.href;
-
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -50,8 +50,9 @@ const CopyLinkButton = ({ size = 16, className }: ButtonProps) => {
   };
 
   return (
-    <Button variant='outline' size='icon' onClick={handleCopy} className={className}>
-      {copied ? <Check size={size} /> : <Link size={size} />}
+    <Button variant={variant} size='icon' onClick={handleCopy} className={className}>
+      <span className='sr-only'>Copy</span>
+      {copied ? <Check size={size} /> : <Copy size={size} />}
     </Button>
   );
 };

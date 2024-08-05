@@ -2,10 +2,13 @@ import { Metadata } from 'next';
 
 import LanguageSelector from '@/components/about/language-selector';
 import ProjectList from '@/components/about/project-list';
+import CopyLinkButton from '@/components/common/CopyLinkButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
+import * as D from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Section } from '@/components/ui/section';
 import { DATAS, Locale } from '@/config/types';
 import { getSortedProjectList } from '@/lib/project';
@@ -34,8 +37,8 @@ export default async function AboutPage({ params: { locale } }: Props) {
   const RESUME_DATA = DATAS[locale].data;
   const projectList = await getSortedProjectList(locale);
   return (
-    <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 sm:p-9 md:p-16 print:p-12'>
-      <LanguageSelector className='m-auto mb-5 border-0 sm:hidden' />
+    <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 sm:p-9 md:p-16 print:p-12 print:pt-0'>
+      <LanguageSelector className='m-auto mb-5 border-0 sm:hidden print:hidden' />
       <Section className='mx-auto w-full max-w-2xl space-y-8 print:space-y-4'>
         <div className='flex flex-col-reverse items-center justify-between gap-4 sm:flex-row'>
           <div className='flex-1 space-y-1.5 text-center sm:text-start'>
@@ -62,19 +65,40 @@ export default async function AboutPage({ params: { locale } }: Props) {
                 </Button>
               ))}
               {RESUME_DATA.contact.email && (
-                <Button className='size-8' variant='outline' size='icon' asChild>
-                  <a href={`mailto:${RESUME_DATA.contact.email}`}>
-                    <MailIcon className='size-4' />
-                  </a>
-                </Button>
+                <D.Dialog>
+                  <D.DialogTrigger>
+                    <Button className='size-8' variant='outline' size='icon' asChild>
+                      <MailIcon className='size-4' />
+                    </Button>
+                  </D.DialogTrigger>
+                  <D.DialogContent className='max-w-[300px]'>
+                    <D.DialogHeader>
+                      <D.DialogTitle className='p-0'>Email Address</D.DialogTitle>
+                      <D.DialogDescription></D.DialogDescription>
+                    </D.DialogHeader>
+                    <div className='flex items-center space-x-2'>
+                      <div className='grid flex-1 gap-2'>
+                        <label htmlFor='link' className='sr-only'>
+                          Link
+                        </label>
+                        <Input id='link' defaultValue={RESUME_DATA.contact.email} readOnly />
+                      </div>
+                      <CopyLinkButton
+                        variant='default'
+                        url={RESUME_DATA.contact.email}
+                        className='p-3'
+                      />
+                    </div>
+                  </D.DialogContent>
+                </D.Dialog>
               )}
             </div>
             <div className='hidden flex-col gap-x-1 text-sm text-muted-foreground print:flex print:text-[12px]'>
-              {RESUME_DATA.contact.email ? (
+              {RESUME_DATA.contact.email && (
                 <a href={`mailto:${RESUME_DATA.contact.email}`}>
                   <span className='underline'>{RESUME_DATA.contact.email}</span>
                 </a>
-              ) : null}
+              )}
             </div>
           </div>
 
