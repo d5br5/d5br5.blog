@@ -5,7 +5,7 @@ import { sync } from 'glob';
 import matter from 'gray-matter';
 import path from 'path';
 
-const BASE_PATH = '/src/projects';
+const BASE_PATH = '/src/projects/section';
 const PROJECT_PATH = path.join(process.cwd(), BASE_PATH);
 
 // 모든 MDX 파일 조회
