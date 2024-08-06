@@ -34,7 +34,7 @@ export default function LanguageSelector({ className }: { className?: string }) 
   };
 
   return (
-    <S.Select onValueChange={onSelectChange} defaultValue={isKo ? 'ko' : 'en'}>
+    <S.Select onValueChange={onSelectChange} defaultValue={isEn ? 'en' : 'ko'}>
       <S.SelectTrigger className={cn('w-fit gap-2', className)}>
         <GlobeIcon className='size-3.5' />
         <S.SelectValue />
