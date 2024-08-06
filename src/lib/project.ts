@@ -5,19 +5,26 @@ import { sync } from 'glob';
 import matter from 'gray-matter';
 import path from 'path';
 
-const BASE_PATH = '/src/projects/section';
-const PROJECT_PATH = path.join(process.cwd(), BASE_PATH);
+const BASE_PATH = '/src/projects';
+const CAREER_PATH = `${BASE_PATH}/career`;
+const SECTION_PATH = `${BASE_PATH}/section`;
 
-// 모든 MDX 파일 조회
-export const getProjectPaths = (locale?: string) => {
-  const filename = locale || '*';
-  const projectPaths: string[] = sync(`${PROJECT_PATH}/**/${filename}.mdx`);
-  return projectPaths;
-};
-
+const PROJECT_SECTION_PATH = path.join(process.cwd(), SECTION_PATH);
 const monthFormat = {
   en: 'MMMM, yyyy',
   ko: 'yyyy년 M월',
+};
+
+// 모든 MDX 파일 조회
+const getProjectSectionPaths = (locale?: string) => {
+  const filename = locale || '*';
+  const projectPaths: string[] = sync(`${PROJECT_SECTION_PATH}/**/${filename}.mdx`);
+  return projectPaths;
+};
+
+export const getCareerProject = async (slug: string, locale: Locale) => {
+  const postPath = path.join(process.cwd(), CAREER_PATH, `${slug}/${locale}.mdx`);
+  return await parseProject(postPath, locale);
 };
 
 // MDX detail
@@ -27,9 +34,9 @@ const parseProject = async (postPath: string, locale: Locale) => {
   const grayMatter = data as ProjectMatter;
   const startMonthString = format(grayMatter.startMonth, monthFormat[locale]);
   const endMonthString = format(grayMatter.endMonth, monthFormat[locale]);
-  const slug = getProjectSLug(postPath);
+  const slug = getProjectSlug(postPath);
 
-  return { ...grayMatter, content, startMonthString, endMonthString, slug, locale };
+  return { ...grayMatter, content, startMonthString, endMonthString, slug };
 };
 
 // project를 날짜 최신순으로 정렬
@@ -38,19 +45,19 @@ const sortProjectList = (projectList: Project[]) => {
 };
 
 // MDX의 개요 파싱
-export const getProjectSLug = (postPath: string) => {
+const getProjectSlug = (postPath: string) => {
   const path = postPath
     .slice(postPath.indexOf(BASE_PATH))
     .replace(`${BASE_PATH}/`, '')
     .replace('.mdx', '');
 
-  const [slug] = path.split('/');
+  const [, slug] = path.split('/');
   return slug;
 };
 
 // 모든 프로젝트 목록 조회. 이력서 하단에서 사용
-export const getProjectList = async (locale: Locale): Promise<Project[]> => {
-  const projectPaths = getProjectPaths(locale);
+const getProjectList = async (locale: Locale): Promise<Project[]> => {
+  const projectPaths = getProjectSectionPaths(locale);
   const projectList = await Promise.all(
     projectPaths.map((postPath) => parseProject(postPath, locale))
   );
@@ -60,11 +67,4 @@ export const getProjectList = async (locale: Locale): Promise<Project[]> => {
 export const getSortedProjectList = async (locale: Locale) => {
   const projectList = await getProjectList(locale);
   return sortProjectList(projectList);
-};
-
-// project 상세 페이지 내용 조회
-export const getProjectDetail = async (slug: string, locale: Locale) => {
-  const filePath = `${PROJECT_PATH}/${slug}/${locale}.mdx`;
-  const detail = await parseProject(filePath, locale);
-  return detail;
 };
