@@ -10,18 +10,17 @@ export const RESUME_DATA_KO = {
   summary:
     '아이디어를 빠르게 서비스하기 위한 가장 강력한 수단은 웹 개발이라고 생각합니다.\n예술 작품을 만들어낸다는 마음가짐으로 디테일과 간결함에 주의를 기울입니다.\n다양한 플랫폼에서 활용되는 Javascript에 관심을 갖고 열심히 공부하고 있습니다.',
   avatarUrl: 'https://avatars.githubusercontent.com/u/40906871?v=4',
-  personalWebsiteUrl: 'https://jarocki.me',
   contact: {
     email: 'ehgud456456@naver.com',
     social: [
       {
         name: 'GitHub',
-        url: 'https://github.com/BartoszJarocki',
+        url: 'https://github.com/d5br5',
         icon: IconGithub,
       },
       {
         name: 'LinkedIn',
-        url: 'https://www.linkedin.com/in/bjarocki/',
+        url: 'https://www.linkedin.com/in/dohkim777/',
         icon: IconLinkedin,
       },
     ],

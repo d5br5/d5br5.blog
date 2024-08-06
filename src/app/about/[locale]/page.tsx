@@ -153,7 +153,12 @@ export default async function AboutPage({ params: { locale } }: Props) {
                         );
                       } else {
                         const project = careerProjectList.find((p) => p.slug === point.slug);
-                        if (!project) return point.title;
+                        if (!project)
+                          return (
+                            <li key={index} className='ml-5 text-muted-foreground'>
+                              {point.title}
+                            </li>
+                          );
                         return (
                           <D.Dialog key={point.slug}>
                             <li className='ml-5 text-muted-foreground'>
