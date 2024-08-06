@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import LanguageSelector from '@/components/about/language-selector';
 import ProjectList from '@/components/about/project-list';
 import CopyLinkButton from '@/components/common/CopyLinkButton';
+import { ProjectBody } from '@/components/project-detail/project-body';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,7 +12,7 @@ import * as D from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Section } from '@/components/ui/section';
 import { DATAS, Locale } from '@/config/types';
-import { getSortedProjectList } from '@/lib/project';
+import { getCareerProjectList, getSortedProjectList } from '@/lib/project';
 import { cn } from '@/lib/utils';
 import { GlobeIcon, MailIcon } from 'lucide-react';
 
@@ -36,6 +37,7 @@ export function generateMetadata({ params: { locale } }: Props): Metadata {
 export default async function AboutPage({ params: { locale } }: Props) {
   const RESUME_DATA = DATAS[locale].data;
   const projectList = await getSortedProjectList(locale);
+  const careerProjectList = await getCareerProjectList(locale);
   return (
     <main className='container relative mx-auto scroll-my-12 overflow-auto p-6 sm:p-9 md:p-16 print:p-12 print:pt-0'>
       <LanguageSelector className='m-auto mb-5 border-0 sm:hidden print:hidden' />
@@ -142,11 +144,37 @@ export default async function AboutPage({ params: { locale } }: Props) {
                 <h4 className='mt-7 font-semibold  leading-none print:text-[12px]'>{work.title}</h4>
                 {work.points && (
                   <ul className='mt-4 list-disc space-y-2 text-sm'>
-                    {work.points.map((point, index) => (
-                      <li key={index} className='ml-5 text-muted-foreground'>
-                        {point}
-                      </li>
-                    ))}
+                    {work.points.map((point, index) => {
+                      if (typeof point === 'string') {
+                        return (
+                          <li key={index} className='ml-5 text-muted-foreground'>
+                            {point}
+                          </li>
+                        );
+                      } else {
+                        const project = careerProjectList.find((p) => p.slug === point.slug);
+                        if (!project) return point.title;
+                        return (
+                          <D.Dialog key={point.slug}>
+                            <li className='ml-5 text-muted-foreground'>
+                              <D.DialogTrigger>{point.title}</D.DialogTrigger>
+                            </li>
+                            <D.DialogContent className='gap-0 px-0 pb-3'>
+                              <D.DialogTitle className='text-center text-xl'>
+                                {point.title}
+                              </D.DialogTitle>
+                              <div className='mt-1 text-center text-sm text-gray-500'>
+                                {project.startMonthString} - {project.endMonthString}
+                              </div>
+                              <div className='mt-2 max-h-[60vh] overflow-y-scroll sm:max-h-[70vh]'>
+                                <ProjectBody project={project} />
+                              </div>
+                              <D.DialogDescription className='sr-only'></D.DialogDescription>
+                            </D.DialogContent>
+                          </D.Dialog>
+                        );
+                      }
+                    })}
                   </ul>
                 )}
               </Card>

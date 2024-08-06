@@ -10,6 +10,7 @@ const CAREER_PATH = `${BASE_PATH}/career`;
 const SECTION_PATH = `${BASE_PATH}/section`;
 
 const PROJECT_SECTION_PATH = path.join(process.cwd(), SECTION_PATH);
+const PROJECT_CAREER_PATH = path.join(process.cwd(), CAREER_PATH);
 const monthFormat = {
   en: 'MMMM, yyyy',
   ko: 'yyyy년 M월',
@@ -20,11 +21,6 @@ const getProjectSectionPaths = (locale?: string) => {
   const filename = locale || '*';
   const projectPaths: string[] = sync(`${PROJECT_SECTION_PATH}/**/${filename}.mdx`);
   return projectPaths;
-};
-
-export const getCareerProject = async (slug: string, locale: Locale) => {
-  const postPath = path.join(process.cwd(), CAREER_PATH, `${slug}/${locale}.mdx`);
-  return await parseProject(postPath, locale);
 };
 
 // MDX detail
@@ -51,8 +47,10 @@ const getProjectInfoFromPath = (postPath: string) => {
     .replace(`${BASE_PATH}/`, '')
     .replace('.mdx', '');
 
-  const [category, slug, locale] = path.split('/');
-  return { category, slug, locale };
+  const splitted = path.split('/');
+  const slug = splitted.slice(1, -1).join('/');
+
+  return { category: splitted[0], slug, locale: splitted[splitted.length - 1] };
 };
 
 // 모든 프로젝트 목록 조회. 이력서 하단에서 사용
@@ -67,4 +65,18 @@ const getProjectList = async (locale: Locale): Promise<Project[]> => {
 export const getSortedProjectList = async (locale: Locale) => {
   const projectList = await getProjectList(locale);
   return sortProjectList(projectList);
+};
+
+const getProjectCareerPaths = (locale: Locale) => {
+  const filename = locale || '*';
+  const projectPaths: string[] = sync(`${PROJECT_CAREER_PATH}/**/${filename}.mdx`);
+  return projectPaths;
+};
+
+export const getCareerProjectList = async (locale: Locale) => {
+  const projectPaths = getProjectCareerPaths(locale);
+  const projectList = await Promise.all(
+    projectPaths.map((postPath) => parseProject(postPath, locale))
+  );
+  return projectList;
 };

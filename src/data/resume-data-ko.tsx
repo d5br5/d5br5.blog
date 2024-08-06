@@ -62,26 +62,13 @@ export const RESUME_DATA_KO = {
         '자산배분, 트레이딩 시뮬레이터 프론트엔드 개발',
         'React 기반 SPA 제작, Redux를 통한 상태관리',
         'Code Migration (Vue.js → React.js)',
-        '프론트엔드 렌더링 성능 최적화',
+        {
+          title: '프론트엔드 렌더링 성능 최적화',
+          slug: 'tmax/optimization',
+        },
         'git commit, branch rule 정리',
       ],
     },
   ],
   skills: ['Javascript', 'Typescript', 'React.js', 'Vue.js', 'Next.js'],
-  projects: [
-    {
-      title: 'Parabol',
-      techStack: ['Full Stack Developer', 'TypeScript', 'React', 'Node.js', 'GraphQL'],
-      description: 'The Agile meeting co-pilot that delivers better meetings with less effort',
-      link: {
-        label: 'github.com',
-        href: 'https://parabol.co/',
-      },
-    },
-    {
-      title: 'Canal Digital GO',
-      techStack: ['Lead Android Developer', 'Android', 'Kotlin'],
-      description: 'Video streaming mobile application for Canal Digital subscribers',
-    },
-  ],
 } as const;
