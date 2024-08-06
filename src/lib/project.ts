@@ -30,11 +30,11 @@ export const getCareerProject = async (slug: string, locale: Locale) => {
 // MDX detail
 const parseProject = async (postPath: string, locale: Locale) => {
   const file = fs.readFileSync(postPath, 'utf8');
+  const { slug } = getProjectInfoFromPath(postPath);
   const { data, content } = matter(file);
   const grayMatter = data as ProjectMatter;
   const startMonthString = format(grayMatter.startMonth, monthFormat[locale]);
   const endMonthString = format(grayMatter.endMonth, monthFormat[locale]);
-  const slug = getProjectSlug(postPath);
 
   return { ...grayMatter, content, startMonthString, endMonthString, slug };
 };
@@ -45,14 +45,14 @@ const sortProjectList = (projectList: Project[]) => {
 };
 
 // MDX의 개요 파싱
-const getProjectSlug = (postPath: string) => {
+const getProjectInfoFromPath = (postPath: string) => {
   const path = postPath
     .slice(postPath.indexOf(BASE_PATH))
     .replace(`${BASE_PATH}/`, '')
     .replace('.mdx', '');
 
-  const [, slug] = path.split('/');
-  return slug;
+  const [category, slug, locale] = path.split('/');
+  return { category, slug, locale };
 };
 
 // 모든 프로젝트 목록 조회. 이력서 하단에서 사용
