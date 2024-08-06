@@ -45,7 +45,6 @@ export interface Project extends ProjectMatter {
   startMonthString: string;
   endMonthString: string;
   content: string;
-  locale: string;
 }
 
 export const DATAS = {

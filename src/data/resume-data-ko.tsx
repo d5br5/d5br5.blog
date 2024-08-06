@@ -10,18 +10,17 @@ export const RESUME_DATA_KO = {
   summary:
     '아이디어를 빠르게 서비스하기 위한 가장 강력한 수단은 웹 개발이라고 생각합니다.\n예술 작품을 만들어낸다는 마음가짐으로 디테일과 간결함에 주의를 기울입니다.\n다양한 플랫폼에서 활용되는 Javascript에 관심을 갖고 열심히 공부하고 있습니다.',
   avatarUrl: 'https://avatars.githubusercontent.com/u/40906871?v=4',
-  personalWebsiteUrl: 'https://jarocki.me',
   contact: {
     email: 'ehgud456456@naver.com',
     social: [
       {
         name: 'GitHub',
-        url: 'https://github.com/BartoszJarocki',
+        url: 'https://github.com/d5br5',
         icon: IconGithub,
       },
       {
         name: 'LinkedIn',
-        url: 'https://www.linkedin.com/in/bjarocki/',
+        url: 'https://www.linkedin.com/in/dohkim777/',
         icon: IconLinkedin,
       },
     ],
@@ -62,26 +61,13 @@ export const RESUME_DATA_KO = {
         '자산배분, 트레이딩 시뮬레이터 프론트엔드 개발',
         'React 기반 SPA 제작, Redux를 통한 상태관리',
         'Code Migration (Vue.js → React.js)',
-        '프론트엔드 렌더링 성능 최적화',
+        {
+          title: '프론트엔드 렌더링 성능 최적화',
+          slug: 'tmax/optimization',
+        },
         'git commit, branch rule 정리',
       ],
     },
   ],
   skills: ['Javascript', 'Typescript', 'React.js', 'Vue.js', 'Next.js'],
-  projects: [
-    {
-      title: 'Parabol',
-      techStack: ['Full Stack Developer', 'TypeScript', 'React', 'Node.js', 'GraphQL'],
-      description: 'The Agile meeting co-pilot that delivers better meetings with less effort',
-      link: {
-        label: 'github.com',
-        href: 'https://parabol.co/',
-      },
-    },
-    {
-      title: 'Canal Digital GO',
-      techStack: ['Lead Android Developer', 'Android', 'Kotlin'],
-      description: 'Video streaming mobile application for Canal Digital subscribers',
-    },
-  ],
 } as const;

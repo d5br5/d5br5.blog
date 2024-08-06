@@ -10,18 +10,17 @@ export const RESUME_DATA_EN = {
   summary:
     'I believe that web development is the most powerful means to quickly bring ideas to life as services.\nWith a mindset of creating a work of art, I pay attention to detail and simplicity.\nI am diligently studying JavaScript, which is used across various platforms.',
   avatarUrl: 'https://avatars.githubusercontent.com/u/40906871?v=4',
-  personalWebsiteUrl: 'https://jarocki.me',
   contact: {
     email: 'ehgud456456@naver.com',
     social: [
       {
         name: 'GitHub',
-        url: 'https://github.com/BartoszJarocki',
+        url: 'https://github.com/d5br5',
         icon: IconGithub,
       },
       {
         name: 'LinkedIn',
-        url: 'https://www.linkedin.com/in/bjarocki/',
+        url: 'https://www.linkedin.com/in/dohkim777/',
         icon: IconLinkedin,
       },
     ],
