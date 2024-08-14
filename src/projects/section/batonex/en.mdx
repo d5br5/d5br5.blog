@@ -1,0 +1,57 @@
+---
+title: 'Cryptocurrency Exchange: Batonex'
+desc: 'Cryptocurrency Spot and Futures Trading Platform'
+startMonth: '2023-03'
+tags: 'FE, React, Vue, Redux, MUI, TradingView'
+link: 'https://www.batonex.com'
+---
+
+![](/projects/batonex/dark.jpg)
+
+### Key Features
+ 
+- Cryptocurrency futures and spot trading with real-time price tracking
+- Cryptocurrency storage and transactions (wallet)
+- Purchase of currencies through third-party payment services
+- Provision of blog posts, promotions, and market analysis
+
+### Tech Stack (FE)
+
+- Exchange: React.js, Redux, Redux-Saga, MUI, TradingView
+- Admin: Vue.js, Vuex, Chart.js
+
+### Role
+
+> Development and maintenance of new features for the exchange and admin pages (FE)
+
+#### Dark/Light Theme Addition
+
+- Built and applied the design system to the FE structure
+- Created color palettes and delivered themes to components (Context API)
+- Modified color referencing methods within the code (`window.palette` -> `theme.palette`)
+- Applied themes to web view components and Chart libraries
+
+#### Search Engine Optimization (without SSR)
+
+- Dynamically generated meta tags to display search engine results correctly even with CSR
+- Loaded SEO data during the pre-build process and created the `.nginx.seo.conf` file
+- Implemented a pseudo-SSG by replacing tags with the appropriate HTML when index.html is requested in nginx
+- Automated generation of `robots.txt` and sitemap
+
+#### Integration of Third-Party Payment Services
+
+- Implemented a popup window instead of a regular modal
+- Handled payment results through communication between parent and child windows after payment completion
+- Identified and improved issues within the fee application logic
+
+#### Trading Chart Usability and Code Improvement
+
+- Updated the TradingView library to the latest version (`v1.14` -> `v27.0`)
+- Improved code structure and modularized common logic (class -> function)
+- Separated dependencies in data fetching and chart reflection logic
+- Automated the saving of changes in chart settings and analysis tools
+
+#### Main Page Renewal
+
+- Markup and styling work
+- Implemented Marquee, Carousel, and viewport entry animations

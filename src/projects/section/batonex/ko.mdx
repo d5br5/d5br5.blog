@@ -1,0 +1,58 @@
+---
+title: '가상화폐 거래소: Batonex'
+desc: '가상화폐 현물, 선물 거래소'
+startMonth: '2023-03'
+tags: 'FE, React, Vue, Redux, MUI, TradingView'
+link: 'https://www.batonex.com'
+---
+
+![](/projects/batonex/dark.jpg)
+
+### 주요 기능
+ 
+- 가상화폐 선물, 현물 거래 및 실시간 가격 확인
+- 가상자산 보관 및 입출금 (지갑)
+- 서드파티 결제 서비스를 통한 화폐 구매
+- 블로그, 프로모션, 시장 분석 제공
+
+### Tech Stack (FE)
+
+- 거래소: React.js, Redux, Redux-Saga, MUI, TradingView
+- 어드민: Vue.js, Vuex, Chart.js
+
+### Role
+
+> 거래소, 어드민 페이지 신규 기능 개발 및 유지보수 (FE)
+
+#### 다크/라이트 테마 추가
+
+- 디자인 시스템 구축 및 FE 구조에 적용
+- 색상 팔레트 생성 및 컴포넌트에 테마 전달 (Context API)
+- 코드 내 색상 참조 방식 수정 (`window.palette`->`theme.palette`)
+- 웹뷰 컴포넌트 및 Chart 라이브러리에 테마 적용
+
+
+#### 검색 엔진 최적화 (without SSR)
+
+- CSR에서도 검색엔진 결과 정보가 정상 표시되도록 meta tag 동적 생성
+- pre-build 과정에서 SEO 데이터를 로드후 `.nginx.seo.conf` 파일 생성
+- nginx에 index.html 요청시 tag를 치환한 html로 응답하여 유사 SSG 구현
+- `robots.txt` 및 사이트맵 생성 자동화
+
+#### 서드파티 결제 서비스 연동
+
+- 일반 modal이 아닌 popup window 구현
+- 부모-자식 창간 통신으로 결제 완료 후 결과 핸들링
+- 수수료 적용 로직의 문제점 파악 및 개선
+
+#### 거래 차트 사용성 및 코드 개선
+
+- trading view 라이브러리 버전 최신화 (`v1.14` -> `v27.0`)
+- 코드 구조 개선 및 공통 로직 모듈화 (class->function)
+- 데이터 호출 및 차트 반영 로직의 의존성 분리
+- 차트 설정 및 분석 도구 변경 내용 자동 저장
+
+#### 메인페이지 리뉴얼
+- 마크업 및 스타일링 작업
+- Marquee, Carousel 및 viewport 진입 애니메이션 구현
+
