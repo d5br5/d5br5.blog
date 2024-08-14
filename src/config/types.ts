@@ -43,7 +43,7 @@ export interface ProjectMatter {
 export interface Project extends ProjectMatter {
   slug: string;
   startMonthString: string;
-  endMonthString: string;
+  endMonthString?: string;
   content: string;
 }
 

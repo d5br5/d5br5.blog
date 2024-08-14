@@ -16,6 +16,11 @@ const monthFormat = {
   ko: 'yyyy년 M월',
 };
 
+const presentLang = {
+  en: 'present',
+  ko: '현재',
+};
+
 // 모든 MDX 파일 조회
 const getProjectSectionPaths = (locale?: string) => {
   const filename = locale || '*';
@@ -30,14 +35,16 @@ const parseProject = async (postPath: string, locale: Locale) => {
   const { data, content } = matter(file);
   const grayMatter = data as ProjectMatter;
   const startMonthString = format(grayMatter.startMonth, monthFormat[locale]);
-  const endMonthString = format(grayMatter.endMonth, monthFormat[locale]);
+  const endMonthString = grayMatter.endMonth
+    ? format(grayMatter.endMonth, monthFormat[locale])
+    : presentLang[locale];
 
   return { ...grayMatter, content, startMonthString, endMonthString, slug };
 };
 
 // project를 날짜 최신순으로 정렬
 const sortProjectList = (projectList: Project[]) => {
-  return projectList.sort((a, b) => (a.endMonth > b.endMonth ? -1 : 1));
+  return projectList.sort((a, b) => (a.startMonth > b.startMonth ? -1 : 1));
 };
 
 // MDX의 개요 파싱
