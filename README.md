@@ -1,12 +1,14 @@
-## Welcome
+# Next.js + Tailwind CSS Blog
 
 Next.js 로 구축한 개발 블로그 소스코드입니다.
 
 구현 과정은 [블로그 글](https://www.d5br5.dev/blog/nextjs_blog/setup)에 자세하게 작성해두었으니 참고 부탁드립니다.
 
-Repository Star 부탁드립니다. 큰 힘이 됩니다. 감사합니다.
-
 좋은 하루 보내세요!
+
+---
+
+### ⭐ STAR 하나만 부탁드립니다. 큰 힘이 됩니다. 감사합니다. ⭐
 
 ---
 
