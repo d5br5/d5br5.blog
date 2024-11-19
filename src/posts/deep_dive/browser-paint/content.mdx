@@ -1,0 +1,46 @@
+---
+title: 브라우저가 화면을 그리는 과정 (Reflow, Repaint)
+date: 2024-11-17
+desc: 브라우저의 렌더링 엔진이 화면을 그리는 과정을 알아보자.
+thumbnail: /posts/deep_dive/browser-paint/thumbnail.png
+---
+
+## 브라우저의 구조
+
+브라우저는 아래와 같은 구조로 이루어져 있습니다.
+
+![출처: https://d2.naver.com/helloworld/59361](/posts/deep_dive/browser-paint/1.png)
+
+
+1. 사용자 인터페이스
+    - 주소 표시줄, 이전/다음 버튼, 북마크 메뉴 등. 요청한 페이지를 보여주는 창을 제외한 나머지 모든 부분
+2. 브라우저 엔진
+    - 사용자 인터페이스와 렌더링 엔진 사이의 동작을 제어
+3. 렌더링 엔진
+    - 요청한 콘텐츠를 표시
+4. 통신
+    - HTTP 요청과 같은 네트워크 호출에 사용
+    - 플랫폼 독립적인 인터페이스이고 각 플랫폼 하부에서 실행
+5. UI 백엔드
+    - 콤보 박스와 창 같은 기본적인 장치를 그림.
+    - 플랫폼에서 명시하지 않은 일반적인 인터페이스로서, OS 사용자 인터페이스 체계를 사용
+6. 자바스크립트 해석
+    - 자바스크립트 코드를 해석하고 실행
+7. 자료 저장소
+    - local storage, indexed DB, 쿠키 등 브라우저 메모리를 활용하여 저장하는 영역
+
+우리가 주목할 부분은 ‘렌더링 엔진’입니다.
+firefox는 mozilla에서 만든 Gecko 엔진을 사용하고, 사파리와 크롬은 Webkit 엔진을 사용합니다.
+
+
+## 브라우저가 화면을 그리는 과정
+
+아래 흐름과 같이 간단하게 정리할 수 있습니다.
+
+1. HTML을 기반으로 DOM tree 생성
+2. CSS를 기반으로 CSSOM tree 생성
+3. 둘을 결합하여 Render Tree 생성
+4. Layout: Render Tree 기반으로 각 요소의 위치 및 크기 계산
+5. Paint: 계산한 layout대로 화면에 pixel을 paint
+
+![출처: javascript deep dive 도서](/posts/deep_dive/browser-paint/2.png)
