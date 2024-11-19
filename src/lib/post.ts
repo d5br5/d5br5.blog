@@ -6,7 +6,7 @@ import matter from 'gray-matter';
 import path from 'path';
 import readingTime from 'reading-time';
 
-const BASE_PATH = '/src/posts';
+const BASE_PATH = 'src/posts';
 const POSTS_PATH = path.join(process.cwd(), BASE_PATH);
 
 // 모든 MDX 파일 조회
@@ -29,8 +29,9 @@ const parsePost = async (postPath: string): Promise<Post> => {
 // MDX의 개요 파싱
 // url, cg path, cg name, slug
 export const parsePostAbstract = (postPath: string) => {
-  const filePath = postPath
-    .slice(postPath.indexOf(BASE_PATH))
+  const normalizedPath = postPath.split(path.sep).join('/');
+  const filePath = normalizedPath
+    .slice(normalizedPath.indexOf(BASE_PATH))
     .replace(`${BASE_PATH}/`, '')
     .replace('.mdx', '');
 
