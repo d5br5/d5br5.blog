@@ -1,12 +1,14 @@
-## Welcome
+# Next.js + Tailwind CSS Blog
 
 Next.js 로 구축한 개발 블로그 소스코드입니다.
 
 구현 과정은 [블로그 글](https://www.d5br5.dev/blog/nextjs_blog/setup)에 자세하게 작성해두었으니 참고 부탁드립니다.
 
-Repository Star 부탁드립니다. 큰 힘이 됩니다. 감사합니다.
-
 좋은 하루 보내세요!
+
+---
+
+### ⭐ STAR 하나만 부탁드립니다. 큰 힘이 됩니다. 감사합니다. ⭐
 
 ---
 
@@ -23,11 +25,8 @@ Repository Star 부탁드립니다. 큰 힘이 됩니다. 감사합니다.
     NEXT_PUBLIC_GISCUS_CATEGORY_ID=foobarboobar
     ```
 
-- `fs` 라이브러리가 디렉토리 구조를 제대로 읽지 못해요!
-
-  - `Error: ENOENT: no such file or directory` 에러가 발생하는 경우
-  - windows 환경에서만 위와 같은 에러가 발생합니다. -> mac os 사용을 권장합니다.
-
-  - 배포 환경에서는 에러가 발생하지 않습니다.
-
-  - windows에서도 에러가 발생하지 않도록 추후 업데이트해두겠습니다.
+- `Error: ENOENT: no such file or directory` 에러가 발생해요!
+  - `fs` 라이브러리가 디렉토리 구조를 제대로 읽지 못해 발생하는 에러
+    - 파일 경로 구분자가 mac(`/`)과 windows(`\\`)에서 다르게 사용되기 때문
+  - windows 환경에서만 위 에러가 발생하기 때문에 mac os 사용을 권장합니다. 배포 환경에서는 에러가 발생하지 않습니다.
+  - 현재 배포된 최신 코드에서는 에러가 발생하지 않도록 수정해두었습니다. 최신 코드를 참조해주세요.

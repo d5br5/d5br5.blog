@@ -1,0 +1,129 @@
+---
+title: CSS Trigger (Reflow, Repaint)
+date: 2024-10-06
+desc: CSS 속성이 변경되면 어느 단계부터 렌더링이 재시작되는지 알아보자.
+thumbnail: /posts/css-trigger/thumbnail.png
+---
+
+![](/posts/css-trigger/thumbnail.png)
+
+## CSS Trigger
+
+브라우저는 화면 내 렌더트리의 CSS 속성이 변경되면, 이를 탐지하여 렌더링을 재시작합니다.
+
+브라우저의 렌더링 엔진이 화면을 그리는 과정은 다음과 같습니다.
+
+> Render Tree -> Layout(Reflow) -> Paint(Repaint) -> Composite
+
+특정 단계가 다시 시작되면, 그 뒤 단계도 같이 진행됩니다.
+CSS 속성이 변했을 때, 렌더링 재시작점은 속성마다 다릅니다.
+
+각 속성별로, 렌더링 재시작점이 어디인지 정리해보겠습니다.
+
+---
+
+### Reflow부터 시작
+
+- align-content
+- align-items
+- border-[bottom/top/left/right]-style
+- border-[bottom/top/left/width]-width
+- border-collapse
+- border-image-source
+- bottom / top / left / right
+- box-shadow
+- box-sizing
+- clear
+- direction
+- display
+- flex-basis
+- flex-direction
+- flex-grow
+- flex-shrink
+- flex-wrap
+- float
+- font-family
+- font-kerning
+- font-size
+- font-style
+- font-variant
+- font-variant-ligatures
+- font-weight
+- height / width
+- justify-content	
+- letter-spacing
+- line-height
+- list-style-image
+- list-style-position
+- list-style-type
+- margin-[bottom/left/right/top]
+- max-[height/width]
+- min-[height/width]
+- order
+- outline-color
+- outline-offset
+- outline-style
+- outline-width
+- overflow-[x/y]
+- padding-[top/bottom/right/left]
+- position
+- table-layout
+- text-align
+- text-indent
+- text-rendering
+- text-shadow
+- text-transform
+- unicode-bidi
+- vertical-align
+- white-space
+- word-break
+- word-spacing
+- word-wrap
+
+---
+
+### Repaint부터 시작
+
+- backface-visibility
+- background-attachment
+- background-blend-mode
+- background-clip
+- background-color
+- background-image
+- background-origin
+- background-position
+- background-repeat
+- background-size
+- border-[bottom/top]-[right/left]-radius
+- border-[bottom/top/left/right]-color
+- border-image-outset
+- border-image-repeat
+- border-image-slice
+- border-image-width
+- clip
+- color
+- opacity
+- resize
+- text-decoration
+- transform-origin
+- visibility
+- z-index
+
+---
+
+### Composite만 발생
+
+- cursor
+- orphans
+- perspective 
+- perspective-origin
+- pointer-events
+- transform
+- transform-style
+- widows
+
+---
+
+## Reference 
+- https://csstriggers.com
+- https://css-triggers.com
