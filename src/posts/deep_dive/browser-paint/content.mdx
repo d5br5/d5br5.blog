@@ -1,0 +1,346 @@
+---
+title: 브라우저가 화면을 그리는 과정 (Reflow, Repaint)
+date: 2024-11-17
+desc: 브라우저의 렌더링 엔진이 화면을 그리는 과정을 알아보자.
+thumbnail: /posts/deep_dive/browser-paint/thumbnail.png
+---
+
+## 브라우저의 구조
+
+브라우저는 아래와 같은 구조로 이루어져 있습니다.
+
+![출처: https://d2.naver.com/helloworld/59361](/posts/deep_dive/browser-paint/1.png)
+
+
+1. 사용자 인터페이스
+    - 요청한 페이지를 보여주는 창을 제외한 나머지 모든 부분 (주소 표시줄, 이전/다음 버튼, 북마크 메뉴 등)
+2. 브라우저 엔진
+    - 사용자 인터페이스와 렌더링 엔진 사이의 동작을 제어
+3. 렌더링 엔진
+    - 요청한 콘텐츠를 표시
+4. 통신
+    - HTTP 요청과 같은 네트워크 호출에 사용
+    - 플랫폼 독립적인 인터페이스이고 각 플랫폼 하부에서 실행
+5. UI 백엔드
+    - 콤보 박스와 창 같은 기본적인 장치를 그림
+    - 플랫폼에서 명시하지 않은 일반적인 인터페이스로서, OS 사용자 인터페이스 체계를 사용
+6. 자바스크립트 해석
+    - 자바스크립트 코드를 해석하고 실행
+7. 자료 저장소
+    - local storage, indexed DB, 쿠키 등 브라우저 메모리를 활용하여 저장하는 영역
+
+우리가 주목할 부분은 ‘렌더링 엔진’입니다.
+firefox는 mozilla에서 만든 Gecko 엔진을 사용하고, 사파리와 크롬은 Webkit 엔진을 사용합니다.
+
+---
+
+## 화면을 그리는 과정
+
+아래 흐름과 같이 간단하게 정리할 수 있습니다.
+
+![출처: javascript deep dive 도서](/posts/deep_dive/browser-paint/2.png)
+
+1. HTML을 기반으로 DOM tree 생성
+2. CSS를 기반으로 CSSOM tree 생성
+3. 둘을 결합하여 Render Tree 생성
+4. Layout: Render Tree 기반으로 각 요소의 위치 및 크기 계산
+5. Paint: 계산한 layout대로 화면에 pixel을 paint
+
+각 단계를 세부적으로 살펴봅시다.
+
+### 1. DOM tree 생성
+
+> DOM: Document Object Model
+
+브라우저는 서버로부터 html 파일을 응답받습니다.
+다음과 같은 html 문서를 받는다고 생각해봅시다.
+
+```html
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <ul>
+      <li id="apple">Apple</li>
+      <li id="banana">Banana</li>
+      <li id="orange">Orange</li>
+    </ul>
+    <script src="app.js"></script>
+  </body>
+</html>
+```
+
+브라우저는 다음과 같은 과정을 거쳐 DOM tree를 생성합니다.
+
+1. 변환(Conversion)
+    - 위 코드는 인간이 보기 좋은 코드일 뿐, 실제 데이터 전송은 byte로 이루어집니다.
+        - `3C 62 6F 64 79 3E 48 65 6C 6C 6F 2C 20 3C 73...`
+    - 전달받은 byte를, 문서에 지정된 인코딩(예: UTF-8)에 따라 개별 문자로 변환합니다.
+2. 토큰화(Tokenizing)
+    - 문서 내 문자열을, 고유 문자열로 변환합니다.
+    - html, body, div, p 등, 미리 지정된 토큰으로 변환합니다.
+    - 각 토큰에는 특별한 의미와 고유한 규칙이 정해져 있습니다.
+3. 렉싱(Lexing)
+    - 각 토큰을 객체로 변환하여 노드를 생성합니다.
+    - property, value 등 미리 정의된 속성, 규칙을 가집니다.
+4. DOM 구성(DOM contruction)
+    - 각 노드를 tree 구조로 연결합니다. 연결된 tree를 DOM이라 합니다.
+    - tree구조이므로, 노드간 부모-자식 관계를 확인할 수 있습니다.
+
+위 과정을 다음과 같이 그림으로 정리할 수 있습니다.
+
+![출처: javascript deep dive 도서](/posts/deep_dive/browser-paint/3.jpg)
+
+
+<Callout type="info">Token화 알고리즘</Callout>
+
+![출처: https://d2.naver.com/helloworld/59361](/posts/deep_dive/browser-paint/4.png)
+
+
+다음과 같은 html을 예시로 설명하겠습니다.
+
+```html
+<html>
+  <body>
+    Hello world
+  </body>
+</html> 
+```
+
+초기 상태는 `자료 상태` 입니다.
+
+'\<' 문자를 만나면 `태그 열림 상태` 로 변합니다. 
+a-z 문자를 만나면 `시작 태그 토큰`을 생성하고, `태그 이름 상태`로 변합니다.  '>' 를 만날때까지 유지합니다.
+‘>’ 를 만나면 현재 토큰이 발행되고, 다시 `자료 상태`로 바뀝니다.
+
+현재 html, body 태그를 발행 후 `자료 상태`인 상황입니다.
+Hello world의 각 문자를 위한 문자 토큰이 발행됩니다.
+
+다시 '\<'를 만나 `태그 열림 상태` 가 되고,
+'/'' 를 만나 종료 태그 토큰을 생성합니다. `태그 이름 상태` 로 변경됩니다.
+'>' 를 만나 새로운 태그 토큰을 발행합니다. `자료 상태`가 됩니다.
+
+문서 끝까지 위 과정을 반복합니다.
+
+### 2. CSSOM tree 생성
+
+DOM 과 마찬가지로, 브라우저는 CSS를 파싱하여 CSSOM을 생성합니다. 
+CSS가 다음과 같았다고 가정해봅시다.
+
+```css
+body {
+	font-size: 18px;
+}
+
+ul {
+	list-style-type: none;
+}
+```
+
+스타일을 `head` 태그에 선언하든, 외부 stylesheet를 link로 불러오든 과정은 동일합니다. 
+DOM과 동일한 과정으로 파싱, 생성된 CSSOM은 다음과 같습니다.
+
+![출처: javascript deep dive 도서](/posts/deep_dive/browser-paint/5.jpg)
+
+
+<Callout type="info">
+CSSOM은 왜 트리구조일까요? 
+</Callout>
+
+요소에 스타일을 적용하는 순서와 관련이 있습니다.
+노드에 대한 최종 스타일 집합을 계산할 때, 브라우저는 해당 노드에 적용할 수 있는 가장 일반적인 규칙으로 시작해서, 점점 더 구체적인 규칙을 덮어씁니다. (body, html 에 적용된 스타일을 기본으로 깔고, 요소 특정 스타일을 제일 위에 덮어씀)
+즉, 규칙이 하위로 'cascade' 됩니다.
+
+아! 그래서 CSS(Cascading Style Sheets) 라는 이름이 붙었나 봅니다.
+가장 부모부터, 본인까지 스타일을 cascading 하기 위해, 브라우저는 CSSOM을 트리 구조로 파싱합니다.
+
+
+### 3. Render tree 생성 (Attachment)
+
+앞서 만든 DOM, CSSOM을 결합하여, Render tree를 만듭니다.
+
+![출처: javascript deep dive 도서](/posts/deep_dive/browser-paint/6.png)
+
+1. DOM tree의 root node부터 시작하여, visible한 node를 각각 traverse(순회)합니다.
+    - script, meta 와 같은 일부 노드는 visible하지 않습니다. 생략됩니다.
+    - `display:none` 과 같이 숨겨지는 노드도 제외됩니다.
+2. 각 노드와 일치하는 적절한 CSSOM 규칙을 찾아 적용
+3. visible node + CSSOM 규칙을 결합하여 render tree를 만듭니다.
+
+이렇게 생성한 render tree를 토대로, Layout 단계를 진행합니다.
+
+<Callout type="warn">visibility:hidden 과 display:none은 다릅니다.</Callout>
+
+- visibility: hidden → 요소가 보이지는 않지만, 레이아웃에서 공간을 차지합니다. (빈 상자로 렌더링)
+- display: none → 요소가 보이지 않고, 레이아웃에도 포함되지 않습니다. 렌더 트리에서 제외됩니다.
+
+
+### 4. Layout (reflow)
+
+각 요소의 정확한 위치와 크기를 계산하는 단계입니다. 
+이를 위해 브라우저는, render tree의 root에서 시작해서 각 요소를 traverse합니다.
+다음 예시를 살펴봅시다.
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Critial Path: Hello world!</title>
+  </head>
+  <body>
+    <div style="width: 50%">
+      <div style="width: 50%">Hello world!</div>
+    </div>
+  </body>
+</html>
+```
+
+body 내 중첩된 두 div의 width를 viewport 기준으로 계산합니다. 
+이 과정에서 각 요소의 정확한 위치와 크기가 화면 내 픽셀값으로 정확하게 계산됩니다. 
+요소가 배치되는 순서는 다음과 같습니다.
+
+1. Box model calculation
+    - 요소 자체의 margin, border, padding, width, height를 먼저 계산
+2. Normal flow 배치
+    - 마크업 순서에 따라 화면 내 배치 실행
+3. Positioning
+    - 요소의 position 속성에 따른 배치 실행
+
+position: absolute 혹은 fixed의 경우 2번 순서가 스킵됩니다. position: relative가 비용이 더 비쌉니다.
+
+### 5. Paint (rasterize, repaint)
+
+계산된 위치와 크기를 바탕으로, 실제 스타일을 화면에 그립니다.
+문서가 클수록, 스타일이 복잡할수록 브라우저에서 더 많은 작업을 수행해야 해서, 더 많은 시간이 걸립니다.
+(단색은 그리는 비용이 저렴하지만, gradient 혹은 음영을 렌더링하는 비용은 비쌉니다.)
+
+최신 브라우저에서는 composite라는 과정도 수행됩니다.
+계산된 스타일들을 모아 하나의 layer를 만들고, 
+이 layer를 3차원 형태로 겹겹이 쌓아 하나의 비트맵을 만드는 과정입니다.
+전체 요소를 paint할 필요 없이, 특정 레이어만 변경하면 되기 때문에 더 빠르게 화면을 그릴 수 있습니다.
+
+---
+
+## DOM 에 변경사항 발생!
+
+우리 브라우저는 계속 같은 상태로 있지 않습니다.
+문서 내용이 바뀌거나, 스타일이 변경되는 일이 더 많습니다.
+
+### 발생 예시
+- DOM 추가/제거
+- DOM 노드 위치/크기 변경
+- window 크기 변경
+- css 애니메이션
+- 폰트, 이미지 크기, 텍스트 변경
+
+브라우저는 이 변경 사항을 파악하여, 화면을 다시 그립니다!
+하지만 처음부터 다시 수행하는 것은 비효율적이므로, 필요한 부분부터 다시 수행합니다.
+
+> DOM 생성 → CSSOM 생성 → Render Tree 생성 → Layout → Paint → Composite
+
+
+reflow부터 수행되는 변경이 있는가 하면, repaint부터 수행되는 변경도 있습니다.
+중요한 것은, 특정 동작이 수행되면, 그 뒷 과정도 반드시 일어난다는 것입니다.
+예를 들어 reflow가 발생하면, repaint가 반드시 발생합니다. (composite도 수행된다.)
+반대로 repaint가 수행되면, reflow는 발생하지 않고 composite만 수행됩니다.
+
+동일한 현상을 웹페이지에 적용하고자 한다면, reflow가 발생하는 속성을 건드리는 것보다는, repaint가 발생하는 속성을 건드리는게 렌더링 관점에서 유리하다는 것을 알 수 있습니다.
+
+<Callout type="info" title="Reflow를 유발하는 동작">
+- window resizing
+- 폰트 변화, 텍스트 내용 변화 (input 박스 내 텍스트 입력 등)
+- 스타일 추가 또는 제거
+- :hover와 같은 CSS pseudo class
+- class, style attribute의 동적 변화
+- JS를 사용한 DOM 동적 변화 (위치, 크기)
+- 이미지 크기 변경
+- 요소에 대한 offsetWidth/offsetHeight (화면에서 보여지는 좌표) 계산
+</Callout>
+
+### 속성별 재시작 동작
+
+<Callout type="warn">
+상세한 내용은 [이전 게시글(CSS Trigger)](/blog/manual/css-trigger)을 참고하세요.
+</Callout>
+
+#### Reflow trigger (크기, 배치 등의 기하학적 변화 / 브라우저 사이즈 변경)
+- position, width, height, margin, padding, border, border-width
+- font-size, font-weight, line-height, text-align, overflow
+- vertical-align, white-space, box-shadow
+
+#### Repaint trigger (색상, 두께 / visibility 변경)    
+- background, text-decoration, border-radius
+- color, line-style, outline, visibility, opacity
+
+#### Composite trigger(GPU)
+- transform, cursor, perspective
+
+---
+
+## 최적화 전략
+
+가능하면 reflow 보다는 repaint를 trigger 하는게 유리하다는 것은 이제 이해했습니다.
+
+-  reflow trigger 동작을 최소화
+-  css를 변경해야 한다면, reflow보다는 repaint를 trigger 하는 속성을 변경
+
+실제 상황에 적용할 수 있는 다양한 최적화 전략을 공유합니다. (출처: [아래 reference](https://lists.w3.org/Archives/Public/public-html-ig-ko/2011Sep/att-0031/Reflow_____________________________Tip.pdf))
+
+1. 최대한 DOM 구조상 끝단에 위치한 노드를 변경
+    - root에 가까울수록 그 영향은 tree 전체에 미칩니다.
+    - 말단에 위치한 노드에 변화를 줄 경우, reflow의 영향을 일부 노드들로 제한할 수 있습니다.
+2. 인라인 스타일은 지양
+    - DOM은 매우 느린 구조체
+    - 인라인 스타일은 리플로우를 수차례 발생시킵니다.
+3. 애니메이션이 포함된 요소는 가급적 fixed / absolute
+    - 페이지 전체의 reflow 대신 해당 요소의 repaint만을 유발합니다.
+4. quality와 performance 사이에서 타협
+    - 초당 1px 이동하는 애니메이션 A
+    - 초당 3px 이동하는 애니메이션 B
+    - B가 덜 정교(quality down)하지만, 퍼포먼스는 좋습니다.
+5. table layout 지양
+    - 테이블 레이아웃은 점진적 페이지 렌더링이 적용되지 않습니다.
+    - 모두 로드되고 계산된 후에야 화면에 뿌려집니다.
+    - 테이블 내 작은 변화마저도 테이블 전체 모든 노드에 대한 reflow를 발생시킵니다..
+6. CSS에서 JS 표현식 지양
+    - 문서 중 일부가 reflow될 때마다 표현식이 다시 계산되므로, 비용이 매우 높습니다.
+7. JS를 통해 스타일을 변경할 경우, 가급적 한 번에 처리
+    - 다음 방식으로 수정하는 경우가 있습니다다. 이는 reflow, repaint를 여러번 발생시킵니다.
+        
+        ```jsx
+        var toChange = document.getElementById('elem');
+        toChange.style.background = '#333';
+        toChange.style.color = '#fff';
+        toChange.style.border = '1px solid #ccc';
+        ```
+        
+    - 다음과 같이 한 번의 변화만을 발생시키는 것이 더욱 효과적입니다.
+        
+        ```css
+        #elem { border:1px solid #000; color:#000; background:#ddd; }
+        .highlight { border-color:#00f; color:#fff; background:#333; }
+        ```
+        
+        ```jsx
+        document.getElementById('elem').className = 'highlight';
+        ```
+        
+8. CSS 하위선택자는 필요한 depth 만큼만 정리
+    - 자식 태그를 전부 연결하지 않아도, 필요한 태그만 정의하여 사용
+9. position: relative 사용시 주의
+    - Layout 과정의 실행 순서에서, fixed 혹은 absolute보다 비용이 많이 소요된다는 것을 확인했습니다.
+10. DOM 사용 최소화 및 캐시 적극 활용
+
+---
+
+## Reference
+- [naver 기술 블로그: 브라우저는 어떻게 동작하는가?](https://d2.naver.com/helloworld/59361)
+- [web.dev article: 렌더링 트리 생성, 레이아웃 및 페인트](https://web.dev/articles/critical-rendering-path/render-tree-construction?hl=ko)
+- [web.dev article: 객체 모델 생성](https://web.dev/articles/critical-rendering-path/constructing-the-object-model?hl=ko)
+- [web.dev article: How browsers work](https://web.dev/articles/howbrowserswork)
+- [list.w3.org](https://lists.w3.org/Archives/Public/public-html-ig-ko/2011Sep/att-0031/Reflow_____________________________Tip.pdf)
+- [HTML Standard](https://html.spec.whatwg.org/multipage/parsing.html)
